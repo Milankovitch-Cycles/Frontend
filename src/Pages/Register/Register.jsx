@@ -1,16 +1,19 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { Navbar } from '../../components';
 
 const Register = () => {
   return (
+    <>
+    <Navbar/>
     <div className="bg-gradient-to-r from-gray-700 to-black min-h-screen flex items-center justify-center">
       <div className="container mx-auto">
         <div className="flex justify-center">
           <div className="w-full max-w-md">
             <div className="bg-white p-6 rounded-lg shadow-lg">
               <form>
-                <h1 className="text-2xl font-bold mb-4">Register</h1>
-                <p className="text-gray-600 mb-4">Create your account</p>
+                <h1 className="text-2xl font-bold mb-4">Registrase</h1>
+                <p className="text-gray-600 mb-4">Crea tu cuenta</p>
                 <div className="mb-4">
                   <div className="flex items-center border border-gray-300 rounded-md">
                     <span className="px-3 py-2 text-gray-500 bg-gray-100 rounded-l-md">
@@ -31,7 +34,7 @@ const Register = () => {
                     </span>
                     <input
                       type="text"
-                      placeholder="Username"
+                      placeholder="Nombre de usuario"
                       className="w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-r-md"
                     />
                   </div>
@@ -66,7 +69,7 @@ const Register = () => {
                     </span>
                     <input
                       type="password"
-                      placeholder="Password"
+                      placeholder="Contraseña"
                       className="w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-r-md"
                     />
                   </div>
@@ -91,14 +94,14 @@ const Register = () => {
                     </span>
                     <input
                       type="password"
-                      placeholder="Repeat password"
+                      placeholder="Repetir contraseña"
                       className="w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-r-md"
                     />
                   </div>
                 </div>
                 <div className="flex justify-center">
                   <button className="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600">
-                    Create Account
+                    Crear cuenta
                   </button>
                 </div>
               </form>
@@ -107,6 +110,7 @@ const Register = () => {
         </div>
       </div>
     </div>
+    </>
   )
 }
 
