@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Navbar } from '../../components';
 
 const Home = () => {
@@ -10,4 +10,4 @@ const Home = () => {
   );
 };
 
-export default Navbar;
+export default Home;

@@ -4,7 +4,9 @@ import { Navbar } from '../../components';
 
 
 const Login = () => {
+
   return (
+    
     <>
     <Navbar/>
     <div className="bg-gradient-to-r from-gray-700 to-black min-h-screen flex items-center justify-center">
