@@ -1,5 +1,7 @@
 import React, { Suspense } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import store from './redux/store'
+import { Provider } from 'react-redux';
 
 // Lazy load del componente Register
 const Register = React.lazy(() => import('./Pages/Register/Register'));
@@ -9,6 +11,7 @@ const Verify = React.lazy(()=>import ('./Pages/Verify/Verify'))
 
 function App() {
   return (
+    <Provider store={store}>
     <BrowserRouter>
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
@@ -19,6 +22,7 @@ function App() {
         </Routes>
       </Suspense>
       </BrowserRouter>
+    </Provider>
   );
 }
 

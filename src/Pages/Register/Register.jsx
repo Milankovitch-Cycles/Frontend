@@ -1,18 +1,25 @@
 import React, { useState } from 'react'
 import { register } from '../../api/authService'
 import { Navbar } from '../../components';
+import { addAuthToken } from '../../redux/states';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const Register = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const dispatch = useDispatch();
 
   const handleRegister = async (e) => {
     e.preventDefault();
     const validationErrors = {};
-  
+
+    // Validación del formulario
     if (!username) validationErrors.username = 'El nombre de usuario es obligatorio';
     if (!email) validationErrors.email = 'El correo electrónico es obligatorio';
     if (!password) validationErrors.password = 'La contraseña es obligatoria';
@@ -20,23 +27,47 @@ const Register = () => {
     if (password && confirmPassword && password !== confirmPassword) {
       validationErrors.passwordMatch = 'Las contraseñas no coinciden';
     }
-  
+
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
-  
+
     try {
       const datos = {
         email: email,
         password: password,
       };
-  
+
+
+      Swal.fire({
+        title: 'Generando su código de verificación',
+        text: 'Aguarde un momento...',
+        didOpen: () => {
+          Swal.showLoading(); 
+        },
+        allowOutsideClick: false, 
+        showConfirmButton: false, 
+      });
+
+ 
       const response = await register(datos);
-      console.log('Registro exitoso:', response);
+      dispatch(addAuthToken(response));
+
    
+      Swal.close();
+      navigate('/verifyCode');
+
     } catch (error) {
      
+      Swal.close();
+
+    
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Error al registrar. Intenta nuevamente.',
+      });
       console.error('Error en la solicitud de registro:', error.message);
       setErrors({ apiError: 'Error al registrar. Intenta nuevamente.' });
     }
