@@ -36,6 +36,7 @@ const RecoverPassword = () => {
       });
 
       const response = await resetStart({ email });
+      response.email = email;
       dispatch(addAuthToken(response));
 
       Swal.close();

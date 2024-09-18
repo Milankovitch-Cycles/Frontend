@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Navbar } from '../../components';
 import { useSelector } from 'react-redux';
 import { registerFinish } from '../../api/authService';
+import {resetStart} from '../../api/authService';
 import {resetVerify} from '../../api/authService';
 import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+import { addAuthToken } from '../../redux/states';
+import { useDispatch } from 'react-redux';
 
 const Verify = () => {
   const [codeObtain, setCode] = useState('');
@@ -14,6 +17,7 @@ const Verify = () => {
   const dataAuthentication = useSelector((state) => state.authToken);
   const navigate = useNavigate();
   const previousPage = sessionStorage.getItem('previousPage');
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (timer > 0) {
@@ -27,12 +31,53 @@ const Verify = () => {
     }
   }, [timer]);
 
-  const resendCode = () => {
-    setCodeExpired(false);
-    setTimer(30);
-    setApiError(null); 
-    console.log('Código reenviado.');
+  const resendCode = async() => {
+    try {
+      Swal.fire({
+        title: 'Enviando codigo nuevamente',
+        text: 'Por favor, espere un momento...',
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        allowOutsideClick: false,
+        showConfirmButton: false,
+      });
+    
+      const data = {
+        email: dataAuthentication.email
+      };
+      
+     const response = await resetStart(data);
+      response.email = dataAuthentication.email;
+      dispatch(addAuthToken(response));
+
+
+      Swal.close();
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Solicitud enviada',
+        text: 'Revisa tu correo para obtener el código de recuperación.',
+      }).then(() => {
+        sessionStorage.setItem('previousPage', window.location.pathname);
+        window.location.reload();
+      });
+    
+
+    } catch (error) {
+      Swal.close();
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Error al recuperar la contraseña. Intenta nuevamente.',
+      });
+
+      console.error('Error en la solicitud de recuperación:', error.message);
+
+    }
   };
+
 
 
   const handleSubmit = async (e) => {
@@ -40,7 +85,7 @@ const Verify = () => {
     
     try {
 
-    if (previousPage === '/forgotPassword') {
+    if (previousPage === '/forgotPassword'|| previousPage === '/verifyCode' ) {
       const datos = { code: codeObtain };
         await resetVerify(datos, dataAuthentication.access_token);
         setApiError(null);

@@ -52,6 +52,7 @@ const Register = () => {
 
  
       const response = await register(datos);
+      response.email = datos.email;
       dispatch(addAuthToken(response));
 
    
