@@ -45,7 +45,7 @@ const RecoverPassword = () => {
         title: 'Solicitud enviada',
         text: 'Revisa tu correo para obtener el código de recuperación.',
       });
-
+      sessionStorage.setItem('previousPage', window.location.pathname);
       navigate('/verifyCode'); 
 
     } catch (error) {

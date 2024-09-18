@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Navbar } from '../../components';
 import { useSelector } from 'react-redux';
 import { registerFinish } from '../../api/authService';
+import {resetVerify} from '../../api/authService';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom'
 
@@ -9,9 +10,10 @@ const Verify = () => {
   const [codeObtain, setCode] = useState('');
   const [timer, setTimer] = useState(30);
   const [codeExpired, setCodeExpired] = useState(false);
-  const [apiError, setApiError] = useState(null); // Estado para errores de la API
+  const [apiError, setApiError] = useState(null); 
   const dataAuthentication = useSelector((state) => state.authToken);
-  const navigate = useNavigate(); // Hook para redirigir
+  const navigate = useNavigate();
+  const previousPage = sessionStorage.getItem('previousPage');
 
   useEffect(() => {
     if (timer > 0) {
@@ -28,31 +30,50 @@ const Verify = () => {
   const resendCode = () => {
     setCodeExpired(false);
     setTimer(30);
-    setApiError(null); // Limpia cualquier error anterior
+    setApiError(null); 
     console.log('Código reenviado.');
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     try {
-      const datos = {
-        code: codeObtain
-      };
-      await registerFinish(datos, dataAuthentication.access_token);
-      setApiError(null);
 
-      // Mostrar alerta de éxito y redirigir al login al hacer clic en "Aceptar"
-      Swal.fire({
-        icon: 'success',
-        title: 'Usuario creado correctamente',
-        text: 'Tu cuenta ha sido creada con éxito.',
-        confirmButtonText: 'Aceptar'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          navigate('/login'); // Redirigir al login
-        }
-      });
+    if (previousPage === '/forgotPassword') {
+      const datos = { code: codeObtain };
+        await resetVerify(datos, dataAuthentication.access_token);
+        setApiError(null);
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Código verificado',
+          text: 'Tu código ha sido verificado correctamente.',
+          confirmButtonText: 'Aceptar'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate('/changePassword');
+          }
+        });
+    }
+   
+      if (previousPage ==='/register') {
+        const datos = { code: codeObtain };
+        await registerFinish(datos, dataAuthentication.access_token);
+        setApiError(null);
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Usuario creado correctamente',
+          text: 'Tu cuenta ha sido creada con éxito.',
+          confirmButtonText: 'Aceptar'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate('/login');
+          }
+        });
+      }
+
 
     } catch (error) {
       console.error('Error en la solicitud de registro:', error.message);

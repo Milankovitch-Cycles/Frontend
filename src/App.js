@@ -9,6 +9,7 @@ const Login = React.lazy(() => import('./Pages/Login/Login'));
 const Home = React.lazy(()=>import ('./Pages/Home/Home'))
 const Verify = React.lazy(()=>import ('./Pages/Verify/Verify'))
 const ForgotPassword = React.lazy(()=>import ('./Pages/ForgotPassword/ForgotPassword'))
+const ChangePassword = React.lazy(()=>import ('./Pages/ChangePassword/ChangePassword'))
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/verifyCode" element={<Verify />} />
         <Route path="/forgotPassword" element={<ForgotPassword />} />
+        <Route path="/changePassword" element={<ChangePassword />} />
         </Routes>
       </Suspense>
       </BrowserRouter>

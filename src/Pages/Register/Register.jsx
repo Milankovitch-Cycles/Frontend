@@ -56,6 +56,7 @@ const Register = () => {
 
    
       Swal.close();
+      sessionStorage.setItem('previousPage', window.location.pathname);
       navigate('/verifyCode');
 
     } catch (error) {
