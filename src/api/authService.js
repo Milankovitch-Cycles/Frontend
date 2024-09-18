@@ -25,3 +25,5 @@ const apiClient = async (endpoint, datos, token = null) => {
 
 export const register = (datos) => apiClient('auth/register/start', datos);
 export const registerFinish = (datos, token) => apiClient('auth/register/finish', datos, token);
+export const login = (datos) => apiClient('auth/login', datos);
+export const resetStart = (datos) => apiClient('auth/password/reset/start', datos);
