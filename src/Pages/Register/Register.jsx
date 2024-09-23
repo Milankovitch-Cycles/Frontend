@@ -1,32 +1,35 @@
-import React, { useState } from 'react'
-import { register } from '../../api/authService'
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { register } from '../../api/authService';
 import { Navbar } from '../../components';
 import { addAuthToken } from '../../redux/states';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 const Register = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
+  const dispatch = useDispatch();
+  const dataAuthentication = useSelector((state) => state.authToken);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
-  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (dataAuthentication?.email) {
+      setEmail(dataAuthentication.email);
+    }
+  }, [dataAuthentication]);
 
   const handleRegister = async (e) => {
     e.preventDefault();
     const validationErrors = {};
 
-    // Validación del formulario
-    if (!username) validationErrors.username = 'El nombre de usuario es obligatorio';
     if (!email) validationErrors.email = 'El correo electrónico es obligatorio';
     if (!password) validationErrors.password = 'La contraseña es obligatoria';
     if (!confirmPassword) validationErrors.confirmPassword = 'Debes repetir la contraseña';
-    if (password && confirmPassword && password !== confirmPassword) {
-      validationErrors.passwordMatch = 'Las contraseñas no coinciden';
-    }
+    if (password !== confirmPassword) validationErrors.passwordMatch = 'Las contraseñas no coinciden';
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -34,43 +37,30 @@ const Register = () => {
     }
 
     try {
-      const datos = {
-        email: email,
-        password: password,
-      };
-
+      const datos = { email, password };
 
       Swal.fire({
         title: 'Generando su código de verificación',
         text: 'Aguarde un momento...',
-        didOpen: () => {
-          Swal.showLoading(); 
-        },
-        allowOutsideClick: false, 
-        showConfirmButton: false, 
+        didOpen: () => Swal.showLoading(),
+        allowOutsideClick: false,
+        showConfirmButton: false,
       });
 
- 
       const response = await register(datos);
       response.email = datos.email;
       dispatch(addAuthToken(response));
 
-   
       Swal.close();
       sessionStorage.setItem('previousPage', window.location.pathname);
       navigate('/verifyCode');
-
     } catch (error) {
-     
       Swal.close();
-
-    
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
         text: 'Error al registrar. Intenta nuevamente.',
       });
-      console.error('Error en la solicitud de registro:', error.message);
       setErrors({ apiError: 'Error al registrar. Intenta nuevamente.' });
     }
   };
@@ -86,24 +76,6 @@ const Register = () => {
                 <form onSubmit={handleRegister}>
                   <h1 className="text-2xl font-bold mb-4">Registrarse</h1>
                   <p className="text-gray-600 mb-4">Crea tu cuenta</p>
-
-                  <div className="mb-4">
-                    <div className="flex items-center border border-gray-300 rounded-md">
-                      <span className="px-3 py-2 text-gray-500 bg-gray-100 rounded-l-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-5 h-5">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12A4 4 0 1 1 8 12a4 4 0 0 1 8 0zm-4 0v6m0 0H8m4 0h4" />
-                        </svg>
-                      </span>
-                      <input
-                        type="text"
-                        placeholder="Nombre de usuario"
-                        className="w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-r-md"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                      />
-                    </div>
-                    {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username}</p>}
-                  </div>
 
                   <div className="mb-4">
                     <div className="flex items-center border border-gray-300 rounded-md">

@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Navbar } from '../../components';
 import { useSelector } from 'react-redux';
 import { registerFinish } from '../../api/authService';
-import {resetStart} from '../../api/authService';
-import {resetVerify} from '../../api/authService';
+import { resetStart } from '../../api/authService';
+import { resetVerify } from '../../api/authService';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { addAuthToken } from '../../redux/states';
@@ -13,11 +13,20 @@ const Verify = () => {
   const [codeObtain, setCode] = useState('');
   const [timer, setTimer] = useState(30);
   const [codeExpired, setCodeExpired] = useState(false);
-  const [apiError, setApiError] = useState(null); 
+  const [apiError, setApiError] = useState(null);
   const dataAuthentication = useSelector((state) => state.authToken);
   const navigate = useNavigate();
   const previousPage = sessionStorage.getItem('previousPage');
   const dispatch = useDispatch();
+
+  useEffect(() => {
+
+    if (previousPage === '/register') {
+      setTimer(60); 
+    } else if (previousPage === '/forgotPassword' || previousPage === '/verifyCode') {
+      setTimer(30); 
+    }
+  }, [previousPage]);
 
   useEffect(() => {
     if (timer > 0) {
@@ -31,10 +40,10 @@ const Verify = () => {
     }
   }, [timer]);
 
-  const resendCode = async() => {
+  const resendCode = async () => {
     try {
       Swal.fire({
-        title: 'Enviando codigo nuevamente',
+        title: 'Enviando código nuevamente',
         text: 'Por favor, espere un momento...',
         didOpen: () => {
           Swal.showLoading();
@@ -42,15 +51,14 @@ const Verify = () => {
         allowOutsideClick: false,
         showConfirmButton: false,
       });
-    
+
       const data = {
-        email: dataAuthentication.email
+        email: dataAuthentication.email,
       };
-      
-     const response = await resetStart(data);
+
+      const response = await resetStart(data);
       response.email = dataAuthentication.email;
       dispatch(addAuthToken(response));
-
 
       Swal.close();
 
@@ -62,7 +70,6 @@ const Verify = () => {
         sessionStorage.setItem('previousPage', window.location.pathname);
         window.location.reload();
       });
-    
 
     } catch (error) {
       Swal.close();
@@ -74,19 +81,15 @@ const Verify = () => {
       });
 
       console.error('Error en la solicitud de recuperación:', error.message);
-
     }
   };
 
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    try {
 
-    if (previousPage === '/forgotPassword'|| previousPage === '/verifyCode' ) {
-      const datos = { code: codeObtain };
+    try {
+      if (previousPage === '/forgotPassword' || previousPage === '/verifyCode') {
+        const datos = { code: codeObtain };
         await resetVerify(datos, dataAuthentication.access_token);
         setApiError(null);
 
@@ -94,15 +97,15 @@ const Verify = () => {
           icon: 'success',
           title: 'Código verificado',
           text: 'Tu código ha sido verificado correctamente.',
-          confirmButtonText: 'Aceptar'
+          confirmButtonText: 'Aceptar',
         }).then((result) => {
           if (result.isConfirmed) {
             navigate('/changePassword');
           }
         });
-    }
-   
-      if (previousPage ==='/register') {
+      }
+
+      if (previousPage === '/register') {
         const datos = { code: codeObtain };
         await registerFinish(datos, dataAuthentication.access_token);
         setApiError(null);
@@ -111,14 +114,13 @@ const Verify = () => {
           icon: 'success',
           title: 'Usuario creado correctamente',
           text: 'Tu cuenta ha sido creada con éxito.',
-          confirmButtonText: 'Aceptar'
+          confirmButtonText: 'Aceptar',
         }).then((result) => {
           if (result.isConfirmed) {
             navigate('/login');
           }
         });
       }
-
 
     } catch (error) {
       console.error('Error en la solicitud de registro:', error.message);
@@ -136,7 +138,7 @@ const Verify = () => {
               <div className="bg-white p-6 rounded-lg shadow-lg">
                 <h1 className="text-2xl font-bold mb-4">Verificación de Código</h1>
                 <p className="text-gray-600 mb-4">Te hemos enviado un código de 6 dígitos a tu correo electrónico.</p>
-                
+
                 <form onSubmit={handleSubmit}>
                   <div className="mb-4">
                     <input
@@ -170,13 +172,21 @@ const Verify = () => {
 
                   {codeExpired && (
                     <div className="mt-4">
-                      <p className="text-red-500 mb-2">El código ha expirado. Solicita uno nuevo.</p>
-                      <button
-                        onClick={resendCode}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                      >
-                        Reenviar Código
-                      </button>
+                      {previousPage === '/forgotPassword' || previousPage === '/verifyCode' ? (
+                        <button
+                          onClick={resendCode}
+                          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                        >
+                          Reenviar Código
+                        </button>
+                      ) : previousPage === '/register' && (
+                        <button
+                          onClick={() => navigate('/register')}
+                          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                        >
+                          Volver a Registro
+                        </button>
+                      )}
                     </div>
                   )}
                 </form>
