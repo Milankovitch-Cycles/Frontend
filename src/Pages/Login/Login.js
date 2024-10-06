@@ -29,7 +29,6 @@ const Login = () => {
 
 
     try {
-      console.log('Iniciar sesión con:', { email, password });
       const datos = {
         email: email,
         password: password,

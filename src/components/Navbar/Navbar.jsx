@@ -1,12 +1,32 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { removeAuthToken } from '../../redux/states';
+import { jwtDecode } from 'jwt-decode';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const dispatch = useDispatch();
+  const authToken = useSelector((state) => state.authToken?.access_token);
+  let userEmail = '';
+
+  if (authToken) {
+    try {
+      const decoded = jwtDecode(authToken);
+      userEmail = decoded.sub || ''; 
+    } catch (error) {
+      console.error("Error decoding token:", error);
+    }
+  }
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = () => {
+    dispatch(removeAuthToken());
+    window.location.href = '/login';
   };
 
   return (
@@ -50,7 +70,7 @@ const Navbar = () => {
             onClick={toggleMenu}
             className="flex items-center text-white focus:outline-none"
           >
-            <span className="mr-2 hidden md:block">John Doe</span>
+            <span className="mr-2 hidden md:block">{userEmail}</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -68,7 +88,7 @@ const Navbar = () => {
           </button>
 
           {isOpen && (
-            <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+            <div className="absolute right-0 mt-2 w-auto bg-white border border-gray-200 rounded-lg shadow-lg z-50">
               <div className="p-4 flex items-center space-x-4 border-b border-gray-200">
                 <img
                   src="/path-to-your-avatar.jpg"
@@ -76,8 +96,8 @@ const Navbar = () => {
                   className="w-12 h-12 rounded-full object-cover"
                 />
                 <div>
-                  <p className="text-gray-900 font-semibold text-lg">John Doe</p>
-                  <p className="text-gray-600 text-sm">johndoe@fi.uba.ar</p>
+                  <p className="text-gray-900 font-semibold text-lg">{userEmail}</p>
+                  <p className="text-gray-600 text-sm">{userEmail}</p>
                 </div>
               </div>
               <div className="py-2">
@@ -100,7 +120,7 @@ const Navbar = () => {
                   </li>
                   <li>
                     <button
-                      onClick={() => console.log('Logout')}
+                      onClick={handleLogout}
                       className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100"
                     >
                       Logout
