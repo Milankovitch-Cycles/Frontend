@@ -12,7 +12,8 @@ const Verify = React.lazy(() => import('./Pages/Verify/Verify'));
 const ForgotPassword = React.lazy(() => import('./Pages/ForgotPassword/ForgotPassword'));
 const ChangePassword = React.lazy(() => import('./Pages/ChangePassword/ChangePassword'));
 const LandingPage = React.lazy(() => import('./Pages/LandingPage/LandingPage'));
-
+const LoadWell = React.lazy(() => import('./Pages/LoadWell/LoadWell'));
+const Well = React.lazy(() => import('./Pages/Well/Well'));
 
 const isTokenValid = (token) => {
   if (!token) return false;
@@ -46,6 +47,8 @@ function App() {
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
             <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+            <Route path="/loadWell" element={<LoadWell />} />
+            <Route path="/well/:wellId" element={<ProtectedRoute><Well /></ProtectedRoute>} />
             <Route path="/register" element={<AuthenticatedRedirect><Register /></AuthenticatedRedirect>} />
             <Route path="/login" element={<AuthenticatedRedirect><Login /></AuthenticatedRedirect>} />
             <Route path="/verifyCode" element={<AuthenticatedRedirect><Verify /></AuthenticatedRedirect>} />
