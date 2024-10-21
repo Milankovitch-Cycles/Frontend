@@ -46,10 +46,10 @@ function App() {
       <BrowserRouter>
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
-            <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+            <Route path="/home" element={<Home />} />
             <Route path="/loadWell" element={<LoadWell />} />
-            <Route path="/well/:wellId" element={<ProtectedRoute><Well /></ProtectedRoute>} />
-            <Route path="/register" element={<AuthenticatedRedirect><Register /></AuthenticatedRedirect>} />
+            <Route path="/well/:wellId" element={<Well />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/login" element={<AuthenticatedRedirect><Login /></AuthenticatedRedirect>} />
             <Route path="/verifyCode" element={<AuthenticatedRedirect><Verify /></AuthenticatedRedirect>} />
             <Route path="/forgotPassword" element={<ForgotPassword />} />

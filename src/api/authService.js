@@ -29,3 +29,4 @@ export const login = (datos) => apiClient('auth/login', datos);
 export const resetStart = (datos) => apiClient('auth/password/reset/start', datos);
 export const resetVerify = (datos, token) => apiClient('auth/password/reset/verify', datos, token);
 export const resetFinish = (datos, token) => apiClient('auth/password/reset/finish', datos, token)
+export const createWell = (datos, token) => apiClient('wells/', datos, token);

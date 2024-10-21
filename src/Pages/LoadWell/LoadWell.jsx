@@ -5,6 +5,8 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import ImageIcon from '@mui/icons-material/Image';
 import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { createWell } from '../../api/authService';
 
 const LoadWell = () => {
     const [wellName, setWellName] = useState('');
@@ -20,6 +22,7 @@ const LoadWell = () => {
     const [wellNameError, setWellNameError] = useState(false);
     const [lasFileError, setLasFileError] = useState(false);
     const [loading, setLoading] = useState(false);
+    const dataAuthentication = useSelector((state) => state.authToken);
     
     const navigate = useNavigate();
     
@@ -61,41 +64,38 @@ const LoadWell = () => {
         } else {
             setWellNameError(false);
         }
-
+    
         if (!lasFile) {
             setLasFileError(true);
             valid = false;
         } else {
             setLasFileError(false);
         }
-
+    
         if (!valid) {
             setToastMessage('Please fill in all required fields.');
             setToastOpen(true);
             return;
         }
-
-        setLoading(true); 
-
-        const formData = new FormData();
-        formData.append('wellName', wellName);
-        formData.append('description', description);
-        formData.append('image', image);
-        formData.append('lasFile', lasFile);
+    
+        setLoading(true);
+    
+        const formData = {
+            name: wellName,
+            description: description,
+            filename: lasFile.name, 
+        };
+    
+        const token = dataAuthentication.access_token;
     
         try {
-            const response = await fetch('/api/wells', {
-                method: 'POST',
-                body: formData,
-            });
-            if (response.ok) {
-                setToastMessage('Submission successful!');
-                setToastOpen(true);
-                navigate('/home');
-            } else {
-                setToastMessage('Failed to submit well data');
-                setToastOpen(true);
-            }
+            console.log(lasFile.name);
+            const response = await createWell(formData, token);
+
+            console.log(response);
+            setToastMessage('Submission successful!');
+            setToastOpen(true);
+            navigate('/home');
         } catch (error) {
             setToastMessage('Error: ' + error.message);
             setToastOpen(true);
@@ -103,115 +103,140 @@ const LoadWell = () => {
             setLoading(false);
         }
     };
-
+    
     const handleCloseToast = () => {
         setToastOpen(false);
     };
     
     return (
-        <div>
-            <Navbar />
-            <Box display="flex" flexDirection="column" alignItems="center" mt={2}>
-                <Box display="flex" flexDirection="column" width="70%">
-                    <TextField
-                        label="Well Name"
-                        value={wellName}
-                        onChange={handleWellNameChange}
-                        margin="normal"
-                        fullWidth
-                        error={wellNameError}
-                        helperText={wellNameError ? 'Well Name is required' : ''}
+        <>
+        <Navbar />
+        <div className="bg-gradient-to-r from-gray-700 to-black min-h-screen flex items-center justify-center">
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              mt={4}
+              sx={{
+                width: '100%', // Mantén el formulario responsivo
+                maxWidth: '600px', // Limita el ancho para pantallas grandes
+                backgroundColor: 'rgba(255, 255, 255, 0.1)', // Fondo blanco muy transparente
+                padding: '40px', // Añade más espacio alrededor del formulario
+                borderRadius: '16px', // Bordes redondeados
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)', // Sombra suave para darle profundidad
+                backdropFilter: 'blur(12px)', // Efecto de desenfoque de fondo para un look moderno
+                border: '1px solid rgba(255, 255, 255, 0.2)', // Bordes con un toque translúcido
+              }}
+            >
+                <Typography variant="h4" className="text-center mb-4" color="white">Cargar Pozo</Typography>
+                <TextField
+                    label="Nombre del Pozo"
+                    value={wellName}
+                    onChange={handleWellNameChange}
+                    margin="normal"
+                    fullWidth
+                    error={wellNameError}
+                    helperText={wellNameError ? 'El nombre del pozo es obligatorio' : ''}
+                    sx={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)', // Fondo más visible para inputs
+                      borderRadius: '8px',
+                    }}
+                />
+                <TextField
+                    label="Descripción"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    margin="normal"
+                    multiline
+                    rows={4}
+                    fullWidth
+                    sx={{
+                      backgroundColor: 'rgba(255, 255, 255, 0.8)', // Fondo más visible para inputs
+                      borderRadius: '8px',
+                    }}
+                />
+                <Box display="flex" alignItems="center" mt={2}>
+                    <input
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        id="well-image"
+                        type="file"
+                        onChange={handleImageChange}
                     />
-                    <TextField
-                        label="Description"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        margin="normal"
-                        multiline
-                        rows={4}
-                        fullWidth
+                    <label
+                        htmlFor="well-image"
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            cursor: 'pointer',
+                            padding: '5px',
+                            borderRadius: '5px',
+                            backgroundColor: hoverImage ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
+                            color: 'white'
+                        }}
+                        onMouseEnter={() => setHoverImage(true)}
+                        onMouseLeave={() => setHoverImage(false)}
+                    >
+                        <IconButton color="primary" component="span">
+                            <ImageIcon />
+                        </IconButton>
+                        <Typography variant="body1" component="span" ml={1} color="white">
+                            Subir Imagen
+                        </Typography>
+                    </label>
+                    {imagePreview && (
+                        <Box display="flex" alignItems="center" ml={2}>
+                            <img src={imagePreview} alt="Image Preview" style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover' }} />
+                            <IconButton color="secondary" onClick={handleRemoveImage}>
+                                <CloseIcon />
+                            </IconButton>
+                        </Box>
+                    )}
+                </Box>
+                <Box display="flex" alignItems="center" mt={2}>
+                    <input
+                        accept=".las"
+                        style={{ display: 'none' }}
+                        id="well-las"
+                        type="file"
+                        onChange={handleLasFileChange}
                     />
-                    <Box display="flex" alignItems="center" mt={2}>
-                        <input
-                            accept="image/*"
-                            style={{ display: 'none' }}
-                            id="well-image"
-                            type="file"
-                            onChange={handleImageChange}
-                        />
-                        <label
-                            htmlFor="well-image"
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                cursor: 'pointer',
-                                padding: '5px',
-                                borderRadius: '5px',
-                                backgroundColor: hoverImage ? 'lightblue' : 'transparent'
-                            }}
-                            onMouseEnter={() => setHoverImage(true)}
-                            onMouseLeave={() => setHoverImage(false)}
-                        >
-                            <IconButton color="primary" component="span">
-                                <ImageIcon />
+                    <label
+                        htmlFor="well-las"
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            cursor: 'pointer',
+                            padding: '5px',
+                            borderRadius: '5px',
+                            backgroundColor: hoverFile ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
+                            color: 'white'
+                        }}
+                        onMouseEnter={() => setHoverFile(true)}
+                        onMouseLeave={() => setHoverFile(false)}
+                    >
+                        <IconButton color="primary" component="span">
+                            <AttachFileIcon />
+                        </IconButton>
+                        <Typography variant="body1" component="span" ml={1} color="white">
+                            Adjuntar Archivo LAS
+                        </Typography>
+                    </label>
+                    {lasFilePreview && (
+                        <Box display="flex" alignItems="center" ml={2}>
+                            <Typography variant="body2" component="span" color={lasFileError ? 'error' : 'white'}>
+                                {lasFilePreview}
+                            </Typography>
+                            <IconButton color="secondary" onClick={handleRemoveLasFile}>
+                                <CloseIcon />
                             </IconButton>
-                            <Typography variant="body1" component="span" ml={1}>
-                                Upload Image
-                            </Typography>
-                        </label>
-                        {imagePreview && (
-                            <Box display="flex" alignItems="center" ml={2}>
-                                <img src={imagePreview} alt="Image Preview" style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover' }} />
-                                <IconButton color="secondary" onClick={handleRemoveImage}>
-                                    <CloseIcon />
-                                </IconButton>
-                            </Box>
-                        )}
-                    </Box>
-                    <Box display="flex" alignItems="center" mt={2}>
-                        <input
-                            accept=".las"
-                            style={{ display: 'none' }}
-                            id="well-las"
-                            type="file"
-                            onChange={handleLasFileChange}
-                        />
-                        <label
-                            htmlFor="well-las"
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                cursor: 'pointer',
-                                padding: '5px',
-                                borderRadius: '5px',
-                                backgroundColor: hoverFile ? 'lightblue' : 'transparent'
-                            }}
-                            onMouseEnter={() => setHoverFile(true)}
-                            onMouseLeave={() => setHoverFile(false)}
-                        >
-                            <IconButton color="primary" component="span">
-                                <AttachFileIcon />
-                            </IconButton>
-                            <Typography variant="body1" component="span" ml={1}>
-                                Attach LAS File
-                            </Typography>
-                        </label>
-                        {lasFilePreview && (
-                            <Box display="flex" alignItems="center" ml={2}>
-                                <Typography variant="body2" component="span" color={lasFileError ? 'error' : 'inherit'}>
-                                    {lasFilePreview}
-                                </Typography>
-                                <IconButton color="secondary" onClick={handleRemoveLasFile}>
-                                    <CloseIcon />
-                                </IconButton>
-                            </Box>
-                        )}
-                        {lasFileError && (
-                            <Typography variant="body2" color="error" ml={2}>
-                                LAS File is required
-                            </Typography>
-                        )}
-                    </Box>
+                        </Box>
+                    )}
+                    {lasFileError && (
+                        <Typography variant="body2" color="error" ml={2}>
+                            El archivo LAS es obligatorio
+                        </Typography>
+                    )}
                 </Box>
                 <Box display="flex" alignItems="center" mt={2}>
                     <Button
@@ -221,18 +246,24 @@ const LoadWell = () => {
                         disabled={loading}
                         style={{ marginRight: '10px' }}
                     >
-                        Submit
+                        Enviar
                     </Button>
-                    {loading && <CircularProgress size={24} />}
+                    {loading && <CircularProgress size={24} color="secondary" />}
                 </Box>
             </Box>
-            <Snackbar
-                open={toastOpen}
-                autoHideDuration={6000}
-                onClose={handleCloseToast}
-                message={toastMessage}
-            />
         </div>
+        <Snackbar
+            open={toastOpen}
+            autoHideDuration={6000}
+            onClose={handleCloseToast}
+            message={toastMessage}
+            action={
+                <IconButton size="small" aria-label="close" color="inherit" onClick={handleCloseToast}>
+                    <CloseIcon fontSize="small" />
+                </IconButton>
+            }
+        />
+        </>
     );
 };
 
