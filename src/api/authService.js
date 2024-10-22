@@ -31,4 +31,4 @@ export const resetStart = (datos) => apiClient('auth/password/reset/start', dato
 export const resetVerify = (datos, token) => apiClient('auth/password/reset/verify', datos, token, 'POST');
 export const resetFinish = (datos, token) => apiClient('auth/password/reset/finish', datos, token, 'POST');
 export const createWell = (datos, token) => apiClient('wells/', datos, token, 'POST');
-export const getWells = (token, limit = 10, offset = 0) => apiClient(`wells?limit=${limit}&offset=${offset}`, null, token);
+export const getWells = (token, limit = 5, offset = 0) => apiClient(`wells?limit=${limit}&offset=${offset}`, null, token);
