@@ -111,7 +111,7 @@ const LoadWell = () => {
     return (
         <>
         <Navbar />
-        <div className="bg-gradient-to-r from-black to-gray-900 min-h-screen flex items-center justify-center">
+        <div className="bg-gradient-to-r from-gray-700 to-black min-h-screen flex items-center justify-center">
             <Box
               display="flex"
               flexDirection="column"

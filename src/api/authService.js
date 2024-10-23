@@ -1,4 +1,4 @@
-const apiClient = async (endpoint, datos = null, token = null, method = 'GET') => {
+const apiClient = async (endpoint, datos = null, token = null, method = 'GET') => { 
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
   try {
@@ -32,3 +32,20 @@ export const resetVerify = (datos, token) => apiClient('auth/password/reset/veri
 export const resetFinish = (datos, token) => apiClient('auth/password/reset/finish', datos, token, 'POST');
 export const createWell = (datos, token) => apiClient('wells/', datos, token, 'POST');
 export const getWells = (token, limit = 5, offset = 0) => apiClient(`wells?limit=${limit}&offset=${offset}`, null, token);
+export const getWellById = async (token_recibido, wellId) => {
+  try {
+    // Extraer el access_token del objeto token_recibido
+    const accessToken = token_recibido.access_token;
+
+    console.log('Access Token:', accessToken);
+    console.log('Well ID:', wellId);
+
+    // Hacer la llamada a la API usando el access_token
+    const response = await apiClient(`wells/${wellId}`, null, accessToken, 'GET'); // Usa apiClient directamente
+
+    console.log('Response:', response);
+    return response;
+  } catch (error) {
+    console.error('Error fetching well data:', error);
+    throw error; // Propaga el error para manejarlo en la llamada
+  }};

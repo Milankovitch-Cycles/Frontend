@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from 'react';  
+import React, { useEffect, useState } from 'react';
 import { Navbar } from '../../components';
 import { Typography, Button, Box, Avatar, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward'; 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'; 
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom'; // Importa useNavigate
+import { useNavigate } from 'react-router-dom';
 import { getWells } from '../../api/authService';
 
 const Home = () => {
-  const navigate = useNavigate(); // Crea la instancia de navigate
-  const [wells, setWells] = useState([]); 
+  const navigate = useNavigate();
+  const [wells, setWells] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [wellsPerPage] = useState(5); 
+  const [wellsPerPage] = useState(5);
   const [sortDirection, setSortDirection] = useState('asc');
-  const [orderBy, setOrderBy] = useState('fantasyName');
+  const [orderBy, setOrderBy] = useState('name'); // Cambiado a 'name'
   const dataAuthentication = useSelector((state) => state.authToken);
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const Home = () => {
       const token = dataAuthentication.access_token;
       try {
         const result = await getWells(token, wellsPerPage, (currentPage - 1) * wellsPerPage);
-        setWells(result || []); 
+        setWells(result || []); // Asegúrate de que result contenga los pozos esperados
       } catch (error) {
         console.error('Error loading wells:', error);
       }
@@ -42,10 +42,10 @@ const Home = () => {
   const sortedWells = [...wells].sort((a, b) => {
     if (orderBy === 'dateCreated') {
       return sortDirection === 'asc'
-        ? new Date(a.dateCreated) - new Date(b.dateCreated)
-        : new Date(b.dateCreated) - new Date(a.dateCreated);
+        ? new Date(a.created_at) - new Date(b.created_at) // Cambiado a 'created_at'
+        : new Date(b.created_at) - new Date(a.created_at);
     }
-    
+
     if (a[orderBy] < b[orderBy]) {
       return sortDirection === 'asc' ? -1 : 1;
     }
@@ -63,6 +63,10 @@ const Home = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
   };
 
+  const handleViewWell = (wellId) => {
+    navigate(`/well/${wellId}`);
+  };
+
   return (
     <>
       <Navbar />
@@ -75,7 +79,7 @@ const Home = () => {
           color="primary"
           startIcon={<AddIcon />}
           sx={{ mb: 2, backgroundColor: '#1a73e8', '&:hover': { backgroundColor: '#0d47a1' } }}
-          onClick={() => navigate('/loadWell')} // Navega a la ruta
+          onClick={() => navigate('/loadWell')}
         >
           Agregar Pozo
         </Button>
@@ -85,23 +89,16 @@ const Home = () => {
               <TableRow>
                 <TableCell sx={{ color: 'black' }}>
                   <TableSortLabel
-                    active={orderBy === 'fantasyName'}
-                    direction={orderBy === 'fantasyName' ? sortDirection : 'asc'}
-                    onClick={() => handleSort('fantasyName')}
+                    active={orderBy === 'name'} // Cambiado a 'name'
+                    direction={orderBy === 'name' ? sortDirection : 'asc'} // Cambiado a 'name'
+                    onClick={() => handleSort('name')} // Cambiado a 'name'
                     sx={{ color: 'black' }}
                   >
                     Nombre
                   </TableSortLabel>
                 </TableCell>
                 <TableCell sx={{ color: 'black' }}>
-                  <TableSortLabel
-                    active={orderBy === 'lasFileName'}
-                    direction={orderBy === 'lasFileName' ? sortDirection : 'asc'}
-                    onClick={() => handleSort('lasFileName')}
-                    sx={{ color: 'black' }}
-                  >
-                    Archivo LAS
-                  </TableSortLabel>
+                  Archivo LAS
                 </TableCell>
                 <TableCell sx={{ color: 'black' }}>
                   <TableSortLabel
@@ -139,15 +136,15 @@ const Home = () => {
             <TableBody>
               {sortedWells.length > 0 ? (
                 sortedWells.map((well) => (
-                  <TableRow key={well.id}>
+                  <TableRow key={well.id} hover onClick={() => handleViewWell(well.id)}>
                     <TableCell sx={{ color: 'black' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Avatar src={well.image} sx={{ width: 36, height: 36, marginRight: 1 }} />
-                        <Typography color="black">{well.fantasyName}</Typography>
+                        <Typography color="black">{well.name}</Typography> {/* Cambiado a 'name' */}
                       </Box>
                     </TableCell>
                     <TableCell sx={{ color: 'black' }}>
-                      <Typography>{well.lasFileName}</Typography>
+                      <Typography>{well.filename}</Typography> {/* Cambiado a 'filename' */}
                     </TableCell>
                     <TableCell sx={{ color: 'black' }}>
                       <Typography>{well.description}</Typography>
@@ -156,17 +153,17 @@ const Home = () => {
                       <Typography>{well.status}</Typography>
                     </TableCell>
                     <TableCell sx={{ color: 'black' }}>
-                      <Typography>{well.dateCreated}</Typography>
+                      <Typography>{new Date(well.created_at).toLocaleDateString()}</Typography> {/* Cambiado a 'created_at' */}
                     </TableCell>
                     <TableCell sx={{ color: 'black' }}>
                       <Box sx={{ display: 'flex', gap: 0.5 }}>
-                        <IconButton color="primary" onClick={() => console.log(`View ${well.id}`)}>
+                        <IconButton color="primary" onClick={(e) => { e.stopPropagation(); handleViewWell(well.id); }}>
                           <VisibilityIcon fontSize="small" />
                         </IconButton>
-                        <IconButton color="secondary" onClick={() => console.log(`Edit ${well.id}`)}>
+                        <IconButton color="secondary">
                           <EditIcon fontSize="small" />
                         </IconButton>
-                        <IconButton color="error" onClick={() => console.log(`Delete ${well.id}`)}>
+                        <IconButton color="error">
                           <DeleteIcon fontSize="small" />
                         </IconButton>
                       </Box>

@@ -14,6 +14,7 @@ const ChangePassword = React.lazy(() => import('./Pages/ChangePassword/ChangePas
 const LandingPage = React.lazy(() => import('./Pages/LandingPage/LandingPage'));
 const LoadWell = React.lazy(() => import('./Pages/LoadWell/LoadWell'));
 const Well = React.lazy(() => import('./Pages/Well/Well'));
+const WellInfo = React.lazy(() => import('./Pages/WellInfo/WellInfo'));
 
 const isTokenValid = (token) => {
   if (!token) return false;
