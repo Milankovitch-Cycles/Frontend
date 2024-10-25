@@ -9,11 +9,11 @@ const Home = () => {
   const handleNavigation = (segment) => {
     console.log("Navegando a:", segment);
     switch (segment) {
-      case "pozos":
+      case "cargarPozos":
         console.log("hola mundo");
         setCurrentComponent(<LoadWell />);
         break;
-      case "orders":
+      case "listarPozos":
         setCurrentComponent(<ListWells />);
         break;
       default:

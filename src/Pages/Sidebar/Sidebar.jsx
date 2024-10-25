@@ -7,6 +7,7 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import LayersIcon from "@mui/icons-material/Layers";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
+import { Chip, Button } from "@mui/material"; 
 
 const NAVIGATION = [
   {
@@ -14,14 +15,34 @@ const NAVIGATION = [
     title: "Main items",
   },
   {
-    segment: "pozos",
-    title: "Pozos",
+    segment: "listarPozos",
+    title: "Listar Pozos",
     icon: <DashboardIcon />,
+    action: (handleNavigation) => (
+      <Button
+        onClick={() => handleNavigation("listarPozos")}
+      >
+        Listar
+      </Button>
+    ),
   },
   {
-    segment: "orders",
-    title: "Orders",
+    segment: "cargarPozos",
+    title: "Cargar Pozos",
     icon: <ShoppingCartIcon />,
+    action: (handleNavigation) => (
+      <Button
+        onClick={() => handleNavigation("cargarPozos")}
+       
+      >
+        Cargar
+      </Button>
+    ),
+  },
+  {
+    segment: "/loadWell",
+    title: "Prueba carga pozo",
+    icon: <ShoppingCartIcon />
   },
   {
     kind: "divider",
@@ -89,21 +110,27 @@ export default function Sidebar(props) {
 
   const demoWindow = window ? window() : undefined;
 
+  // Función para manejar la navegación
+  const handleNavigation = (segment) => {
+    console.log("Navigating to:", segment);
+    if (onNavigate) {
+      onNavigate(segment);
+    }
+  };
+
+  // Modifica la navegación para incluir la función handleNavigation
+  const navigationWithHandlers = NAVIGATION.map((item) => ({
+    ...item,
+    action: item.action ? item.action(handleNavigation) : undefined, // Llama a la acción pasando handleNavigation
+  }));
+
   return (
     <AppProvider
       branding={{
         logo: <img src="https://mui.com/static/logo.png" alt="MUI logo" />,
         title: "My App",
       }}
-      navigation={NAVIGATION.map((item) => ({
-        ...item,
-        onClick: item.segment ? () => {
-          console.log("Navigating to:", item.segment);
-          if (onNavigate) {
-            onNavigate(item.segment);
-          }
-        } : undefined,
-      }))}
+      navigation={navigationWithHandlers} // Usa la navegación con handlers
       router={router}
       theme={demoTheme}
       window={demoWindow}
