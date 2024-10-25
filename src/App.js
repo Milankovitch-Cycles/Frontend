@@ -10,6 +10,7 @@ const Register = React.lazy(() => import("./Pages/Register/Register"));
 const Login = React.lazy(() => import("./Pages/Login/Login"));
 const Home = React.lazy(() => import("./Pages/Home/Home"));
 const Verify = React.lazy(() => import("./Pages/Verify/Verify"));
+const ListWells = React.lazy(() => import("./Pages/ListWells/ListWells"));
 const ForgotPassword = React.lazy(
   () => import("./Pages/ForgotPassword/ForgotPassword")
 );
@@ -54,6 +55,7 @@ function App() {
             <Route path="/loadWell" element={<LoadWell />} />
             <Route path="/well/:wellId" element={<Well />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/listWells" element={<ListWells />} />
             <Route
               path="/login"
               element={

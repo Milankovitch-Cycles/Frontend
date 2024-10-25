@@ -1,5 +1,5 @@
 import * as React from "react";
-import { extendTheme, styled } from "@mui/material/styles";
+import { extendTheme } from "@mui/material/styles";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import BarChartIcon from "@mui/icons-material/BarChart";
@@ -7,8 +7,6 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import LayersIcon from "@mui/icons-material/Layers";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
-import { PageContainer } from "@toolpad/core/PageContainer";
-import Grid from "@mui/material/Grid2";
 
 const NAVIGATION = [
   {
@@ -16,8 +14,8 @@ const NAVIGATION = [
     title: "Main items",
   },
   {
-    segment: "dashboard",
-    title: "Dashboard",
+    segment: "pozos",
+    title: "Pozos",
     icon: <DashboardIcon />,
   },
   {
@@ -85,11 +83,10 @@ function useDemoRouter(initialPath) {
 }
 
 export default function Sidebar(props) {
-  const { window, children } = props;
+  const { window, children, onNavigate } = props;
 
   const router = useDemoRouter("/dashboard");
 
-  // Remove this const when copying and pasting into your project.
   const demoWindow = window ? window() : undefined;
 
   return (
@@ -98,7 +95,15 @@ export default function Sidebar(props) {
         logo: <img src="https://mui.com/static/logo.png" alt="MUI logo" />,
         title: "My App",
       }}
-      navigation={NAVIGATION}
+      navigation={NAVIGATION.map((item) => ({
+        ...item,
+        onClick: item.segment ? () => {
+          console.log("Navigating to:", item.segment);
+          if (onNavigate) {
+            onNavigate(item.segment);
+          }
+        } : undefined,
+      }))}
       router={router}
       theme={demoTheme}
       window={demoWindow}
