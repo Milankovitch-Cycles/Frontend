@@ -25,7 +25,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getWells } from "../../api/authService";
 import { useTheme } from "@mui/material/styles";
-import CloseIcon from "@mui/icons-material/Close"; 
+import CloseIcon from "@mui/icons-material/Close";
 
 const ListWells = () => {
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ const ListWells = () => {
   const [wellsPerPage] = useState(5);
   const [sortDirection, setSortDirection] = useState("asc");
   const [orderBy, setOrderBy] = useState("name");
-  const [openModal, setOpenModal] = useState(false); 
+  const [openModal, setOpenModal] = useState(false);
   const dataAuthentication = useSelector((state) => state.authToken);
 
   useEffect(() => {
@@ -78,8 +78,6 @@ const ListWells = () => {
     return 0;
   });
 
-
-
   const handleNextPage = () => {
     setCurrentPage((prev) => prev + 1);
   };
@@ -93,7 +91,6 @@ const ListWells = () => {
 
   const handleViewWell = (wellId) => {
     navigate(`/well/${wellId}`);
-
   };
 
   return (
@@ -119,12 +116,11 @@ const ListWells = () => {
           backgroundColor: "#1a73e8",
           "&:hover": { backgroundColor: "#0d47a1" },
         }}
-        onClick={handleOpenModal} 
+        onClick={handleOpenModal}
       >
         Agregar Pozo
       </Button>
 
-     
       <Modal
         open={openModal}
         onClose={handleCloseModal}
@@ -143,22 +139,21 @@ const ListWells = () => {
             maxWidth: 600,
             width: "100%",
           }}
-        >  
-        
-         <IconButton
-          onClick={handleCloseModal}
-          sx={{
-            position: "absolute",
-            top: 16,
-            right: 16,
-          }}
         >
+          <IconButton
+            onClick={handleCloseModal}
+            sx={{
+              position: "absolute",
+              top: 16,
+              right: 16,
+            }}
+          >
             <CloseIcon />
           </IconButton>
           <Typography id="modal-title" variant="h6" component="h2" mb={2}>
             Agregar Nuevo Pozo
           </Typography>
-          <LoadWell /> 
+          <LoadWell />
         </Box>
       </Modal>
 

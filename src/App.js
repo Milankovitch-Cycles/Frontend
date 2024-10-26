@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import { jwtDecode } from "jwt-decode";
 import store from "./redux/store";
 import { Provider } from "react-redux";
-import Sidebar from "./Pages/Sidebar/Sidebar";
 
 const Register = React.lazy(() => import("./Pages/Register/Register"));
 const Login = React.lazy(() => import("./Pages/Login/Login"));
@@ -18,9 +17,6 @@ const ChangePassword = React.lazy(
   () => import("./Pages/ChangePassword/ChangePassword")
 );
 const LandingPage = React.lazy(() => import("./Pages/LandingPage/LandingPage"));
-const LoadWell = React.lazy(() => import("./Pages/LoadWell/LoadWell"));
-const Well = React.lazy(() => import("./Pages/Well/Well"));
-const WellInfo = React.lazy(() => import("./Pages/WellInfo/WellInfo"));
 
 const isTokenValid = (token) => {
   if (!token) return false;
@@ -52,8 +48,6 @@ function App() {
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
             <Route path="/home" element={<Home />} />
-            <Route path="/loadWell" element={<LoadWell />} />
-            <Route path="/well/:wellId" element={<Well />} />
             <Route path="/register" element={<Register />} />
             <Route path="/listWells" element={<ListWells />} />
             <Route

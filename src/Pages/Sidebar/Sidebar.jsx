@@ -1,12 +1,10 @@
 import * as React from "react";
 import PropTypes from "prop-types";
 import { extendTheme } from "@mui/material/styles";
-import DashboardIcon from "@mui/icons-material/Dashboard";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { useDemoRouter } from "@toolpad/core/internal";
-import LoadWell from "../LoadWell/LoadWell";
 import ListWells from "../ListWells/ListWells";
 
 const NAVIGATION = [
@@ -15,13 +13,8 @@ const NAVIGATION = [
     title: "Main items",
   },
   {
-    segment: "loadWell",
-    title: "Page",
-    icon: <DashboardIcon />,
-  },
-  {
     segment: "listWells",
-    title: "Page 2",
+    title: "Pozos",
     icon: <TimelineIcon />,
   },
 ];
@@ -41,10 +34,6 @@ const demoTheme = extendTheme({
 });
 
 function DemoPageContent({ pathname }) {
-  if (pathname === "/loadWell") {
-    return <LoadWell />;
-  }
-
   if (pathname === "/listWells") {
     return <ListWells />;
   }

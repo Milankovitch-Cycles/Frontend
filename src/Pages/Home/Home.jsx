@@ -1,7 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import Sidebar from "../Sidebar/Sidebar";
-import ListWells from "../ListWells/ListWells";
-import LoadWell from "../LoadWell/LoadWell";
 
 const Home = () => {
   return <Sidebar></Sidebar>;
