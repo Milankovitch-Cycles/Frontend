@@ -29,12 +29,6 @@ const isTokenValid = (token) => {
   }
 };
 
-const ProtectedRoute = ({ children }) => {
-  const authToken = useSelector((state) => state.authToken?.access_token);
-
-  return isTokenValid(authToken) ? children : <Navigate to="/login" />;
-};
-
 const AuthenticatedRedirect = ({ children }) => {
   const authToken = useSelector((state) => state.authToken?.access_token);
 

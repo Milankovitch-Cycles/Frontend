@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { register } from "../../api/authService";
-import { Navbar } from "../../components";
 import { addAuthToken } from "../../redux/states";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { BaseInput } from "../../components/BaseInput";
+import { BaseButton } from "../../components/BaseButton";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -74,72 +75,55 @@ const Register = () => {
           <div className="flex justify-center">
             <div className="w-full max-w-md">
               <div className="bg-white p-6 rounded-lg shadow-lg">
-                <form onSubmit={handleRegister}>
-                  <h1 className="text-2xl font-bold mb-4">Registrarse</h1>
-                  <p className="text-gray-600 mb-4">Lorem ipsum</p>
-
-                  <div className="mb-4">
-                    <div className="flex items-center border border-gray-300 rounded-md">
-                      <input
-                        type="email"
-                        placeholder="Email"
-                        className="w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-r-md"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                      />
-                    </div>
-                    {errors.email && (
+                <h1 className="text-2xl font-bold mb-4">Registrarse</h1>
+                <p className="text-gray-600 mb-4">Lorem ipsum</p>
+                <BaseInput
+                  type="email"
+                  placeholder="Correo electrónico"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  error={
+                    errors.email && (
                       <p className="text-red-500 text-sm mt-1">
                         {errors.email}
                       </p>
-                    )}
-                  </div>
-
-                  <div className="mb-4">
-                    <div className="flex items-center border border-gray-300 rounded-md">
-                      <input
-                        type="password"
-                        placeholder="Contraseña"
-                        className="w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-r-md"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                      />
-                    </div>
-                    {errors.password && (
+                    )
+                  }
+                />
+                <BaseInput
+                  type="password"
+                  placeholder="Contraseña"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  error={
+                    errors.password && (
                       <p className="text-red-500 text-sm mt-1">
                         {errors.password}
                       </p>
-                    )}
-                  </div>
-
-                  <div className="mb-6">
-                    <div className="flex items-center border border-gray-300 rounded-md">
-                      <input
-                        type="password"
-                        placeholder="Repetir contraseña"
-                        className="w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-r-md"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                      />
-                    </div>
-                    {errors.confirmPassword && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.confirmPassword}
-                      </p>
-                    )}
-                    {errors.passwordMatch && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.passwordMatch}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="flex justify-center">
-                    <button className="bg-blue-600 mb-4 text-white w-full px-4 py-2 rounded-md hover:bg-blue-500">
-                      Crear cuenta
-                    </button>
-                  </div>
-                </form>
+                    )
+                  }
+                />
+                <BaseInput
+                  type="password"
+                  placeholder="Repetir contraseña"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  error={
+                    <>
+                      {errors.confirmPassword && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.confirmPassword}
+                        </p>
+                      )}
+                      {errors.passwordMatch && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.passwordMatch}
+                        </p>
+                      )}
+                    </>
+                  }
+                />
+                <BaseButton onPress={handleRegister}>Crear cuenta</BaseButton>
               </div>
             </div>
           </div>
