@@ -12,6 +12,7 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
+  Modal,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -19,19 +20,22 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import LoadWell from "../LoadWell/LoadWell";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getWells } from "../../api/authService";
-import { useTheme } from "@mui/material/styles"; // Importa useTheme
+import { useTheme } from "@mui/material/styles";
+import CloseIcon from "@mui/icons-material/Close"; 
 
 const ListWells = () => {
   const navigate = useNavigate();
-  const theme = useTheme(); // Accede al tema actual
+  const theme = useTheme();
   const [wells, setWells] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [wellsPerPage] = useState(5);
   const [sortDirection, setSortDirection] = useState("asc");
   const [orderBy, setOrderBy] = useState("name");
+  const [openModal, setOpenModal] = useState(false); 
   const dataAuthentication = useSelector((state) => state.authToken);
 
   useEffect(() => {
@@ -43,6 +47,7 @@ const ListWells = () => {
           wellsPerPage,
           (currentPage - 1) * wellsPerPage
         );
+        console.log(result);
         setWells(result || []);
       } catch (error) {
         console.error("Error loading wells:", error);
@@ -73,6 +78,8 @@ const ListWells = () => {
     return 0;
   });
 
+
+
   const handleNextPage = () => {
     setCurrentPage((prev) => prev + 1);
   };
@@ -81,14 +88,18 @@ const ListWells = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
   };
 
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+
   const handleViewWell = (wellId) => {
     navigate(`/well/${wellId}`);
+
   };
 
   return (
     <div
       style={{
-        backgroundColor: theme.palette.background.default, // Usa el color de fondo del tema
+        backgroundColor: theme.palette.background.default,
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
@@ -108,10 +119,49 @@ const ListWells = () => {
           backgroundColor: "#1a73e8",
           "&:hover": { backgroundColor: "#0d47a1" },
         }}
-        onClick={() => navigate("/loadWell")}
+        onClick={handleOpenModal} 
       >
         Agregar Pozo
       </Button>
+
+     
+      <Modal
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            maxWidth: 600,
+            width: "100%",
+          }}
+        >  
+        
+         <IconButton
+          onClick={handleCloseModal}
+          sx={{
+            position: "absolute",
+            top: 16,
+            right: 16,
+          }}
+        >
+            <CloseIcon />
+          </IconButton>
+          <Typography id="modal-title" variant="h6" component="h2" mb={2}>
+            Agregar Nuevo Pozo
+          </Typography>
+          <LoadWell /> 
+        </Box>
+      </Modal>
+
       <TableContainer>
         <Table>
           <TableHead>
