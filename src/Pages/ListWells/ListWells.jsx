@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { getWells } from "../../api/authService";
 import { BaseTable } from "../../components/BaseTable";
 import { BaseInput } from "../../components/BaseInput";
+import LoadWell from "../LoadWell/LoadWell";
 
 const ListWells = () => {
   const navigate = useNavigate();
@@ -105,26 +106,41 @@ const ListWells = () => {
           onClick={handleOpenModal}
         >
           Agregar Pozo
-        </Button>{" "}
+        </Button>
       </div>
-
-      <Modal open={openModal} onClose={handleCloseModal}>
+      <Modal
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
         <Box
           sx={{
             position: "absolute",
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
             p: 4,
             maxWidth: 600,
+            width: "100%",
           }}
         >
           <IconButton
             onClick={handleCloseModal}
-            sx={{ position: "absolute", top: 16, right: 16 }}
+            sx={{
+              position: "absolute",
+              top: 16,
+              right: 16,
+            }}
           >
             <CloseIcon />
           </IconButton>
+          <Typography id="modal-title" variant="h6" component="h2" mb={2}>
+            Agregar Nuevo Pozo
+          </Typography>
+          <LoadWell />
         </Box>
       </Modal>
 

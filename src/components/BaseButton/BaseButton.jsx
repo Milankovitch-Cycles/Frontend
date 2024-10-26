@@ -1,6 +1,6 @@
 import React from "react";
 
-const BaseButton = ({ onPress, children, className }) => {
+const BaseButton = ({ onPress, children }) => {
   return (
     <button
       onClick={onPress}
