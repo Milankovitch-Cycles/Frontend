@@ -17,6 +17,7 @@ const NAVIGATION = [
     title: "Pozos",
     icon: <TimelineIcon />,
   },
+  // TO-DO: Add sign out
 ];
 
 const demoTheme = extendTheme({
