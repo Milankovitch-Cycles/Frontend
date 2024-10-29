@@ -95,76 +95,67 @@ const Register = () => {
                 <p className="text-gray-600 mb-4">Lorem ipsum</p>
 
                 <div className="mb-4">
-                  <div className="flex items-center border border-gray-300 rounded-md">
-                    <input
-                      type="email"
-                      placeholder="Email"
-                      className="w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-r-md"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-                  {errors.email && (
-                    <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-                  )}
+                  <BaseInput
+                    type="email"
+                    placeholder="Correo electrónico"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    error={
+                      errors.email && (
+                        <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                      )
+                    }
+                  />
                 </div>
 
-                <div className="mb-4">
-                  <div className="flex items-center border border-gray-300 rounded-md">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Contraseña"
-                      className="w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-l-md"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="px-3 py-2"
-                    >
-                      {showPassword ? (
-                        <i className="fas fa-eye-slash"></i>
-                      ) : (
-                        <i className="fas fa-eye"></i>
-                      )}
-                    </button>
-                  </div>
-                  {errors.password && (
-                    <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-                  )}
+                <div className="mb-4 relative">
+                  <BaseInput
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Contraseña"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    error={
+                      errors.password && (
+                        <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                      )
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-3 text-gray-500"
+                  >
+                    <i className={`fas fa-eye${showPassword ? '-slash' : ''}`}></i>
+                  </button>
                   <p className="text-gray-500 text-sm mt-1">
                     La contraseña debe tener al menos 8 caracteres, incluir un número y un símbolo.
                   </p>
                 </div>
 
-                <div className="mb-6">
-                  <div className="flex items-center border border-gray-300 rounded-md">
-                    <input
-                      type={showConfirmPassword ? "text" : "password"}
-                      placeholder="Repetir contraseña"
-                      className="w-full px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-l-md"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="px-3 py-2"
-                    >
-                      {showConfirmPassword ? (
-                        <i className="fas fa-eye-slash"></i>
-                      ) : (
-                        <i className="fas fa-eye"></i>
-                      )}
-                    </button>
-                  </div>
-                  {errors.confirmPassword && (
-                    <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
-                  )}
-                  {errors.passwordMatch && (
-                    <p className="text-red-500 text-sm mt-1">{errors.passwordMatch}</p>
-                  )}
+                <div className="mb-6 relative">
+                  <BaseInput
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Repetir contraseña"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    error={
+                      <>
+                        {errors.confirmPassword && (
+                          <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
+                        )}
+                        {errors.passwordMatch && (
+                          <p className="text-red-500 text-sm mt-1">{errors.passwordMatch}</p>
+                        )}
+                      </>
+                    }
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-3 text-gray-500"
+                  >
+                    <i className={`fas fa-eye${showConfirmPassword ? '-slash' : ''}`}></i>
+                  </button>
                 </div>
 
                 <div className="flex justify-center">
