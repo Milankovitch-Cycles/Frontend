@@ -23,6 +23,12 @@ const ListWells = () => {
 
   useEffect(() => {
     async function loadWells() {
+      // Asegúrate de que el token existe antes de hacer la llamada a la API
+      if (!dataAuthentication || !dataAuthentication.access_token) {
+        console.error("No access token available");
+        return;
+      }
+
       const token = dataAuthentication.access_token;
       try {
         const result = await getWells(
@@ -36,7 +42,7 @@ const ListWells = () => {
       }
     }
     loadWells();
-  }, [currentPage, dataAuthentication.access_token, wellsPerPage]);
+  }, [currentPage, dataAuthentication, wellsPerPage]); // Aquí puedes dejar dataAuthentication
 
   const handleSort = (property) => {
     const isAsc = orderBy === property && sortDirection === "asc";
