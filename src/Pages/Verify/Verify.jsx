@@ -13,6 +13,7 @@ const Verify = () => {
   const [timer, setTimer] = useState(30);
   const [codeExpired, setCodeExpired] = useState(false);
   const [apiError, setApiError] = useState(null);
+  const [validationError, setValidationError] = useState(null);
   const dataAuthentication = useSelector((state) => state.authToken);
   const navigate = useNavigate();
   const previousPage = sessionStorage.getItem("previousPage");
@@ -87,6 +88,24 @@ const Verify = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Reset validation error
+    setValidationError(null);
+
+    // Validate code length
+    if (codeObtain.length !== 6) {
+      setValidationError('El código debe tener exactamente 6 dígitos.');
+      return;
+    }
+
+    // Reset validation error
+    setValidationError(null);
+
+    // Validate code length
+    if (codeObtain.length !== 6) {
+      setValidationError('El código debe tener exactamente 6 dígitos.');
+      return;
+    }
+
     try {
       if (
         previousPage === "/forgotPassword" ||
@@ -156,6 +175,7 @@ const Verify = () => {
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                       required
                     />
+                    {validationError && <p className="text-red-500 text-sm">{validationError}</p>} {/* Warning for invalid code */}
                   </div>
 
                   {apiError && (

@@ -13,11 +13,20 @@ const RecoverPassword = () => {
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleRecoverPassword = async (e) => {
     e.preventDefault();
     const validationErrors = {};
 
-    if (!email) validationErrors.email = "El correo electrónico es obligatorio";
+    if (!email) {
+      validationErrors.email = 'El correo electrónico es obligatorio';
+    } else if (!validateEmail(email)) {
+      validationErrors.email = 'El correo electrónico no es válido';
+    }
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);

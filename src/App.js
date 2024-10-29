@@ -22,7 +22,8 @@ const isTokenValid = (token) => {
 
   try {
     const decoded = jwtDecode(token);
-    return decoded.exp > Date.now() / 1000;
+    const currentTime = Date.now() / 1000; // Tiempo actual en segundos
+    return decoded.exp > currentTime && decoded.permissions === "login"; // Verifica permisos y expiración
   } catch {
     return false;
   }
@@ -34,14 +35,20 @@ const AuthenticatedRedirect = ({ children }) => {
   return isTokenValid(authToken) ? <Navigate to="/home" /> : children;
 };
 
+const ProtectedRoute = ({ children }) => {
+  const authToken = useSelector((state) => state.authToken?.access_token);
+  
+  return isTokenValid(authToken) ? children : <Navigate to="/login" />;
+};
+
 function App() {
   return (
     <Provider store={store}>
       <BrowserRouter>
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
-            <Route path="/home" element={<Home />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+            <Route path="/register" element={ <AuthenticatedRedirect><Register /></AuthenticatedRedirect>} />d
             <Route
               path="/login"
               element={

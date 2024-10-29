@@ -7,6 +7,8 @@ import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { useDemoRouter } from "@toolpad/core/internal";
 import ListWells from "../ListWells/ListWells";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { useDispatch, useSelector } from "react-redux"; 
+import { removeAuthToken } from '../../redux/states';
 import PersonIcon from "@mui/icons-material/Person";
 import ArticleIcon from "@mui/icons-material/Article";
 
@@ -19,7 +21,7 @@ const NAVIGATION = [
     segment: "listWells",
     title: "Pozos",
     icon: <TimelineIcon />,
-  },
+  }, 
   {
     segment: "listProccess", // TO-DO: Change this
     title: "Procesamientos",
@@ -31,9 +33,9 @@ const NAVIGATION = [
     icon: <PersonIcon />, // TO-DO: Change this
   },
   {
-    segment: "signOut", // TO-DO: Change this
-    title: "Cerrar sesión",
-    icon: <LogoutIcon />, // TO-DO: Change this
+    segment: "logout",
+    title: "Cerrar Sesión",
+    icon: <LogoutIcon />,
   },
   // TO-DO: Add sign out
 ];
@@ -52,23 +54,41 @@ const demoTheme = extendTheme({
   },
 });
 
-function DemoPageContent({ pathname }) {
-  if (pathname === "/listWells") {
-    return <ListWells />;
+function DemoPageContent({ pathname, demoFunction }) {
+  const dispatch = useDispatch();
+  const authToken = useSelector((state) => state.auth?.access_token);
+  if (pathname === "llego el dato") {
+    console.log("fue llamada desde list Wells");
   }
+  if (pathname === "/listWells") {
 
-  return <ListWells></ListWells>; // Agregar mas casos
+    if (!authToken) {
+      window.location.href = '/login';
+      return null;
+    }
+    return <ListWells demoFunction={DemoPageContent} pathname={pathname} />;
+  } else if (pathname === "/logout") {
+  
+    dispatch(removeAuthToken());
+    window.location.href = '/login';
+  }
+  return <ListWells demoFunction={DemoPageContent} pathname={pathname} />;
 }
 
 DemoPageContent.propTypes = {
   pathname: PropTypes.string.isRequired,
-};
+  demoFunction: PropTypes.func.isRequired, // Añadimos la validación para demoFunction
+};;
 
 function AppProviderTheme(props) {
   const { window } = props;
-
   const router = useDemoRouter("/dashboard");
   const demoWindow = window !== undefined ? window() : undefined;
+
+  // Define la función demoFunction
+  const demoFunction = () => {
+    console.log("Función demo llamada desde ListWells");
+  };
 
   return (
     <AppProvider
@@ -82,7 +102,7 @@ function AppProviderTheme(props) {
       window={demoWindow}
     >
       <DashboardLayout>
-        <DemoPageContent pathname={router.pathname} />
+        <DemoPageContent pathname={router.pathname} demoFunction={demoFunction} />
       </DashboardLayout>
     </AppProvider>
   );
