@@ -9,6 +9,7 @@ const Register = React.lazy(() => import("./Pages/Register/Register"));
 const Login = React.lazy(() => import("./Pages/Login/Login"));
 const Home = React.lazy(() => import("./Pages/Home/Home"));
 const Verify = React.lazy(() => import("./Pages/Verify/Verify"));
+const WellDetails = React.lazy(() => import("./Pages/WellDetails/WellDetails"));
 const ForgotPassword = React.lazy(
   () => import("./Pages/ForgotPassword/ForgotPassword")
 );
@@ -47,7 +48,6 @@ function App() {
       <BrowserRouter>
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
-            <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
             <Route path="/register" element={ <AuthenticatedRedirect><Register /></AuthenticatedRedirect>} />d
             <Route
               path="/login"
@@ -68,6 +68,9 @@ function App() {
             <Route path="/forgotPassword" element={<ForgotPassword />} />
             <Route path="/changePassword" element={<ChangePassword />} />
             <Route path="/" element={<LandingPage />} />
+            <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+            <Route path="well/:wellId" element={<ProtectedRoute><WellDetails /></ProtectedRoute>} />
+
           </Routes>
         </Suspense>
       </BrowserRouter>

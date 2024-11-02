@@ -1,21 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Button, Modal, Box, IconButton } from "@mui/material";
+import {
+  Typography,
+  Button,
+  Modal,
+  Box,
+  IconButton,
+  TablePagination,
+} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { getWells } from "../../api/authService";
 import { BaseTable } from "../../components/BaseTable";
 import { BaseInput } from "../../components/BaseInput";
 import LoadWell from "../LoadWell/LoadWell";
+import { useNavigate } from "react-router-dom";
 
-const ListWells = () => {
-  const navigate = useNavigate();
+const ListWells = ( ) => {
   const [wells, setWells] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [wellsPerPage] = useState(5);
+  const [pagination, setPagination] = useState({
+    limit: 5,
+    offset: 0,
+    total: 0,
+    previous_offset: 0,
+    next_offset: 0,
+    total_pages: 0,
+  });
   const [sortDirection, setSortDirection] = useState("asc");
   const [orderBy, setOrderBy] = useState("name");
   const [openModal, setOpenModal] = useState(false);
@@ -23,7 +33,6 @@ const ListWells = () => {
 
   useEffect(() => {
     async function loadWells() {
-      // Asegúrate de que el token existe antes de hacer la llamada a la API
       if (!dataAuthentication || !dataAuthentication.access_token) {
         console.error("No access token available");
         return;
@@ -31,18 +40,15 @@ const ListWells = () => {
 
       const token = dataAuthentication.access_token;
       try {
-        const result = await getWells(
-          token,
-          wellsPerPage,
-          (currentPage - 1) * wellsPerPage
-        );
-        setWells(result || []);
+        const result = await getWells(token, pagination.limit, pagination.offset);
+        setWells(result.wells || []);
+        setPagination(result.pagination || {});
       } catch (error) {
         console.error("Error loading wells:", error);
       }
     }
     loadWells();
-  }, [currentPage, dataAuthentication, wellsPerPage]); // Aquí puedes dejar dataAuthentication
+  }, [pagination.offset, dataAuthentication, pagination.limit]);
 
   const handleSort = (property) => {
     const isAsc = orderBy === property && sortDirection === "asc";
@@ -50,12 +56,23 @@ const ListWells = () => {
     setOrderBy(property);
   };
 
-  const handleNextPage = () => setCurrentPage((prev) => prev + 1);
-  const handlePreviousPage = () =>
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  const handleChangePage = (event, newPage) => {
+    setPagination((prev) => ({
+      ...prev,
+      offset: newPage * prev.limit,
+    }));
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setPagination((prev) => ({
+      ...prev,
+      limit: parseInt(event.target.value, 10),
+      offset: 0,
+    }));
+  };
+
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
-  const handleViewWell = (wellId) => navigate(`/well/${wellId}`);
 
   const columns = [
     {
@@ -84,9 +101,9 @@ const ListWells = () => {
       ),
     },
   ];
-
-  const actions = {
-    view: handleViewWell,
+  const navigate = useNavigate() 
+  const actions = { 
+    view: (id) => navigate(`/well/${id}`),
     edit: (id) => console.log("Edit", id),
     delete: (id) => console.log("Delete", id),
   };
@@ -158,14 +175,15 @@ const ListWells = () => {
         orderBy={orderBy}
         actions={actions}
       />
-      <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
-        <IconButton onClick={handlePreviousPage} disabled={currentPage === 1}>
-          <ArrowBackIcon />
-        </IconButton>
-        <IconButton onClick={handleNextPage}>
-          <ArrowForwardIcon />
-        </IconButton>
-      </Box>
+      <TablePagination
+        component="div"
+        count={pagination.total}
+        page={Math.floor(pagination.offset / pagination.limit)}
+        onPageChange={handleChangePage}
+        rowsPerPage={pagination.limit}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        labelRowsPerPage="Filas por página"
+      />
     </div>
   );
 };
