@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { resetFinish } from "../../api/authService";
-import { BaseInput } from "../../components/BaseInput";
-import { BaseButton } from "../../components/BaseButton";
+import { resetFinish } from "../api/authService";
+import BaseInput from "../components/BaseInput";
+import BaseButton from "../components/BaseButton";
 
 const ChangePassword = () => {
   const navigate = useNavigate();

@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react"; 
 import { useSelector, useDispatch } from "react-redux";
-import { register } from "../../api/authService";
-import { addAuthToken } from "../../redux/states";
+import { register } from "../api/authService";
+import { addAuthToken } from "../redux/states";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { BaseInput } from "../../components/BaseInput";
-import { BaseButton } from "../../components/BaseButton";
+import BaseInput from "../components/BaseInput";
 
 const Register = () => {
   const navigate = useNavigate();

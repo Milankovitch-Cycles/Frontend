@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { resetStart } from "../../api/authService";
-import { addAuthToken } from "../../redux/states";
-import { BaseInput } from "../../components/BaseInput";
-import { BaseButton } from "../../components/BaseButton";
+import { resetStart } from "../api/authService";
+import { addAuthToken } from "../redux/states";
+import BaseInput from "../components/BaseInput";
+import BaseButton  from "../components/BaseButton";
 import { useDispatch } from "react-redux";
 
 const RecoverPassword = () => {

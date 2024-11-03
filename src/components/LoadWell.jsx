@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Navbar } from "../../components";
 import {
   Button,
   TextField,
@@ -102,7 +101,7 @@ const LoadWell = () => {
       if (response.ok) {
         setToastMessage("Submission successful!");
         setToastOpen(true);
-        navigate("/home");
+        navigate("/wells");
       } else {
         const errorData = await response.json();
         console.error("Error details:", errorData);
@@ -176,7 +175,7 @@ const LoadWell = () => {
               <Box display="flex" alignItems="center" ml={2}>
                 <img
                   src={imagePreview}
-                  alt="Image Preview"
+                  alt="Well"
                   style={{
                     width: "50px",
                     height: "50px",

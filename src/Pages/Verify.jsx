@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { registerFinish } from "../../api/authService";
-import { resetStart } from "../../api/authService";
-import { resetVerify } from "../../api/authService";
+import { registerFinish, resetStart, resetVerify } from "../api/authService";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-import { addAuthToken } from "../../redux/states";
+import { addAuthToken } from "../redux/states";
 import { useDispatch } from "react-redux";
 
 const Verify = () => {

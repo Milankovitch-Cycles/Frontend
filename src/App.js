@@ -1,22 +1,21 @@
 import React, { Suspense } from "react";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import store from "./redux/store";
 import { Provider } from "react-redux";
+import Layout from "./components/Layout"; // Import the Layout component
+import ListWells from "./Pages/ListWells";
+import WellDetails from "./Pages/WellDetails";
+import JobsList from "./Pages/JobsList";
+import JobDetails from "./Pages/JobDetails";
+import Account from "./Pages/Account";
 
-const Register = React.lazy(() => import("./Pages/Register/Register"));
-const Login = React.lazy(() => import("./Pages/Login/Login"));
-const Home = React.lazy(() => import("./Pages/Home/Home"));
-const Verify = React.lazy(() => import("./Pages/Verify/Verify"));
-const WellDetails = React.lazy(() => import("./Pages/WellDetails/WellDetails"));
-const ForgotPassword = React.lazy(
-  () => import("./Pages/ForgotPassword/ForgotPassword")
-);
-const ChangePassword = React.lazy(
-  () => import("./Pages/ChangePassword/ChangePassword")
-);
-const LandingPage = React.lazy(() => import("./Pages/LandingPage/LandingPage"));
+const Register = React.lazy(() => import("./Pages/Register"));
+const Login = React.lazy(() => import("./Pages/Login"));
+const Verify = React.lazy(() => import("./Pages/Verify"));
+const ForgotPassword = React.lazy(() => import("./Pages/ForgotPassword"));
+const ChangePassword = React.lazy(() => import("./Pages/ChangePassword"));
 
 const isTokenValid = (token) => {
   if (!token) return false;
@@ -33,7 +32,7 @@ const isTokenValid = (token) => {
 const AuthenticatedRedirect = ({ children }) => {
   const authToken = useSelector((state) => state.authToken?.access_token);
 
-  return isTokenValid(authToken) ? <Navigate to="/home" /> : children;
+  return isTokenValid(authToken) ? <Navigate to="/wells" /> : children;
 };
 
 const ProtectedRoute = ({ children }) => {
@@ -48,29 +47,19 @@ function App() {
       <BrowserRouter>
         <Suspense fallback={<div>Loading...</div>}>
           <Routes>
-            <Route path="/register" element={ <AuthenticatedRedirect><Register /></AuthenticatedRedirect>} />d
-            <Route
-              path="/login"
-              element={
-                <AuthenticatedRedirect>
-                  <Login />
-                </AuthenticatedRedirect>
-              }
-            />
-            <Route
-              path="/verifyCode"
-              element={
-                <AuthenticatedRedirect>
-                  <Verify />
-                </AuthenticatedRedirect>
-              }
-            />
+            <Route path="/register" element={<AuthenticatedRedirect><Register /></AuthenticatedRedirect>} />
+            <Route path="/login" element={<AuthenticatedRedirect><Login /></AuthenticatedRedirect>} />
+            <Route path="/verifyCode" element={<AuthenticatedRedirect><Verify /></AuthenticatedRedirect>} />
             <Route path="/forgotPassword" element={<ForgotPassword />} />
             <Route path="/changePassword" element={<ChangePassword />} />
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-            <Route path="well/:wellId" element={<ProtectedRoute><WellDetails /></ProtectedRoute>} />
-
+            <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+              <Route index element={<Navigate to="/wells" />} />
+              <Route path="wells" element={<ListWells />} />
+              <Route path="wells/:wellId" element={<WellDetails />} />
+              <Route path="jobs" element={<JobsList />} />
+              <Route path="jobs/:jobId" element={<JobDetails />} />
+              <Route path="account" element={<Account />} />
+            </Route>
           </Routes>
         </Suspense>
       </BrowserRouter>

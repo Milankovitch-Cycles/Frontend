@@ -1,6 +1,7 @@
 const apiClient = async (endpoint, datos = null, token = null, method = 'GET') => { 
   const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
+
   try {
     const body = datos ? JSON.stringify(datos) : null;
     const response = await fetch(`${baseUrl}${endpoint}`, {

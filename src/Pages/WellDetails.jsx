@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Typography, Box, CircularProgress, Card, CardContent } from "@mui/material";
-import { getWellById } from "../../api/authService";
+import { getWellById } from "../api/authService";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 

@@ -4,7 +4,7 @@ const BaseInput = ({
   type,
   placeholder,
   value,
-  onChange,
+  onChange, 
   error,
   className,
 }) => {

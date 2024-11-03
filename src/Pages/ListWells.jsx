@@ -10,10 +10,10 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSelector } from "react-redux";
-import { getWells } from "../../api/authService";
-import { BaseTable } from "../../components/BaseTable";
-import { BaseInput } from "../../components/BaseInput";
-import LoadWell from "../LoadWell/LoadWell";
+import { getWells } from "../api/authService";
+import BaseTable from "../components/BaseTable";
+import BaseInput from "../components/BaseInput";
+import LoadWell from "../components/LoadWell";
 import { useNavigate } from "react-router-dom";
 
 const ListWells = ( ) => {
@@ -103,7 +103,7 @@ const ListWells = ( ) => {
   ];
   const navigate = useNavigate() 
   const actions = { 
-    view: (id) => navigate(`/well/${id}`),
+    view: (id) => navigate(`/wells/${id}`),
     edit: (id) => console.log("Edit", id),
     delete: (id) => console.log("Delete", id),
   };
