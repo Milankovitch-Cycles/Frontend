@@ -9,9 +9,9 @@ import BaseButton from "../components/BaseButton";
 import BaseLink from "../components/BaseLink";
 
 const images = [
-  'https://media.istockphoto.com/id/1457436123/es/foto/plataforma-de-petr%C3%B3leo-y-gas-costa-afuera-en-el-sitio-de-producci%C3%B3n-aumentar-la-producci%C3%B3n-de.jpg?s=2048x2048&w=is&k=20&c=jGfTZDGA7_UjjVKTOlw1mXgTRfCIaX76rILv6N9EY2M=',
-  'https://media.istockphoto.com/id/1447640636/es/foto/sitio-del-campo-petrolero-por-la-noche-las-bombas-de-petr%C3%B3leo-est%C3%A1n-funcionando-la-bomba-de.jpg?s=2048x2048&w=is&k=20&c=vypfiaGJHy5N5rbyqfSpX8CtTbGpyqRD_L_aDM2nwn8=',
-  'https://media.istockphoto.com/id/1960084925/es/foto/men-inspection-engineers-working-with-laptop-of-oil-factory-and-gas-refinery-plant-industry-at.jpg?s=2048x2048&w=is&k=20&c=ojGffNuQbETO7HRTPa8g2g1pLpCq7rc2xUqaMkVpla0=',
+  "https://media.istockphoto.com/id/1457436123/es/foto/plataforma-de-petr%C3%B3leo-y-gas-costa-afuera-en-el-sitio-de-producci%C3%B3n-aumentar-la-producci%C3%B3n-de.jpg?s=2048x2048&w=is&k=20&c=jGfTZDGA7_UjjVKTOlw1mXgTRfCIaX76rILv6N9EY2M=",
+  "https://media.istockphoto.com/id/1447640636/es/foto/sitio-del-campo-petrolero-por-la-noche-las-bombas-de-petr%C3%B3leo-est%C3%A1n-funcionando-la-bomba-de.jpg?s=2048x2048&w=is&k=20&c=vypfiaGJHy5N5rbyqfSpX8CtTbGpyqRD_L_aDM2nwn8=",
+  "https://media.istockphoto.com/id/1960084925/es/foto/men-inspection-engineers-working-with-laptop-of-oil-factory-and-gas-refinery-plant-industry-at.jpg?s=2048x2048&w=is&k=20&c=ojGffNuQbETO7HRTPa8g2g1pLpCq7rc2xUqaMkVpla0=",
 ];
 
 const Login = () => {
@@ -43,8 +43,6 @@ const Login = () => {
 
     if (!password) {
       validationErrors.password = "La contraseña es obligatoria.";
-    } else if (password.length < 8 || !/\d/.test(password) || !/[!@#$%^&*]/.test(password)) {
-      validationErrors.password = "La contraseña debe tener al menos 8 caracteres, incluir un número y un símbolo.";
     }
 
     if (Object.keys(validationErrors).length > 0) {
@@ -68,32 +66,46 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-cover bg-center" style={{ backgroundImage: `url(${images[currentImageIndex]})`, transition: 'background-image 1s ease-in-out' }}>
+    <div
+      className="min-h-screen flex items-center justify-center bg-cover bg-center"
+      style={{
+        backgroundImage: `url(${images[currentImageIndex]})`,
+        transition: "background-image 1s ease-in-out",
+      }}
+    >
       <div className="container mx-auto">
         <div className="flex justify-center">
           <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
             <h1 className="text-3xl font-bold mb-4 text-center">My App</h1>
-            <p className="text-2xl text-gray-600 mb-6 text-center">Iniciar sesión</p>
-            
+            <p className="text-2xl text-gray-600 mb-6 text-center">
+              Iniciar sesión
+            </p>
+
             <BaseInput
               type="email"
               placeholder="Correo electrónico"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              error={errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-              )}
+              error={
+                errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )
+              }
             />
-            
+
             <div className="relative">
               <BaseInput
                 type={showPassword ? "text" : "password"}
                 placeholder="Contraseña"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                error={errors.password && (
-                  <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-                )}
+                error={
+                  errors.password && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.password}
+                    </p>
+                  )
+                }
               />
               <button
                 type="button"
@@ -104,14 +116,8 @@ const Login = () => {
               </button>
             </div>
 
-            <p className="text-gray-500 text-sm mt-1">
-              La contraseña debe tener al menos 8 caracteres, incluir un número y un símbolo.
-            </p>
-
             <div className="flex flex-col items-center mt-4">
-              <BaseButton onPress={handleLogin}>
-                Continuar
-              </BaseButton>
+              <BaseButton onPress={handleLogin}>Continuar</BaseButton>
               <BaseLink
                 path="/forgotPassword"
                 text="Olvidaste tu contraseña?"
@@ -123,7 +129,8 @@ const Login = () => {
             <div className="text-center">
               <h2 className="text-3xl font-bold mb-4">MyApp</h2>
               <p className="mb-6">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua.
               </p>
               <BaseLink
                 path="/register"
