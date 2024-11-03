@@ -59,6 +59,7 @@ function App() {
               <Route path="jobs" element={<JobsList />} />
               <Route path="jobs/:jobId" element={<JobDetails />} />
               <Route path="account" element={<Account />} />
+              <Route path="*" element={<Navigate to="/wells" />} /> 
             </Route>
           </Routes>
         </Suspense>
