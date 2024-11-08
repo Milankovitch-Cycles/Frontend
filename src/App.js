@@ -57,7 +57,7 @@ function App() {
               <Route path="wells" element={<ListWells />} />
               <Route path="wells/:wellId" element={<WellDetails />} />
               <Route path="jobs" element={<JobsList />} />
-              <Route path="jobs/:jobId" element={<JobDetails />} />
+              <Route path="wells/:wellId/jobs" element={<JobDetails />} />
               <Route path="account" element={<Account />} />
               <Route path="*" element={<Navigate to="/wells" />} /> 
             </Route>

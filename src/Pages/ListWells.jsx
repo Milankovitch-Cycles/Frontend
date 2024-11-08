@@ -16,7 +16,7 @@ import BaseInput from "../components/BaseInput";
 import LoadWell from "../components/LoadWell";
 import { useNavigate } from "react-router-dom";
 
-const ListWells = ( ) => {
+const ListWells = () => {
   const [wells, setWells] = useState([]);
   const [pagination, setPagination] = useState({
     limit: 5,
@@ -30,6 +30,7 @@ const ListWells = ( ) => {
   const [orderBy, setOrderBy] = useState("name");
   const [openModal, setOpenModal] = useState(false);
   const dataAuthentication = useSelector((state) => state.authToken);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function loadWells() {
@@ -101,11 +102,12 @@ const ListWells = ( ) => {
       ),
     },
   ];
-  const navigate = useNavigate() 
-  const actions = { 
+
+  const actions = {
     view: (id) => navigate(`/wells/${id}`),
     edit: (id) => console.log("Edit", id),
     delete: (id) => console.log("Delete", id),
+    jobs: (id) => navigate(`/wells/${id}/jobs`),
   };
 
   return (

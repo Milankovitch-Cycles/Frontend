@@ -13,6 +13,7 @@ import {
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import WorkIcon from "@mui/icons-material/Work";
 
 const BaseTable = ({
   data,
@@ -66,6 +67,11 @@ const BaseTable = ({
                       {actions.delete && (
                         <IconButton onClick={() => actions.delete(item.id)}>
                           <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      )}
+                      {actions.jobs && (
+                        <IconButton onClick={() => actions.jobs(item.id)}>
+                          <WorkIcon fontSize="small" />
                         </IconButton>
                       )}
                     </Box>
