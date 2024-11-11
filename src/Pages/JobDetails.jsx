@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getWellJobs } from '../api/authService';
 import { useSelector } from "react-redux";
-import { CircularProgress, Box, Typography } from '@mui/material';
+import { CircularProgress, Box, Typography, Button } from '@mui/material';
 import BaseTable from '../components/BaseTable';
 
 const JobDetails = () => {
@@ -66,6 +66,9 @@ const JobDetails = () => {
       <Typography variant="h4" gutterBottom>
         Jobs from Well {wellId}
       </Typography>
+      <Button variant="contained" color="primary" onClick={() => navigate(`/wells/${wellId}/createJob`)}>
+        Create Job
+      </Button>
       <BaseTable
         data={jobs}
         columns={columns}

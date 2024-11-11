@@ -10,6 +10,9 @@ import WellDetails from "./Pages/WellDetails";
 import JobsList from "./Pages/JobsList";
 import JobDetails from "./Pages/JobDetails";
 import Account from "./Pages/Account";
+import Home from "./Pages/Home"; // Import the Home component
+import CreateJob from "./Pages/CreateJob"; // Import the CreateJob component
+
 
 const Register = React.lazy(() => import("./Pages/Register"));
 const Login = React.lazy(() => import("./Pages/Login"));
@@ -53,11 +56,13 @@ function App() {
             <Route path="/forgotPassword" element={<ForgotPassword />} />
             <Route path="/changePassword" element={<ChangePassword />} />
             <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-              <Route index element={<Navigate to="/wells" />} />
+              <Route index element={<Home />} />
+              <Route element={<Navigate to="/wells" />} />
               <Route path="wells" element={<ListWells />} />
               <Route path="wells/:wellId" element={<WellDetails />} />
               <Route path="jobs" element={<JobsList />} />
               <Route path="wells/:wellId/jobs" element={<JobDetails />} />
+              <Route path="wells/:wellId/createJob" element={<CreateJob />} />
               <Route path="account" element={<Account />} />
               <Route path="*" element={<Navigate to="/wells" />} /> 
             </Route>

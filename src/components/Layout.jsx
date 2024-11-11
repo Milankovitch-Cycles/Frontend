@@ -6,6 +6,7 @@ import ArticleIcon from "@mui/icons-material/Article";
 import PersonIcon from "@mui/icons-material/Person";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
+import HomeIcon from "@mui/icons-material/Home";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { useDispatch } from "react-redux";
 import { removeAuthToken } from '../redux/states';
@@ -54,6 +55,12 @@ const Layout = () => {
     <div>
       <Toolbar />
       <List>
+        <ListItem button onClick={() => handleNavigation("/")}>
+          <ListItemIcon>
+            <HomeIcon />
+          </ListItemIcon>
+          <ListItemText primary="Home" />
+        </ListItem>
         <ListItem button onClick={() => handleNavigation("/wells")}>
           <ListItemIcon>
             <TimelineIcon />

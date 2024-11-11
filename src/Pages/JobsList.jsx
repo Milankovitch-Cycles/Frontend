@@ -1,18 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getWellJobs } from '../api/authService';
+import { getJobs } from '../api/authService';
 import BaseTable from '../components/BaseTable';
+import { useSelector } from 'react-redux';
 
 const JobsList = () => {
   const { wellId } = useParams();
   const [jobs, setJobs] = useState([]);
   const [sortDirection, setSortDirection] = useState('asc');
   const [orderBy, setOrderBy] = useState('created_at');
+  const dataAuthentication = useSelector((state) => state.authToken);
 
   useEffect(() => {
+
+
     const fetchJobs = async () => {
+
       try {
-        const data = await getWellJobs(wellId);
+        if (!dataAuthentication || !dataAuthentication.access_token) {
+          console.error("No access token available");
+          return;
+        }
+
+        const token = dataAuthentication.access_token;
+        const data = await getJobs(token);
         setJobs(data);
       } catch (error) {
         console.error('Error fetching jobs:', error);
@@ -20,7 +31,7 @@ const JobsList = () => {
     };
 
     fetchJobs();
-  }, [wellId]);
+  }, [dataAuthentication]);
 
   const handleSort = (columnId) => {
     const isAsc = orderBy === columnId && sortDirection === 'asc';
