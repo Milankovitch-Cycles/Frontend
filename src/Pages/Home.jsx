@@ -26,10 +26,10 @@ const Home = () => {
         setWells(wellsData.wells || []);
 
         const jobsData = await getJobs(token, 10, 0);
-        setJobs(jobsData[0].jobs);
+        setJobs(jobsData.jobs);
 
         // Assuming recent activity is the latest jobs
-        setRecentActivity(jobsData[0].jobs.slice(0, 5));
+        setRecentActivity(jobsData.jobs.slice(0, 5));
       } catch (error) {
         console.error("Error fetching data:", error);
       }

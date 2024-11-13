@@ -31,8 +31,8 @@ const JobsList = () => {
 
       const token = dataAuthentication.access_token;
       const data = await getJobs(token, limit, offset);
-      setJobs(data[0].jobs);
-      setPagination(data[0].pagination);
+      setJobs(data.jobs);
+      setPagination(data.pagination);
     } catch (error) {
       console.error('Error fetching jobs:', error);
     }
