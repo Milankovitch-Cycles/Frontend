@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Swal from "sweetalert2";
 import { login } from "../api/authService";
 import { useNavigate } from "react-router-dom";
@@ -7,12 +7,9 @@ import { useDispatch } from "react-redux";
 import BaseInput from "../components/BaseInput";
 import BaseButton from "../components/BaseButton";
 import BaseLink from "../components/BaseLink";
+import BackgroundSlider from "../components/BackgroundSlider";
 
-const images = [
-  "https://media.istockphoto.com/id/1457436123/es/foto/plataforma-de-petr%C3%B3leo-y-gas-costa-afuera-en-el-sitio-de-producci%C3%B3n-aumentar-la-producci%C3%B3n-de.jpg?s=2048x2048&w=is&k=20&c=jGfTZDGA7_UjjVKTOlw1mXgTRfCIaX76rILv6N9EY2M=",
-  "https://media.istockphoto.com/id/1447640636/es/foto/sitio-del-campo-petrolero-por-la-noche-las-bombas-de-petr%C3%B3leo-est%C3%A1n-funcionando-la-bomba-de.jpg?s=2048x2048&w=is&k=20&c=vypfiaGJHy5N5rbyqfSpX8CtTbGpyqRD_L_aDM2nwn8=",
-  "https://media.istockphoto.com/id/1960084925/es/foto/men-inspection-engineers-working-with-laptop-of-oil-factory-and-gas-refinery-plant-industry-at.jpg?s=2048x2048&w=is&k=20&c=ojGffNuQbETO7HRTPa8g2g1pLpCq7rc2xUqaMkVpla0=",
-];
+
 
 const Login = () => {
   const navigate = useNavigate();
@@ -20,16 +17,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 5000); // Change image every 5 seconds
-
-    return () => clearInterval(interval); // Cleanup interval on component unmount
-  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -66,13 +55,7 @@ const Login = () => {
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center bg-cover bg-center"
-      style={{
-        backgroundImage: `url(${images[currentImageIndex]})`,
-        transition: "background-image 1s ease-in-out",
-      }}
-    >
+    <BackgroundSlider>
       <div className="container mx-auto">
         <div className="flex justify-center">
           <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
@@ -129,8 +112,9 @@ const Login = () => {
             <div className="text-center">
               <h2 className="text-3xl font-bold mb-4">MyApp</h2>
               <p className="mb-6">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Inicia sesión para acceder a tu cuenta y disfrutar de nuestros servicios.
+               ¿No tienes una cuenta?
+              Regístrate aquí para empezar.
               </p>
               <BaseLink
                 path="/register"
@@ -141,7 +125,7 @@ const Login = () => {
           </div>
         </div>
       </div>
-    </div>
+    </BackgroundSlider>
   );
 };
 

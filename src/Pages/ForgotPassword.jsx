@@ -6,6 +6,7 @@ import { addAuthToken } from "../redux/states";
 import BaseInput from "../components/BaseInput";
 import BaseButton  from "../components/BaseButton";
 import { useDispatch } from "react-redux";
+import BackgroundSlider from "../components/BackgroundSlider";
 
 const RecoverPassword = () => {
   const navigate = useNavigate();
@@ -75,7 +76,8 @@ const RecoverPassword = () => {
 
   return (
     <>
-      <div className="bg-white to-black min-h-screen flex items-center justify-center">
+      <BackgroundSlider>
+
         <div className="container mx-auto">
           <div className="flex justify-center">
             <div className="w-full max-w-md">
@@ -106,7 +108,7 @@ const RecoverPassword = () => {
             </div>
           </div>
         </div>
-      </div>
+      </BackgroundSlider>
     </>
   );
 };

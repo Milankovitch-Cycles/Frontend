@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { addAuthToken } from "../redux/states";
 import { useDispatch } from "react-redux";
+import BackgroundSlider from "../components/BackgroundSlider";
 
 const Verify = () => {
   const [codeObtain, setCode] = useState("");
@@ -149,7 +150,7 @@ const Verify = () => {
 
   return (
     <>
-      <div className="bg-white min-h-screen flex items-center justify-center">
+        <BackgroundSlider>
         <div className="container mx-auto">
           <div className="flex justify-center">
             <div className="w-full max-w-md">
@@ -224,7 +225,7 @@ const Verify = () => {
             </div>
           </div>
         </div>
-      </div>
+      </BackgroundSlider>
     </>
   );
 };

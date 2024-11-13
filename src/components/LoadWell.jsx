@@ -9,18 +9,15 @@ import {
   CircularProgress,
 } from "@mui/material";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
-import ImageIcon from "@mui/icons-material/Image";
 import CloseIcon from "@mui/icons-material/Close";
-import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-const LoadWell = () => {
+import Swal from "sweetalert2";
+
+const LoadWell = ({ closeModal }) => {
   const [wellName, setWellName] = useState("");
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [description, setDescription] = useState("");;
   const [lasFile, setLasFile] = useState(null);
   const [lasFilePreview, setLasFilePreview] = useState(null);
-  const [hoverImage, setHoverImage] = useState(false);
   const [hoverFile, setHoverFile] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [toastOpen, setToastOpen] = useState(false);
@@ -29,27 +26,21 @@ const LoadWell = () => {
   const [loading, setLoading] = useState(false);
   const dataAuthentication = useSelector((state) => state.authToken);
 
-  const navigate = useNavigate();
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setImage(file);
-    setImagePreview(URL.createObjectURL(file));
-  };
+
   const handleLasFileChange = (e) => {
     const file = e.target.files[0];
     setLasFile(file);
     setLasFilePreview(file.name);
     setLasFileError(false);
   };
-  const handleRemoveImage = () => {
-    setImage(null);
-    setImagePreview(null);
-  };
+
+
   const handleRemoveLasFile = () => {
     setLasFile(null);
     setLasFilePreview(null);
   };
+
   const handleWellNameChange = (e) => {
     setWellName(e.target.value);
     if (wellNameError) {
@@ -60,8 +51,7 @@ const LoadWell = () => {
   const handleSubmit = async () => {
     const token = dataAuthentication.access_token;
     let valid = true;
-
-    // Validación de campos
+  
     if (!wellName) {
       setWellNameError(true);
       valid = false;
@@ -79,35 +69,43 @@ const LoadWell = () => {
       setToastOpen(true);
       return;
     }
-
+  
     setLoading(true);
-
-    // Crear formData con los datos requeridos
+  
     const formData = new FormData();
-    formData.append("name", wellName); // Cambiar 'wellName' a 'name'
+    formData.append("name", wellName);
     formData.append("description", description);
-    formData.append("file", lasFile); // Cambiar 'lasFile' a 'file'
-
+    formData.append("file", lasFile);
+  
     try {
       const response = await fetch("http://localhost:8080/wells/", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
-          // No es necesario establecer el Content-Type, ya que el navegador se encarga de eso con FormData
         },
         body: formData,
       });
-
+  
       if (response.ok) {
-        setToastMessage("Submission successful!");
+        closeModal();
+        Swal.fire({
+          title: "Pozo creado con éxito!",
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        }).then(() => {
+        
+         
+        });
+        setToastMessage("Pozo creado con éxito!");
         setToastOpen(true);
-        navigate("/wells");
+  
+     
+       
+     
       } else {
         const errorData = await response.json();
         console.error("Error details:", errorData);
-        setToastMessage(
-          `Failed to submit well data: ${errorData.message || "Unknown error"}`
-        );
+        setToastMessage(`Error al crear el pozo: ${errorData.message || "Unknown error"}`);
         setToastOpen(true);
       }
     } catch (error) {
@@ -117,8 +115,9 @@ const LoadWell = () => {
       setLoading(false);
     }
   };
+
   const handleCloseToast = () => {
-    setToastOpen(false);
+    setToastOpen(false); // Cerrar el modal
   };
 
   return (
@@ -126,7 +125,7 @@ const LoadWell = () => {
       <Box display="flex" flexDirection="column" alignItems="center" mt={2}>
         <Box display="flex" flexDirection="column" width="70%">
           <TextField
-            label="Well Name"
+            label="Nombre del pozo"
             value={wellName}
             onChange={handleWellNameChange}
             margin="normal"
@@ -135,7 +134,7 @@ const LoadWell = () => {
             helperText={wellNameError ? "Well Name is required" : ""}
           />
           <TextField
-            label="Description"
+            label="Descripción"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             margin="normal"
@@ -143,52 +142,7 @@ const LoadWell = () => {
             rows={4}
             fullWidth
           />
-          <Box display="flex" alignItems="center" mt={2}>
-            <input
-              accept="image/*"
-              style={{ display: "none" }}
-              id="well-image"
-              type="file"
-              onChange={handleImageChange}
-            />
-            <label
-              htmlFor="well-image"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                cursor: "pointer",
-                padding: "5px",
-                borderRadius: "5px",
-                backgroundColor: hoverImage ? "lightblue" : "transparent",
-              }}
-              onMouseEnter={() => setHoverImage(true)}
-              onMouseLeave={() => setHoverImage(false)}
-            >
-              <IconButton color="primary" component="span">
-                <ImageIcon />
-              </IconButton>
-              <Typography variant="body1" component="span" ml={1}>
-                Upload Image
-              </Typography>
-            </label>
-            {imagePreview && (
-              <Box display="flex" alignItems="center" ml={2}>
-                <img
-                  src={imagePreview}
-                  alt="Well"
-                  style={{
-                    width: "50px",
-                    height: "50px",
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                  }}
-                />
-                <IconButton color="secondary" onClick={handleRemoveImage}>
-                  <CloseIcon />
-                </IconButton>
-              </Box>
-            )}
-          </Box>
+
           <Box display="flex" alignItems="center" mt={2}>
             <input
               accept=".las"
@@ -214,7 +168,7 @@ const LoadWell = () => {
                 <AttachFileIcon />
               </IconButton>
               <Typography variant="body1" component="span" ml={1}>
-                Attach LAS File
+                Adjuntar archivo LAS
               </Typography>
             </label>
             {lasFilePreview && (
@@ -233,7 +187,7 @@ const LoadWell = () => {
             )}
             {lasFileError && (
               <Typography variant="body2" color="error" ml={2}>
-                LAS File is required
+                El archivo LAS es requerido
               </Typography>
             )}
           </Box>
@@ -246,7 +200,7 @@ const LoadWell = () => {
             disabled={loading}
             style={{ marginRight: "10px" }}
           >
-            Submit
+            Agregar
           </Button>
           {loading && <CircularProgress size={24} />}
         </Box>
@@ -260,4 +214,5 @@ const LoadWell = () => {
     </div>
   );
 };
+
 export default LoadWell;

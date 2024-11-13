@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { resetFinish } from "../api/authService";
 import BaseInput from "../components/BaseInput";
 import BaseButton from "../components/BaseButton";
+import BackgroundSlider from "../components/BackgroundSlider";
 
 const ChangePassword = () => {
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ const ChangePassword = () => {
 
   return (
     <>
-      <div className="bg-white min-h-screen flex items-center justify-center">
+       <BackgroundSlider>
         <div className="container mx-auto">
           <div className="flex justify-center">
             <div className="w-full max-w-md">
@@ -103,7 +104,7 @@ const ChangePassword = () => {
             </div>
           </div>
         </div>
-      </div>
+      </BackgroundSlider>
     </>
   );
 };

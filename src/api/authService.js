@@ -35,15 +35,6 @@ export const createWell = (datos, token) => apiClient('wells/', datos, token, 'P
 export const getWells = (token, limit = 5, offset = 0) => apiClient(`wells?limit=${limit}&offset=${offset}`, null, token);
 export const getWellJobs = (token, wellId) => apiClient(`wells/${wellId}/jobs`, null, token);
 export const getJobs = (token) => apiClient('wells/jobs', null, token);
-export const getWellById = async (token, wellId) => {
-  try {
-    const accessToken = token;
-
-    // Hacer la llamada a la API usando el access_token
-    const response = await apiClient(`wells/${wellId}`, null, accessToken, 'GET'); // Usa apiClient directamente
-
-    return response;
-  } catch (error) {
-    console.error('Error fetching well data:', error);
-    throw error; // Propaga el error para manejarlo en la llamada
-  }};
+export const getWellById = (token, wellId) => apiClient(`wells/${wellId}`, null, token, 'GET');
+export const deleteWell = (token, wellId) => apiClient(`wells/?id=${wellId}`, null, token, 'DELETE');
+export const editById = (token, wellId) => apiClient(`wells/${wellId}`, null, token, 'PATCH');

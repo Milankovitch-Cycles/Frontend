@@ -1,23 +1,19 @@
 import React, { useEffect, useState } from "react";
-import {
-  Typography,
-  Button,
-  Modal,
-  Box,
-  IconButton,
-  TablePagination,
-} from "@mui/material";
+import { Typography, Button, Modal, Box, IconButton, TablePagination } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSelector } from "react-redux";
 import { getWells } from "../api/authService";
+import { deleteWell } from "../api/authService";
 import BaseTable from "../components/BaseTable";
 import BaseInput from "../components/BaseInput";
 import LoadWell from "../components/LoadWell";
 import { useNavigate } from "react-router-dom";
+import swal from "sweetalert2";
 
 const ListWells = () => {
   const [wells, setWells] = useState([]);
+  const [filteredWells, setFilteredWells] = useState([]);
   const [pagination, setPagination] = useState({
     limit: 5,
     offset: 0,
@@ -29,16 +25,13 @@ const ListWells = () => {
   const [sortDirection, setSortDirection] = useState("asc");
   const [orderBy, setOrderBy] = useState("name");
   const [openModal, setOpenModal] = useState(false);
+  const [filter, setFilter] = useState("");
   const dataAuthentication = useSelector((state) => state.authToken);
   const navigate = useNavigate();
 
   useEffect(() => {
     async function loadWells() {
-      if (!dataAuthentication || !dataAuthentication.access_token) {
-        console.error("No access token available");
-        return;
-      }
-
+      if (!dataAuthentication || !dataAuthentication.access_token) return;
       const token = dataAuthentication.access_token;
       try {
         const result = await getWells(token, pagination.limit, pagination.offset);
@@ -50,6 +43,14 @@ const ListWells = () => {
     }
     loadWells();
   }, [pagination.offset, dataAuthentication, pagination.limit]);
+
+  useEffect(() => {
+    if (filter) {
+      setFilteredWells(wells.filter(well => well.name.toLowerCase().includes(filter.toLowerCase())));
+    } else {
+      setFilteredWells(wells);
+    }
+  }, [filter, wells]);
 
   const handleSort = (property) => {
     const isAsc = orderBy === property && sortDirection === "asc";
@@ -73,7 +74,7 @@ const ListWells = () => {
   };
 
   const handleOpenModal = () => setOpenModal(true);
-  const handleCloseModal = () => setOpenModal(false);
+  const handleCloseModal = () => { setOpenModal(false); reloadWells(); }
 
   const columns = [
     {
@@ -96,18 +97,60 @@ const ListWells = () => {
       id: "dateCreated",
       label: "Fecha Creación",
       render: (well) => (
-        <Typography>
-          {new Date(well.created_at).toLocaleDateString()}
-        </Typography>
+        <Typography>{new Date(well.created_at).toLocaleDateString()}</Typography>
       ),
     },
   ];
 
+  const deleteWellAction = async (id) => {
+    if (!dataAuthentication || !dataAuthentication.access_token) return;
+    const token = dataAuthentication.access_token;
+
+    const result = await swal.fire({
+      title: "¿Estás seguro de querer eliminar este pozo?",
+      text: "¡Esta acción no se puede deshacer!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Eliminar",
+      cancelButtonText: "Cancelar",
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteWell(token, id);
+        const result = await getWells(token, pagination.limit, pagination.offset);
+        setWells(result.wells || []);
+        setPagination(result.pagination || {});
+      } catch (error) {
+        console.error("Error deleting well:", error);
+        swal.fire("Error", "Hubo un problema al eliminar el pozo.", "error");
+      }
+    }
+  };
+
   const actions = {
     view: (id) => navigate(`/wells/${id}`),
     edit: (id) => console.log("Edit", id),
-    delete: (id) => console.log("Delete", id),
+    delete: deleteWellAction,
     jobs: (id) => navigate(`/wells/${id}/jobs`),
+  };
+
+  const handleRowClick = (id) => actions.view(id);
+
+  const reloadWells = () => {
+    async function loadWells() {
+      if (!dataAuthentication || !dataAuthentication.access_token) return;
+      const token = dataAuthentication.access_token;
+      try {
+        const result = await getWells(token, pagination.limit, pagination.offset);
+        setWells(result.wells || []);
+        setPagination(result.pagination || {});
+      } catch (error) {
+        console.error("Error loading wells:", error);
+      }
+    }
+    loadWells();
   };
 
   return (
@@ -115,9 +158,9 @@ const ListWells = () => {
       <h1 className="mb-4 text-2xl">Pozos</h1>
       <div className="flex justify-evenly">
         <BaseInput
-          type="email"
-          placeholder="Cambiar por un filter"
-          onChange={() => {}}
+          type="text"
+          placeholder="Filtrar por nombre"
+          onChange={(e) => setFilter(e.target.value)} 
         />
         <Button
           variant="contained"
@@ -165,17 +208,18 @@ const ListWells = () => {
           <Typography id="modal-title" variant="h6" component="h2" mb={2}>
             Agregar Nuevo Pozo
           </Typography>
-          <LoadWell />
+          <LoadWell closeModal={handleCloseModal} reloadWells={reloadWells} />
         </Box>
       </Modal>
 
       <BaseTable
-        data={wells}
+        data={filteredWells} 
         columns={columns}
         onSort={handleSort}
         sortDirection={sortDirection}
         orderBy={orderBy}
         actions={actions}
+        onRowClick={handleRowClick}
       />
       <TablePagination
         component="div"

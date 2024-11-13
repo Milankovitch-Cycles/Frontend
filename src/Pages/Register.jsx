@@ -5,6 +5,7 @@ import { addAuthToken } from "../redux/states";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import BaseInput from "../components/BaseInput";
+import BackgroundSlider from "../components/BackgroundSlider";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState({});
+
 
   useEffect(() => {
     if (dataAuthentication?.email) {
@@ -84,14 +86,15 @@ const Register = () => {
   };
 
   return (
-    <div className="bg-white min-h-screen flex items-center justify-center">
+
+    <BackgroundSlider>
       <div className="container mx-auto">
         <div className="flex justify-center">
           <div className="w-full max-w-md">
             <div className="bg-white p-6 rounded-lg shadow-lg">
               <form onSubmit={handleRegister} noValidate>
                 <h1 className="text-2xl font-bold mb-4">Registrarse</h1>
-                <p className="text-gray-600 mb-4">Lorem ipsum</p>
+               
 
                 <div className="mb-4">
                   <BaseInput
@@ -167,7 +170,7 @@ const Register = () => {
           </div>
         </div>
       </div>
-    </div>
+    </BackgroundSlider>
   );
 };
 

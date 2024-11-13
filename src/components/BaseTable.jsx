@@ -45,7 +45,12 @@ const BaseTable = ({
         <TableBody>
           {data.length > 0 ? (
             data.map((item) => (
-              <TableRow key={item.id} hover>
+              <TableRow
+                key={item.id}
+                hover
+                onClick={() => actions.view(item.id)}
+                style={{ cursor: "pointer" }}
+              >
                 {columns.map((column) => (
                   <TableCell key={column.id}>
                     {column.render ? column.render(item) : item[column.id]}
@@ -55,22 +60,42 @@ const BaseTable = ({
                   <TableCell>
                     <Box sx={{ display: "flex", gap: 0.5 }}>
                       {actions.view && (
-                        <IconButton onClick={() => actions.view(item.id)}>
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            actions.view(item.id);
+                          }}
+                        >
                           <VisibilityIcon fontSize="small" />
                         </IconButton>
                       )}
                       {actions.edit && (
-                        <IconButton onClick={() => actions.edit(item.id)}>
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            actions.edit(item.id);
+                          }}
+                        >
                           <EditIcon fontSize="small" />
                         </IconButton>
                       )}
                       {actions.delete && (
-                        <IconButton onClick={() => actions.delete(item.id)}>
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            actions.delete(item.id);
+                          }}
+                        >
                           <DeleteIcon fontSize="small" />
                         </IconButton>
                       )}
                       {actions.jobs && (
-                        <IconButton onClick={() => actions.jobs(item.id)}>
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            actions.jobs(item.id);
+                          }}
+                        >
                           <WorkIcon fontSize="small" />
                         </IconButton>
                       )}
