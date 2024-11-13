@@ -34,7 +34,7 @@ export const resetFinish = (datos, token) => apiClient('auth/password/reset/fini
 export const createWell = (datos, token) => apiClient('wells/', datos, token, 'POST');
 export const getWells = (token, limit = 5, offset = 0) => apiClient(`wells?limit=${limit}&offset=${offset}`, null, token);
 export const getWellJobs = (token, wellId) => apiClient(`wells/${wellId}/jobs`, null, token);
-export const getJobs = (token) => apiClient('wells/jobs', null, token);
+export const getJobs = (token, limit = 5, offset = 0) => apiClient(`wells/jobs?limit=${limit}&offset=${offset}`, null, token);
 export const getWellById = (token, wellId) => apiClient(`wells/${wellId}`, null, token, 'GET');
 export const deleteWell = (token, wellId) => apiClient(`wells/?id=${wellId}`, null, token, 'DELETE');
 export const editById = (token, wellId) => apiClient(`wells/${wellId}`, null, token, 'PATCH');
