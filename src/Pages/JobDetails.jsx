@@ -63,12 +63,14 @@ const JobDetails = () => {
 
   return (
     <Box display="flex" flexDirection="column" p={2}>
-      <Typography variant="h4" gutterBottom>
-        Jobs from Well {wellId}
-      </Typography>
-      <Button variant="contained" color="primary" onClick={() => navigate(`/wells/${wellId}/createJob`)}>
-        Create Job
-      </Button>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Typography variant="h4" gutterBottom>
+          Jobs from Well {wellId}
+        </Typography>
+        <Button variant="contained" color="primary" onClick={() => navigate(`/wells/${wellId}/createJob`)}>
+          Create Job
+        </Button>
+      </Box>
       <BaseTable
         data={jobs}
         columns={columns}
