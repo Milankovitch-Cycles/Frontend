@@ -11,6 +11,7 @@ const Home = () => {
   const [wells, setWells] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [recentActivity, setRecentActivity] = useState([]);
+  const [barData, setBarData] = useState([]);
   const dataAuthentication = useSelector((state) => state.authToken);
 
   useEffect(() => {
@@ -19,17 +20,35 @@ const Home = () => {
         console.error("No access token available");
         return;
       }
-
-      const token = dataAuthentication.access_token; 
+      const token = dataAuthentication.access_token;
       try {
         const wellsData = await getWells(token);
         setWells(wellsData.wells || []);
-
         const jobsData = await getJobs(token, 10, 0);
         setJobs(jobsData.jobs);
 
-        // Assuming recent activity is the latest jobs
         setRecentActivity(jobsData.jobs.slice(0, 5));
+
+
+        const last7Days = Array.from({ length: 7 }, (_, i) => ({
+          name: `Día ${1 + i}`,
+          jobs: 0,
+        }));
+
+
+        jobsData.jobs.forEach(job => {
+          const jobDate = new Date(job.created_at).toLocaleDateString();
+          const dayIndex = last7Days.findIndex((_, index) => {
+            const date = new Date();
+            date.setDate(date.getDate() - (6 - index));
+            return date.toLocaleDateString() === jobDate;
+          });
+          if (dayIndex !== -1) {
+            last7Days[dayIndex].jobs += 1;
+          }
+        });
+
+        setBarData(last7Days);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -37,8 +56,8 @@ const Home = () => {
     fetchData();
   }, [dataAuthentication]);
 
-  const completedJobs = jobs.filter(job => job.status === 'completed').length;
-  const pendingJobs = jobs.filter(job => job.status === 'pending').length;
+  const completedJobs = jobs.filter(job => job.status === 'processed').length;
+  const pendingJobs = jobs.filter(job => job.status !== 'processed').length;
 
   const pieData = [
     { name: 'Completado', value: completedJobs },
@@ -46,16 +65,6 @@ const Home = () => {
   ];
 
   const COLORS = ['#0088FE', '#FFBB28'];
-
-  const barData = [
-    { name: 'Day 1', jobs: 5 },
-    { name: 'Day 2', jobs: 3 },
-    { name: 'Day 3', jobs: 4 },
-    { name: 'Day 4', jobs: 7 },
-    { name: 'Day 5', jobs: 2 },
-    { name: 'Day 6', jobs: 6 },
-    { name: 'Day 7', jobs: 4 },
-  ];
 
   return (
     <Box p={4}>
@@ -154,9 +163,9 @@ const Home = () => {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
-                <Tooltip />
+                <Tooltip formatter={(value) => [`${value}`, "Procesos"]} />
                 <Legend />
-                <Bar dataKey="jobs" fill="#8884d8" />
+                <Bar dataKey="jobs" fill="#8884d8" name="Procesos" />
               </BarChart>
             </CardContent>
           </Card>
