@@ -87,7 +87,7 @@ const WellDetails = () => {
       <Card sx={{ mb: 2 }}>
         <CardContent>
           <Typography variant="body1" gutterBottom>
-            <strong>Status:</strong> {well.status}
+          <strong>Estado:</strong> {well.jobs[0].status === "processed" ? "procesado" : well.jobs[0].status}
           </Typography>
         </CardContent>
       </Card>
@@ -99,17 +99,22 @@ const WellDetails = () => {
         </CardContent>
       </Card>
       <Typography variant="h5" gutterBottom>
-        Job Graphs
+      Gráfico de los procesos
       </Typography>
       <Grid container spacing={2}>
-        {well.jobs && well.jobs[0].graphs.map((graph, index) => (
+        {well.jobs && well.jobs[0].result.graphs.map((graph, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
-            <Card onClick={() => handleOpenModal(graph)} sx={{ cursor: 'pointer' }}>
+            <Card onClick={() => handleOpenModal(graph.image)} sx={{ cursor: 'pointer' }}>
               <CardContent>
                 <Typography variant="body2" color="textSecondary" gutterBottom>
-                  Graph {index + 1}
+                  {graph.title}
                 </Typography>
-                <Box component="img" src={"http://localhost:8080" + transformGraphUrl(graph)} alt={`Graph ${index + 1}`} sx={{ width: '100%', height: 'auto' }} />
+                <Box
+                  component="img"
+                  src={"http://localhost:8080/" + transformGraphUrl(graph.image)}
+                  alt={`Graph ${graph.title}`}
+                  sx={{ width: '100%', height: 'auto' }}
+                />
               </CardContent>
             </Card>
           </Grid>
@@ -148,9 +153,14 @@ const WellDetails = () => {
           {selectedGraph && (
             <Box>
               <Typography id="modal-title" variant="h6" component="h2" mb={2}>
-                Graph Detail
+                Detalles del Gráfico
               </Typography>
-              <Box component="img" src={"http://localhost:8080" + transformGraphUrl(selectedGraph)} alt="Graph Detail" sx={{ width: '100%', height: 'auto' }} />
+              <Box
+                component="img"
+                src={"http://localhost:8080/" + transformGraphUrl(selectedGraph)}
+                alt="Graph Detail"
+                sx={{ width: '100%', height: 'auto' }}
+              />
             </Box>
           )}
         </Box>

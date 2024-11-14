@@ -86,7 +86,7 @@ const ListWells = () => {
     { id: "description", label: "Descripción" },
     {
       id: "status",
-      label: "Status",
+      label: "Estado",
       render: (well) => (
         <Typography color={well.status === "Active" ? "green" : "red"}>
           {well.status}

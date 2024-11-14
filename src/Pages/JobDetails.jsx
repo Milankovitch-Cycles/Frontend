@@ -49,12 +49,11 @@ const JobDetails = () => {
 
   const columns = [
     { id: 'id', label: 'ID' },
-    { id: 'user_id', label: 'User ID' },
-    { id: 'type', label: 'Type' },
-    { id: 'parameters', label: 'Parameters', render: (job) => JSON.stringify(job.parameters) },
-    { id: 'result', label: 'Result', render: (job) => JSON.stringify(job.result) },
-    { id: 'status', label: 'Status' },
-    { id: 'created_at', label: 'Created At', render: (job) => new Date(job.created_at).toLocaleString() },
+    { id: 'user_id', label: 'ID De Usuario' },
+    { id: 'type', label: 'Tipo' },
+    { id: 'parameters', label: 'Parámetros', render: (job) => JSON.stringify(job.parameters) },
+    { id: 'status', label: 'Estado' },
+    { id: 'created_at', label: 'Fecha De Creación', render: (job) => new Date(job.created_at).toLocaleString() },
   ];
 
   const actions = {
@@ -65,10 +64,10 @@ const JobDetails = () => {
     <Box display="flex" flexDirection="column" p={2}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h4" gutterBottom>
-          Jobs from Well {wellId}
+          Lista De Procesos Pozo {wellId}
         </Typography>
         <Button variant="contained" color="primary" onClick={() => navigate(`/wells/${wellId}/createJob`)}>
-          Create Job
+          Crear Proceso
         </Button>
       </Box>
       <BaseTable

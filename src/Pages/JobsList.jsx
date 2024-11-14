@@ -70,12 +70,11 @@ const JobsList = () => {
 
   const columns = [
     { id: 'id', label: 'ID' },
-    { id: 'user_id', label: 'User ID' },
-    { id: 'type', label: 'Type' },
-    { id: 'parameters', label: 'Parameters', render: (job) => renderParameters(job.parameters) },
-    { id: 'result', label: 'Result', render: (job) => JSON.stringify(job.result) },
-    { id: 'status', label: 'Status' },
-    { id: 'created_at', label: 'Created At', render: (job) => new Date(job.created_at).toLocaleString() },
+    { id: 'user_id', label: 'ID de Usuario' },
+    { id: 'type', label: 'Tipo' },
+    { id: 'parameters', label: 'Parámetros', render: (job) => renderParameters(job.parameters) },
+    { id: 'status', label: 'Estado' },
+    { id: 'created_at', label: 'Fecha de Creación', render: (job) => new Date(job.created_at).toLocaleString() },
   ];
 
   const actions = {
@@ -98,7 +97,7 @@ const JobsList = () => {
   return (
     <Box p={4}>
       <Typography variant="h4" gutterBottom>
-        Jobs List
+        Lista De Procesos
       </Typography>
       <BaseTable
         data={jobs}

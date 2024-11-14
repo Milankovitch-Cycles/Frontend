@@ -41,8 +41,8 @@ const Home = () => {
   const pendingJobs = jobs.filter(job => job.status === 'pending').length;
 
   const pieData = [
-    { name: 'Completed', value: completedJobs },
-    { name: 'Pending', value: pendingJobs },
+    { name: 'Completado', value: completedJobs },
+    { name: 'Pendiente', value: pendingJobs },
   ];
 
   const COLORS = ['#0088FE', '#FFBB28'];
@@ -65,7 +65,7 @@ const Home = () => {
             <CardContent>
               <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant="h6" gutterBottom>
-                  Jobs Status
+                  Estado Del Proceso
                 </Typography>
                 <IconButton>
                   <AssignmentIcon />
@@ -115,7 +115,7 @@ const Home = () => {
                 <CardContent>
                   <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Typography variant="h6" gutterBottom>
-                      Number of Wells
+                      Nombre De Pozos
                     </Typography>
                     <IconButton>
                       <InfoIcon />
@@ -130,7 +130,7 @@ const Home = () => {
                 <CardContent>
                   <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Typography variant="h6" gutterBottom>
-                      Number of Jobs
+                      Cantidad De Pozos
                     </Typography>
                     <IconButton>
                       <BarChartIcon />
@@ -148,7 +148,7 @@ const Home = () => {
           <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Jobs per Day (Last 7 Days)
+                Procesos Por Días (Último 7 días)
               </Typography>
               <BarChart width={500} height={300} data={barData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -165,7 +165,7 @@ const Home = () => {
           <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Recent Activity
+                Actividad Reciente
               </Typography>
               <Box sx={{ maxHeight: 300, overflow: 'auto' }}>
                 <ul style={{ listStyleType: 'none', padding: 0 }}>
@@ -174,13 +174,13 @@ const Home = () => {
                       <Card variant="outlined">
                         <CardContent>
                           <Typography variant="body2">
-                            <strong>Type:</strong> {job.type}
+                            <strong>Tipo:</strong> {job.type}
                           </Typography>
                           <Typography variant="body2">
-                            <strong>Status:</strong> {job.status}
+                            <strong>Estado:</strong> {job.status}
                           </Typography>
                           <Typography variant="body2">
-                            <strong>Created At:</strong> {new Date(job.created_at).toLocaleString()}
+                            <strong>Fecha De Creación:</strong> {new Date(job.created_at).toLocaleString()}
                           </Typography>
                         </CardContent>
                       </Card>
