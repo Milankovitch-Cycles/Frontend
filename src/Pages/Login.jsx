@@ -110,7 +110,7 @@ const Login = () => {
           </div>
           <div className="hidden lg:flex bg-blue-600 text-white py-10 px-8 rounded-r-lg items-center justify-center w-2/5">
             <div className="text-center">
-              <h2 className="text-3xl font-bold mb-4">MyApp</h2>
+              <h2 className="text-3xl font-bold mb-4">Cycle App</h2>
               <p className="mb-6">
               Inicia sesión para acceder a tu cuenta y disfrutar de nuestros servicios.
                ¿No tienes una cuenta?
