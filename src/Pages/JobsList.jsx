@@ -3,7 +3,10 @@ import { useParams } from 'react-router-dom';
 import { getJobs } from '../api/authService';
 import BaseTable from '../components/BaseTable';
 import { useSelector } from 'react-redux';
-import { Box, Typography, TablePagination } from '@mui/material';
+import { Box, Typography, TablePagination, InputAdornment } from '@mui/material';
+
+import BaseInput from "../components/BaseInput";
+import SearchIcon from "@mui/icons-material/Search"; // Importa el ícono de lupa
 
 const JobsList = () => {
   const { wellId } = useParams();
@@ -17,10 +20,32 @@ const JobsList = () => {
   const [sortDirection, setSortDirection] = useState('asc');
   const [orderBy, setOrderBy] = useState('created_at');
   const dataAuthentication = useSelector((state) => state.authToken);
+  const [filter, setFilter] = useState("");
 
   useEffect(() => {
     fetchJobs();
   }, [dataAuthentication]);
+
+  const translations = {
+    type: {
+      "NEW_WELL": "Nuevo Pozo",
+    },
+    status: {
+      "processed": "Procesado",
+      "pending": "Pendiente",
+      "failed": "Fallido",
+    }
+  };
+
+  const parameterTranslations = {
+    filename: "Nombre de Archivo",
+  };
+
+  const translateJobData = (job) => ({
+    ...job,
+    type: translations.type[job.type] || job.type,
+    status: translations.status[job.status] || job.status,
+  });
 
   const fetchJobs = async (offset = 0, limit = 10) => {
     try {
@@ -31,7 +56,8 @@ const JobsList = () => {
 
       const token = dataAuthentication.access_token;
       const data = await getJobs(token, limit, offset);
-      setJobs(data.jobs);
+      const translatedJobs = data.jobs.map(translateJobData);
+      setJobs(translatedJobs);
       setPagination(data.pagination);
     } catch (error) {
       console.error('Error fetching jobs:', error);
@@ -61,7 +87,7 @@ const JobsList = () => {
       <ul style={{ padding: 0, margin: 0, listStyleType: 'none' }}>
         {Object.entries(parameters).map(([key, value]) => (
           <li key={key}>
-            <strong>{key}:</strong> {value}
+            <strong>{parameterTranslations[key] || key}:</strong> {value}
           </li>
         ))}
       </ul>
@@ -97,8 +123,17 @@ const JobsList = () => {
   return (
     <Box p={4}>
       <Typography variant="h4" gutterBottom>
-        Lista De Procesos
+        Procesamientos
       </Typography>
+      <div className="flex justify-evenly">
+        <BaseInput
+          type="text"
+          placeholder="Filtrar: "
+          onChange={(e) => setFilter(e.target.value)}
+
+
+        />
+      </div>
       <BaseTable
         data={jobs}
         columns={columns}

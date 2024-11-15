@@ -67,12 +67,12 @@ const CreateJob = () => {
   return (
     <Box p={4}>
       <Typography variant="h4" gutterBottom>
-        Create Job for Well {wellId}
+        Crear Procesamiento Para Pozo {wellId}
       </Typography>
       <Box mb={2}>
         <TextField
           select
-          label="Job Type"
+          label="Tipo De Procesamiento"
           value={jobType}
           onChange={handleJobTypeChange}
           fullWidth
@@ -88,7 +88,7 @@ const CreateJob = () => {
         <Grid container spacing={2}>
           <Grid item xs={4}>
             <TextField
-              label="Coefficient 1"
+              label="Coeficiente 1"
               name="coef1"
               value={coefficients.coef1}
               onChange={handleCoefficientChange}
@@ -99,7 +99,7 @@ const CreateJob = () => {
           </Grid>
           <Grid item xs={4}>
             <TextField
-              label="Coefficient 2"
+              label="Coeficiente 2"
               name="coef2"
               value={coefficients.coef2}
               onChange={handleCoefficientChange}
@@ -110,7 +110,7 @@ const CreateJob = () => {
           </Grid>
           <Grid item xs={4}>
             <TextField
-              label="Coefficient 3"
+              label="Coeficiente 3"
               name="coef3"
               value={coefficients.coef3}
               onChange={handleCoefficientChange}
@@ -122,10 +122,10 @@ const CreateJob = () => {
         </Grid>
       </Box>
       <Box mb={2}>
-        <Typography variant="h6">Select Analysis Window</Typography>
+        <Typography variant="h6">Seleccionar Ventana De Análisis</Typography>
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            <Typography>Start</Typography>
+            <Typography>Inicio</Typography>
             <Slider
               value={start}
               onChange={handleStartChange}
@@ -138,7 +138,7 @@ const CreateJob = () => {
             />
           </Grid>
           <Grid item xs={6}>
-            <Typography>End</Typography>
+            <Typography>Fin</Typography>
             <Slider
               value={end}
               onChange={handleEndChange}

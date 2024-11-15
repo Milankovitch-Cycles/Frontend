@@ -71,7 +71,7 @@ const Layout = () => {
           <ListItemIcon>
             <ArticleIcon />
           </ListItemIcon>
-          <ListItemText primary="Procesos" />
+          <ListItemText primary="Procesamientos" />
         </ListItem>
         <ListItem button onClick={() => handleNavigation("/account")}>
           <ListItemIcon>
@@ -117,7 +117,7 @@ const Layout = () => {
               {drawerOpen ? <ChevronLeftIcon /> : <MenuIcon />}
             </IconButton>
             <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-              My App
+              Cycle App
             </Typography>
             <IconButton color="inherit" onClick={handleThemeToggle}>
               {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}

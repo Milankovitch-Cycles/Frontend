@@ -80,14 +80,16 @@ const WellDetails = () => {
       <Card sx={{ mb: 2 }}>
         <CardContent>
           <Typography variant="body1" gutterBottom>
-            <strong>Metadata:</strong> {well.well_metadata}
-          </Typography>
-        </CardContent>
-      </Card>
-      <Card sx={{ mb: 2 }}>
-        <CardContent>
-          <Typography variant="body1" gutterBottom>
-          <strong>Estado:</strong> {well.jobs[0].status === "processed" ? "procesado" : well.jobs[0].status}
+            <strong>Metadata:</strong>{" "}
+            {well.well_metadata ? well.well_metadata : (
+              <div>
+                <p><strong>Intervalo de profundidades:</strong> 3600 a 4600</p>
+                <p><strong>Intervalo de frecuencia:</strong> 0 a 800</p>
+                <p><strong>Intervalo de densidad de masa:</strong> 2.0 a 3.0</p>
+                <p><strong>Intervalo de rayos gamma:</strong> 0 a 300</p>
+                <p><strong>Intervalo de porosidad de neutrones:</strong> 0 a 140</p>
+              </div>
+            )}
           </Typography>
         </CardContent>
       </Card>
@@ -99,7 +101,7 @@ const WellDetails = () => {
         </CardContent>
       </Card>
       <Typography variant="h5" gutterBottom>
-      Gráfico de los procesos
+        Gráfico de los procesamientos
       </Typography>
       <Grid container spacing={2}>
         {well.jobs && well.jobs[0].result.graphs.map((graph, index) => (

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Button, Modal, Box, IconButton, TablePagination } from "@mui/material";
+import { Typography, Button, Modal, Box, IconButton, TablePagination, InputAdornment } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import SearchIcon from "@mui/icons-material/Search"; // Importa el ícono de lupa
 import { useSelector } from "react-redux";
 import { getWells } from "../api/authService";
 import { deleteWell } from "../api/authService";
@@ -85,15 +86,6 @@ const ListWells = () => {
     { id: "filename", label: "Archivo LAS" },
     { id: "description", label: "Descripción" },
     {
-      id: "status",
-      label: "Estado",
-      render: (well) => (
-        <Typography color={well.status === "Active" ? "green" : "red"}>
-          {well.status}
-        </Typography>
-      ),
-    },
-    {
       id: "dateCreated",
       label: "Fecha Creación",
       render: (well) => (
@@ -159,8 +151,15 @@ const ListWells = () => {
       <div className="flex justify-evenly">
         <BaseInput
           type="text"
-          placeholder="Filtrar por nombre"
-          onChange={(e) => setFilter(e.target.value)} 
+          placeholder="Filtrar: "
+          onChange={(e) => setFilter(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
         />
         <Button
           variant="contained"
@@ -213,7 +212,7 @@ const ListWells = () => {
       </Modal>
 
       <BaseTable
-        data={filteredWells} 
+        data={filteredWells}
         columns={columns}
         onSort={handleSort}
         sortDirection={sortDirection}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'; 
 import { useParams, useNavigate } from 'react-router-dom';
 import { getWellJobs } from '../api/authService';
 import { useSelector } from "react-redux";
@@ -13,6 +13,38 @@ const JobDetails = () => {
   const [error, setError] = useState(null);
   const dataAuthentication = useSelector((state) => state.authToken);
 
+  // Traducciones para tipo, estado y parámetros
+  const translations = {
+    type: {
+      "NEW_WELL": "Nuevo Pozo",
+    },
+    status: {
+      "processed": "Procesado",
+      "pending": "Pendiente",
+      "failed": "Fallido",
+    },
+    parameters: {
+      "filename": "Nombre de Archivo",
+    }
+  };
+
+  // Función para traducir los trabajos
+  const translateJobData = (job) => ({
+    ...job,
+    type: translations.type[job.type] || job.type,
+    status: translations.status[job.status] || job.status,
+    parameters: translateParameters(job.parameters),
+  });
+
+  // Función para traducir los parámetros del trabajo
+  const translateParameters = (parameters) => {
+    if (!parameters) return parameters;
+    return Object.entries(parameters).reduce((acc, [key, value]) => {
+      acc[translations.parameters[key] || key] = value;
+      return acc;
+    }, {});
+  };
+
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
@@ -23,7 +55,8 @@ const JobDetails = () => {
 
         const token = dataAuthentication.access_token;
         const data = await getWellJobs(token, wellId);
-        setJobs(data);
+        const translatedJobs = data.map(translateJobData); // Traducir los trabajos
+        setJobs(translatedJobs);
       } catch (error) {
         setError('Error fetching job details');
         console.error('Error fetching job details:', error);
@@ -51,7 +84,7 @@ const JobDetails = () => {
     { id: 'id', label: 'ID' },
     { id: 'user_id', label: 'ID De Usuario' },
     { id: 'type', label: 'Tipo' },
-    { id: 'parameters', label: 'Parámetros', render: (job) => JSON.stringify(job.parameters) },
+    { id: 'parameters', label: 'Parámetros', render: (job) => renderParameters(job.parameters) },
     { id: 'status', label: 'Estado' },
     { id: 'created_at', label: 'Fecha De Creación', render: (job) => new Date(job.created_at).toLocaleString() },
   ];
@@ -60,11 +93,23 @@ const JobDetails = () => {
     view: (id) => navigate(`/wells/${wellId}/jobs/${id}`),
   };
 
+  const renderParameters = (parameters) => {
+    return (
+      <ul style={{ padding: 0, margin: 0, listStyleType: 'none' }}>
+        {Object.entries(parameters).map(([key, value]) => (
+          <li key={key}>
+            <strong>{key}:</strong> {value}
+          </li>
+        ))}
+      </ul>
+    );
+  };
+
   return (
     <Box display="flex" flexDirection="column" p={2}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h4" gutterBottom>
-          Lista De Procesos Pozo {wellId}
+          Procesamientos De Pozo {wellId}
         </Typography>
         <Button variant="contained" color="primary" onClick={() => navigate(`/wells/${wellId}/createJob`)}>
           Crear Proceso

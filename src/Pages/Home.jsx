@@ -74,7 +74,7 @@ const Home = () => {
             <CardContent>
               <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant="h6" gutterBottom>
-                  Estado Del Proceso
+                  Estado de los Procesamientos
                 </Typography>
                 <IconButton>
                   <AssignmentIcon />
@@ -124,7 +124,7 @@ const Home = () => {
                 <CardContent>
                   <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Typography variant="h6" gutterBottom>
-                      Nombre De Pozos
+                      Cantidad de Pozos
                     </Typography>
                     <IconButton>
                       <InfoIcon />
@@ -139,7 +139,7 @@ const Home = () => {
                 <CardContent>
                   <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Typography variant="h6" gutterBottom>
-                      Cantidad De Pozos
+                      Cantidad de Procesamientos
                     </Typography>
                     <IconButton>
                       <BarChartIcon />
@@ -157,15 +157,15 @@ const Home = () => {
           <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Procesos Por Días (Último 7 días)
+                Procesamientos por Días (Último 7 días)
               </Typography>
               <BarChart width={500} height={300} data={barData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
-                <Tooltip formatter={(value) => [`${value}`, "Procesos"]} />
+                <Tooltip formatter={(value) => [`${value}`, "Procesamientos"]} />
                 <Legend />
-                <Bar dataKey="jobs" fill="#8884d8" name="Procesos" />
+                <Bar dataKey="jobs" fill="#8884d8" name="Procesamientos" />
               </BarChart>
             </CardContent>
           </Card>
@@ -183,10 +183,10 @@ const Home = () => {
                       <Card variant="outlined">
                         <CardContent>
                           <Typography variant="body2">
-                            <strong>Tipo:</strong> {job.type}
+                            <strong>Tipo:</strong> {job.type === "NEW_WELL" ? "Nuevo Pozo" : job.type}
                           </Typography>
                           <Typography variant="body2">
-                            <strong>Estado:</strong> {job.status}
+                            <strong>Estado:</strong> {job.status === "processed" ? "Procesado" : job.status}
                           </Typography>
                           <Typography variant="body2">
                             <strong>Fecha De Creación:</strong> {new Date(job.created_at).toLocaleString()}

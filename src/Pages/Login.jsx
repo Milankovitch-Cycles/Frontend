@@ -59,7 +59,7 @@ const Login = () => {
       <div className="container mx-auto">
         <div className="flex justify-center">
           <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
-            <h1 className="text-3xl font-bold mb-4 text-center">My App</h1>
+            <h1 className="text-3xl font-bold mb-4 text-center">Cycle App</h1>
             <p className="text-2xl text-gray-600 mb-6 text-center">
               Iniciar sesión
             </p>
