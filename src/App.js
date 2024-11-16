@@ -8,12 +8,12 @@ import Layout from "./components/Layout"; // Import the Layout component
 import ListWells from "./Pages/ListWells";
 import WellDetails from "./Pages/WellDetails";
 import JobsList from "./Pages/JobsList";
-import JobDetails from "./Pages/JobDetails";
+import JobsFromWell from "./Pages/JobsFromWell";
 import Account from "./Pages/Account";
 import Home from "./Pages/Home"; // Import the Home component
 import CreateJob from "./Pages/CreateJob"; // Import the CreateJob component
 import MilankovitchJob from "./Pages/MilankovitchJob"; // Import the MilankovitchJob component
-
+import JobDetails from "./Pages/JobDetails"; // Import the JobDetails component
 
 const Register = React.lazy(() => import("./Pages/Register"));
 const Login = React.lazy(() => import("./Pages/Login"));
@@ -62,7 +62,8 @@ function App() {
               <Route path="wells" element={<ListWells />} />
               <Route path="wells/:wellId" element={<WellDetails />} />
               <Route path="jobs" element={<JobsList />} />
-              <Route path="wells/:wellId/jobs" element={<JobDetails />} />
+              <Route path="wells/:wellId/jobs" element={<JobsFromWell />} />
+              <Route path="wells/:wellId/jobs/:jobId" element={<JobDetails />} />
               <Route path="wells/:wellId/createJob" element={<CreateJob />} />
               <Route path="account" element={<Account />} />
               <Route path="milankovitchJob" element={<MilankovitchJob />} />

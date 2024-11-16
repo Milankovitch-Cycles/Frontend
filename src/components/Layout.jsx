@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, AppBar, Toolbar, Typography, IconButton, CssBaseline, Avatar, Divider } from "@mui/material";
+import { Drawer, List, ListItem, ListItemIcon, ListItemText, AppBar, Toolbar, Typography, IconButton, CssBaseline, Avatar, Divider, Box } from "@mui/material";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import ArticleIcon from "@mui/icons-material/Article";
 import PersonIcon from "@mui/icons-material/Person";
@@ -13,6 +13,7 @@ import { removeAuthToken } from '../redux/states';
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
+import Breadcrumbs from './Breadcrumbs'; // Import the Breadcrumbs component
 
 const drawerWidth = 240;
 
@@ -150,6 +151,9 @@ const Layout = () => {
           {drawer}
         </Drawer>
         <main style={{ flexGrow: 1, padding: '24px', marginTop: '64px', marginLeft: drawerOpen ? drawerWidth : 0, transition: 'margin-left 0.3s' }}>
+          <Box mb={2}>
+            <Breadcrumbs />
+          </Box>
           <Outlet />
         </main>
       </div>

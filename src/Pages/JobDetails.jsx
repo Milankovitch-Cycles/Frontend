@@ -1,52 +1,20 @@
-import React, { useEffect, useState } from 'react'; 
-import { useParams, useNavigate } from 'react-router-dom';
-import { getWellJobs } from '../api/authService';
-import { useSelector } from "react-redux";
-import { CircularProgress, Box, Typography, Button } from '@mui/material';
-import BaseTable from '../components/BaseTable';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Box, Card, CardContent, Typography, Grid, Divider, CircularProgress, Modal, IconButton } from '@mui/material';
+import { getJobById } from '../api/authService';
+import { useSelector } from 'react-redux';
+import CloseIcon from '@mui/icons-material/Close';
 
 const JobDetails = () => {
-  const { wellId } = useParams();
-  const navigate = useNavigate();
-  const [jobs, setJobs] = useState([]);
+  const { wellId, jobId } = useParams();
+  const [jobData, setJobData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedGraph, setSelectedGraph] = useState(null);
   const dataAuthentication = useSelector((state) => state.authToken);
 
-  // Traducciones para tipo, estado y parámetros
-  const translations = {
-    type: {
-      "NEW_WELL": "Nuevo Pozo",
-    },
-    status: {
-      "processed": "Procesado",
-      "pending": "Pendiente",
-      "failed": "Fallido",
-    },
-    parameters: {
-      "filename": "Nombre de Archivo",
-    }
-  };
-
-  // Función para traducir los trabajos
-  const translateJobData = (job) => ({
-    ...job,
-    type: translations.type[job.type] || job.type,
-    status: translations.status[job.status] || job.status,
-    parameters: translateParameters(job.parameters),
-  });
-
-  // Función para traducir los parámetros del trabajo
-  const translateParameters = (parameters) => {
-    if (!parameters) return parameters;
-    return Object.entries(parameters).reduce((acc, [key, value]) => {
-      acc[translations.parameters[key] || key] = value;
-      return acc;
-    }, {});
-  };
-
   useEffect(() => {
-    const fetchJobDetails = async () => {
+    const fetchJobData = async () => {
       try {
         if (!dataAuthentication || !dataAuthentication.access_token) {
           console.error("No access token available");
@@ -54,19 +22,18 @@ const JobDetails = () => {
         }
 
         const token = dataAuthentication.access_token;
-        const data = await getWellJobs(token, wellId);
-        const translatedJobs = data.map(translateJobData); // Traducir los trabajos
-        setJobs(translatedJobs);
+        const data = await getJobById(token, jobId, wellId);
+        setJobData(data);
       } catch (error) {
-        setError('Error fetching job details');
-        console.error('Error fetching job details:', error);
+        setError('Error fetching job data');
+        console.error('Error fetching job data:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchJobDetails();
-  }, [wellId, dataAuthentication]);
+    fetchJobData();
+  }, [wellId, jobId, dataAuthentication]);
 
   if (loading) {
     return <Box display="flex" justifyContent="center" alignItems="center" height="100vh"><CircularProgress /></Box>;
@@ -76,53 +43,113 @@ const JobDetails = () => {
     return <Box display="flex" justifyContent="center" alignItems="center" height="100vh"><Typography color="error">{error}</Typography></Box>;
   }
 
-  if (jobs.length === 0) {
-    return <Box display="flex" justifyContent="center" alignItems="center" height="100vh"><Typography>No job details available</Typography></Box>;
+  if (!jobData) {
+    return <Box display="flex" justifyContent="center" alignItems="center" height="100vh"><Typography>No job data available</Typography></Box>;
   }
 
-  const columns = [
-    { id: 'id', label: 'ID' },
-    { id: 'user_id', label: 'ID De Usuario' },
-    { id: 'type', label: 'Tipo' },
-    { id: 'parameters', label: 'Parámetros', render: (job) => renderParameters(job.parameters) },
-    { id: 'status', label: 'Estado' },
-    { id: 'created_at', label: 'Fecha De Creación', render: (job) => new Date(job.created_at).toLocaleString() },
-  ];
-
-  const actions = {
-    view: (id) => navigate(`/wells/${wellId}/jobs/${id}`),
+  const transformGraphUrl = (url) => {
+    return url.replace('./static', 'http://localhost:8080/static');
   };
 
-  const renderParameters = (parameters) => {
-    return (
-      <ul style={{ padding: 0, margin: 0, listStyleType: 'none' }}>
-        {Object.entries(parameters).map(([key, value]) => (
-          <li key={key}>
-            <strong>{key}:</strong> {value}
-          </li>
-        ))}
-      </ul>
-    );
+  const handleOpenModal = (graph) => {
+    setSelectedGraph(graph);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedGraph(null);
   };
 
   return (
-    <Box display="flex" flexDirection="column" p={2}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <Typography variant="h4" gutterBottom>
-          Procesamientos De Pozo {wellId}
-        </Typography>
-        <Button variant="contained" color="primary" onClick={() => navigate(`/wells/${wellId}/createJob`)}>
-          Crear Proceso
-        </Button>
-      </Box>
-      <BaseTable
-        data={jobs}
-        columns={columns}
-        onSort={() => {}}
-        sortDirection="asc"
-        orderBy="id"
-        actions={actions}
-      />
+    <Box p={4}>
+      <Typography variant="h4" gutterBottom>
+        Job Details
+      </Typography>
+      <Card sx={{ mb: 4 }}>
+        <CardContent>
+          <Typography variant="h6">Job Information</Typography>
+          <Divider sx={{ my: 2 }} />
+          <Typography><strong>ID:</strong> {jobData.id}</Typography>
+          <Typography><strong>User ID:</strong> {jobData.user_id}</Typography>
+          <Typography><strong>Type:</strong> {jobData.type}</Typography>
+          <Typography><strong>Status:</strong> {jobData.status}</Typography>
+          <Typography><strong>Created At:</strong> {new Date(jobData.created_at).toLocaleString()}</Typography>
+        </CardContent>
+      </Card>
+      <Card sx={{ mb: 4 }}>
+        <CardContent>
+          <Typography variant="h6">Parameters</Typography>
+          <Divider sx={{ my: 2 }} />
+          <Typography><strong>Filename:</strong> {jobData.parameters.filename}</Typography>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent>
+          <Typography variant="h6">Result Graphs</Typography>
+          <Divider sx={{ my: 2 }} />
+          <Grid container spacing={2}>
+            {jobData.result.graphs.map((graph, index) => (
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <Card onClick={() => handleOpenModal(transformGraphUrl(graph.image))} sx={{ cursor: 'pointer' }}>
+                  <CardContent>
+                    <Typography variant="subtitle1">{graph.title}</Typography>
+                    <Box
+                      component="img"
+                      src={transformGraphUrl(graph.image)}
+                      alt={graph.title}
+                      sx={{ width: '100%', height: 'auto', mt: 2 }}
+                    />
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </CardContent>
+      </Card>
+      <Modal
+        open={!!selectedGraph}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            p: 4,
+            maxWidth: '90%',
+            maxHeight: '90%',
+            overflow: 'auto',
+          }}
+        >
+          <IconButton
+            onClick={handleCloseModal}
+            sx={{
+              position: 'absolute',
+              top: 16,
+              right: 16,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          {selectedGraph && (
+            <Box>
+              <Typography id="modal-title" variant="h6" component="h2" mb={2}>
+                Graph Details
+              </Typography>
+              <Box
+                component="img"
+                src={selectedGraph}
+                alt="Graph Detail"
+                sx={{ width: '100%', height: 'auto' }}
+              />
+            </Box>
+          )}
+        </Box>
+      </Modal>
     </Box>
   );
 };
