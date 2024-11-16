@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getJobs } from '../api/authService';
 import BaseTable from '../components/BaseTable';
 import { useSelector } from 'react-redux';
@@ -9,7 +9,6 @@ import BaseInput from "../components/BaseInput";
 import SearchIcon from "@mui/icons-material/Search"; // Importa el ícono de lupa
 
 const JobsList = () => {
-  const { wellId } = useParams();
   const [jobs, setJobs] = useState([]);
   const [pagination, setPagination] = useState({
     limit: 10,
@@ -21,6 +20,7 @@ const JobsList = () => {
   const [orderBy, setOrderBy] = useState('created_at');
   const dataAuthentication = useSelector((state) => state.authToken);
   const [filter, setFilter] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchJobs();
@@ -104,9 +104,12 @@ const JobsList = () => {
   ];
 
   const actions = {
-    view: (id) => console.log('View', id),
-    edit: (id) => console.log('Edit', id),
-    delete: (id) => console.log('Delete', id),
+    view: (id) => {
+      const job = jobs.find(job => job.id === id);
+      if (job) {
+        navigate(`/wells/${job.well_id}/jobs/${job.id}`);
+      }
+    },
   };
 
   const handleChangePage = (event, newPage) => {
@@ -130,8 +133,6 @@ const JobsList = () => {
           type="text"
           placeholder="Filtrar: "
           onChange={(e) => setFilter(e.target.value)}
-
-
         />
       </div>
       <BaseTable

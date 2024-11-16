@@ -123,7 +123,6 @@ const ListWells = () => {
 
   const actions = {
     view: (id) => navigate(`/wells/${id}`),
-    edit: (id) => console.log("Edit", id),
     delete: deleteWellAction,
     jobs: (id) => navigate(`/wells/${id}/jobs`),
   };
