@@ -1,33 +1,79 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Button, TextField, MenuItem, Typography, Grid, Slider } from '@mui/material';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Scatter } from 'recharts';
+import { getWellById, createJob } from '../api/authService';
+import Papa from 'papaparse';
+import { CircularProgress } from '@mui/material';
+import { useSelector } from 'react-redux';
 
 const jobTypes = [
-  { value: 'type1', label: 'Type 1' },
-  { value: 'type2', label: 'Type 2' },
-  { value: 'type3', label: 'Type 3' },
+  { value: 'MILANKOVITCH', label: 'Milankovitch Cycle Analysis' },
 ];
-
-// Generate 100 points for the chart
-const data = Array.from({ length: 100 }, (_, i) => ({
-  x: i + 1,
-  y: Math.floor(Math.random() * 1000) + 1,
-}));
 
 const CreateJob = () => {
   const { wellId } = useParams();
-  const [jobType, setJobType] = useState('');
-  const [coefficients, setCoefficients] = useState({ coef1: '', coef2: '', coef3: '' });
+  const navigate = useNavigate();
+  const [jobType, setJobType] = useState('MILANKOVITCH');
   const [start, setStart] = useState(1);
   const [end, setEnd] = useState(100);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const dataAuthentication = useSelector((state) => state.authToken);
+
+  useEffect(() => {
+    const fetchWellData = async () => {
+      try {
+        if (!dataAuthentication || !dataAuthentication.access_token) {
+          console.error("No access token available");
+          return;
+        }
+
+        const token = dataAuthentication.access_token;
+        const wellData = await getWellById(token, wellId);
+        const job = wellData.jobs[0]; // Assuming you want to use the first job's CSV file
+
+        if (job && job.result && job.result.csv) {
+          const csvUrl = transformCsvUrl(job.result.csv);
+          const response = await fetch(csvUrl);
+          const csvText = await response.text();
+          Papa.parse(csvText, {
+            header: true,
+            dynamicTyping: true,
+            complete: (result) => {
+              const transformedData = result.data.map((row) => ({
+                ...row,
+                GR: parseInt(row.GR, 10),
+                TEMP_DEPTH: parseInt(row.TEMP_DEPTH, 10),
+              }));
+              setData(transformedData);
+              setLoading(false);
+            },
+            error: (error) => {
+              setError('Error parsing CSV data');
+              setLoading(false);
+            },
+          });
+        } else {
+          setError('No CSV data available');
+          setLoading(false);
+        }
+      } catch (error) {
+        setError('Error fetching well data');
+        setLoading(false);
+      }
+    };
+
+    fetchWellData();
+  }, [wellId, dataAuthentication]);
+
+  const transformCsvUrl = (url) => {
+    return url.replace('./static', 'http://localhost:8080/static');
+  };
 
   const handleJobTypeChange = (event) => {
     setJobType(event.target.value);
-  };
-
-  const handleCoefficientChange = (event) => {
-    setCoefficients({ ...coefficients, [event.target.name]: event.target.value });
   };
 
   const handleStartChange = (event, newValue) => {
@@ -59,10 +105,36 @@ const CreateJob = () => {
     }
   };
 
-  const handleSubmit = () => {
-    // Handle job creation logic here
-    console.log({ wellId, jobType, coefficients, start, end });
+  const handleSubmit = async () => {
+    try {
+      if (!dataAuthentication || !dataAuthentication.access_token) {
+        console.error("No access token available");
+        return;
+      }
+
+      const token = dataAuthentication.access_token;
+      const jobData = {
+        type: jobType,
+        parameters: {
+          min_window: data[start].TEMP_DEPTH,
+          max_window: data[end].TEMP_DEPTH,
+        },
+      };
+
+      await createJob(token, wellId, jobData);
+      navigate(`/wells/${wellId}/jobs`);
+    } catch (error) {
+      console.error('Error creating job:', error);
+    }
   };
+
+  if (loading) {
+    return <Box display="flex" justifyContent="center" alignItems="center" height="100vh"><CircularProgress /></Box>;
+  }
+
+  if (error) {
+    return <Box display="flex" justifyContent="center" alignItems="center" height="100vh"><Typography color="error">{error}</Typography></Box>;
+  }
 
   return (
     <Box p={4}>
@@ -85,41 +157,6 @@ const CreateJob = () => {
             </MenuItem>
           ))}
         </TextField>
-        <Grid container spacing={2}>
-          <Grid item xs={4}>
-            <TextField
-              label="Coeficiente 1"
-              name="coef1"
-              value={coefficients.coef1}
-              onChange={handleCoefficientChange}
-              fullWidth
-              variant="outlined"
-              margin="normal"
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              label="Coeficiente 2"
-              name="coef2"
-              value={coefficients.coef2}
-              onChange={handleCoefficientChange}
-              fullWidth
-              variant="outlined"
-              margin="normal"
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              label="Coeficiente 3"
-              name="coef3"
-              value={coefficients.coef3}
-              onChange={handleCoefficientChange}
-              fullWidth
-              variant="outlined"
-              margin="normal"
-            />
-          </Grid>
-        </Grid>
       </Box>
       <Box mb={2}>
         <Typography variant="h6">Seleccionar Ventana De Análisis</Typography>
@@ -133,8 +170,8 @@ const CreateJob = () => {
               valueLabelDisplay="auto"
               step={1}
               marks
-              min={1}
-              max={100}
+              min={0}
+              max={data.length - 1}
             />
           </Grid>
           <Grid item xs={6}>
@@ -146,8 +183,8 @@ const CreateJob = () => {
               valueLabelDisplay="auto"
               step={1}
               marks
-              min={1}
-              max={100}
+              min={0}
+              max={data.length - 1}
             />
           </Grid>
         </Grid>
@@ -156,12 +193,13 @@ const CreateJob = () => {
         <ResponsiveContainer width="100%" height={400}>
           <LineChart data={data} onClick={handleChartClick}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="x" />
+            <XAxis dataKey="TEMP_DEPTH" />
             <YAxis />
             <Tooltip />
-            <Line type="monotone" dataKey="y" stroke="#8884d8" />
-            <ReferenceLine x={start} stroke="red" label="Start" strokeWidth={4} />
-            <ReferenceLine x={end} stroke="green" label="End" strokeWidth={4} />
+            <Line type="monotone" dataKey="GR" stroke="#8884d8" />
+            <Scatter dataKey="GR" fill="red" />
+            <ReferenceLine x={data[start]?.TEMP_DEPTH} stroke="red" label="Start" strokeWidth={4} />
+            <ReferenceLine x={data[end]?.TEMP_DEPTH} stroke="green" label="End" strokeWidth={4} />
           </LineChart>
         </ResponsiveContainer>
       </Box>

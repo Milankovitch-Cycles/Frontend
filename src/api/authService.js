@@ -39,3 +39,5 @@ export const getWellById = (token, wellId) => apiClient(`wells/${wellId}`, null,
 export const getJobById = (token, jobId, wellId) => apiClient(`wells/${wellId}/jobs/${jobId}`, null, token, 'GET');
 export const deleteWell = (token, wellId) => apiClient(`wells/?id=${wellId}`, null, token, 'DELETE');
 export const editById = (token, wellId) => apiClient(`wells/${wellId}`, null, token, 'PATCH');
+export const createJob = (token, wellId, datos) => apiClient(`wells/${wellId}/jobs`, datos, token, 'POST');
+export const getUserDetails = (token) => apiClient('auth/me', null, token, 'GET');
