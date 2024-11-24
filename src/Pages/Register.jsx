@@ -15,10 +15,11 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState({});
-
 
   useEffect(() => {
     if (dataAuthentication?.email) {
@@ -31,6 +32,14 @@ const Register = () => {
     const validationErrors = {};
 
     // Validaciones
+    if (!firstName) {
+      validationErrors.firstName = "El nombre es obligatorio";
+    }
+
+    if (!lastName) {
+      validationErrors.lastName = "El apellido es obligatorio";
+    }
+
     if (!email) {
       validationErrors.email = "El correo electrónico es obligatorio";
     } else if (!/\S+@\S+\.\S+/.test(email)) {
@@ -57,7 +66,7 @@ const Register = () => {
     }
 
     try {
-      const datos = { email, password };
+      const datos = { email, password, first_name: firstName, last_name: lastName };
 
       Swal.fire({
         title: "Generando su código de verificación",
@@ -86,7 +95,6 @@ const Register = () => {
   };
 
   return (
-
     <BackgroundSlider>
       <div className="container mx-auto">
         <div className="flex justify-center">
@@ -94,7 +102,34 @@ const Register = () => {
             <div className="bg-white p-6 rounded-lg shadow-lg">
               <form onSubmit={handleRegister} noValidate>
                 <h1 className="text-2xl font-bold mb-4">Registrarse</h1>
-               
+
+                <div className="mb-4">
+                  <BaseInput
+                    type="text"
+                    placeholder="Nombre"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    error={
+                      errors.firstName && (
+                        <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>
+                      )
+                    }
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <BaseInput
+                    type="text"
+                    placeholder="Apellido"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    error={
+                      errors.lastName && (
+                        <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>
+                      )
+                    }
+                  />
+                </div>
 
                 <div className="mb-4">
                   <BaseInput
