@@ -4,6 +4,8 @@ import { Box, Card, CardContent, Typography, Grid, Divider, CircularProgress, Mo
 import { getJobById } from '../api/authService';
 import { useSelector } from 'react-redux';
 import CloseIcon from '@mui/icons-material/Close';
+import Papa from 'papaparse';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const JobDetails = () => {
   const { wellId, jobId } = useParams();
@@ -11,7 +13,12 @@ const JobDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedGraph, setSelectedGraph] = useState(null);
+  const [frequenciesData, setFrequenciesData] = useState([]);
   const dataAuthentication = useSelector((state) => state.authToken);
+
+  const transformGraphUrl = (url) => {
+    return url.replace('./static', 'http://localhost:8080/static');
+  };
 
   useEffect(() => {
     const fetchJobData = async () => {
@@ -24,6 +31,22 @@ const JobDetails = () => {
         const token = dataAuthentication.access_token;
         const data = await getJobById(token, jobId, wellId);
         setJobData(data);
+
+        if (data.type === 'MILANKOVIC_CYCLES' && data.result.frequencies_path) {
+          const csvUrl = transformGraphUrl(data.result.frequencies_path);
+          const response = await fetch(csvUrl);
+          const csvText = await response.text();
+          Papa.parse(csvText, {
+            header: true,
+            dynamicTyping: true,
+            complete: (result) => {
+              setFrequenciesData(result.data);
+            },
+            error: (error) => {
+              console.error('Error parsing CSV data:', error);
+            },
+          });
+        }
       } catch (error) {
         setError('Error fetching job data');
         console.error('Error fetching job data:', error);
@@ -47,9 +70,7 @@ const JobDetails = () => {
     return <Box display="flex" justifyContent="center" alignItems="center" height="100vh"><Typography>No job data available</Typography></Box>;
   }
 
-  const transformGraphUrl = (url) => {
-    return url.replace('./static', 'http://localhost:8080/static');
-  };
+
 
   const handleOpenModal = (graph) => {
     setSelectedGraph(graph);
@@ -82,29 +103,69 @@ const JobDetails = () => {
           <Typography><strong>Filename:</strong> {jobData.parameters.filename}</Typography>
         </CardContent>
       </Card>
-      <Card>
-        <CardContent>
-          <Typography variant="h6">Result Graphs</Typography>
-          <Divider sx={{ my: 2 }} />
-          <Grid container spacing={2}>
-            {jobData.result.graphs.map((graph, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Card onClick={() => handleOpenModal(transformGraphUrl(graph.image))} sx={{ cursor: 'pointer' }}>
-                  <CardContent>
-                    <Typography variant="subtitle1">{graph.title}</Typography>
-                    <Box
-                      component="img"
-                      src={transformGraphUrl(graph.image)}
-                      alt={graph.title}
-                      sx={{ width: '100%', height: 'auto', mt: 2 }}
-                    />
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </CardContent>
-      </Card>
+      {jobData.type === 'NEW_WELL' && (
+        <Card>
+          <CardContent>
+            <Typography variant="h6">Result Graphs</Typography>
+            <Divider sx={{ my: 2 }} />
+            <Grid container spacing={2}>
+              {jobData.result.graphs.map((graph, index) => (
+                <Grid item xs={12} sm={6} md={4} key={index}>
+                  <Card onClick={() => handleOpenModal(transformGraphUrl(graph.image))} sx={{ cursor: 'pointer' }}>
+                    <CardContent>
+                      <Typography variant="subtitle1">{graph.title}</Typography>
+                      <Box
+                        component="img"
+                        src={transformGraphUrl(graph.image)}
+                        alt={graph.title}
+                        sx={{ width: '100%', height: 'auto', mt: 2 }}
+                      />
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </CardContent>
+        </Card>
+      )}
+      {jobData.type === 'MILANKOVIC_CYCLES' && (
+        <Card>
+          <CardContent>
+            <Typography variant="h6">Milankovitch Cycles</Typography>
+            <Divider sx={{ my: 2 }} />
+            <Grid container spacing={2}>
+              {jobData.result.cycles.map((cycle, index) => (
+                <Grid item xs={12} sm={6} md={4} key={index}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="subtitle1">{cycle.type}</Typography>
+                      <Typography><strong>Period:</strong> {cycle.period}</Typography>
+                      <Typography><strong>Amplitude:</strong> {cycle.amplitude}</Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </CardContent>
+        </Card>
+      )}
+      {jobData.type === 'MILANKOVIC_CYCLES' && frequenciesData.length > 0 && (
+        <Card sx={{ mt: 4 }}>
+          <CardContent>
+            <Typography variant="h6">Frequencies Graph</Typography>
+            <Divider sx={{ my: 2 }} />
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={frequenciesData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="frequencies" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="amplitudes" stroke="#8884d8" />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      )}
       <Modal
         open={!!selectedGraph}
         onClose={handleCloseModal}

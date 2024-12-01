@@ -8,13 +8,13 @@ import { CircularProgress } from '@mui/material';
 import { useSelector } from 'react-redux';
 
 const jobTypes = [
-  { value: 'MILANKOVITCH', label: 'Milankovitch Cycle Analysis' },
+  { value: 'MILANKOVIC_CYCLES', label: 'Milankovitch Cycle Analysis' },
 ];
 
 const CreateJob = () => {
   const { wellId } = useParams();
   const navigate = useNavigate();
-  const [jobType, setJobType] = useState('MILANKOVITCH');
+  const [jobType, setJobType] = useState('MILANKOVIC_CYCLES');
   const [start, setStart] = useState(1);
   const [end, setEnd] = useState(100);
   const [data, setData] = useState([]);
@@ -34,8 +34,8 @@ const CreateJob = () => {
         const wellData = await getWellById(token, wellId);
         const job = wellData.jobs[0]; // Assuming you want to use the first job's CSV file
 
-        if (job && job.result && job.result.csv) {
-          const csvUrl = transformCsvUrl(job.result.csv);
+        if (job && job.result && job.result.gamma_ray_path) {
+          const csvUrl = transformCsvUrl(job.result.gamma_ray_path);
           const response = await fetch(csvUrl);
           const csvText = await response.text();
           Papa.parse(csvText, {
