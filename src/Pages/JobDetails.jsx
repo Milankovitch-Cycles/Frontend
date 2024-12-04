@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Card, CardContent, Typography, Grid, Divider, CircularProgress, Modal, IconButton } from '@mui/material';
+import { Box, Card, CardContent, Typography, Grid, Divider, CircularProgress, Modal, IconButton, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { getJobById } from '../api/authService';
 import { useSelector } from 'react-redux';
 import CloseIcon from '@mui/icons-material/Close';
@@ -14,6 +14,9 @@ const JobDetails = () => {
   const [error, setError] = useState(null);
   const [selectedGraph, setSelectedGraph] = useState(null);
   const [frequenciesData, setFrequenciesData] = useState([]);
+  const [predictionsData, setPredictionsData] = useState([]);
+  const [sortedPredictionsData, setSortedPredictionsData] = useState([]);
+  const [orderBy, setOrderBy] = useState('TEMP_DEPTH');
   const dataAuthentication = useSelector((state) => state.authToken);
 
   const transformGraphUrl = (url) => {
@@ -47,6 +50,23 @@ const JobDetails = () => {
             },
           });
         }
+
+        if (data.type === 'PREDICTION' && data.result.predictions_path) {
+          const csvUrl = transformGraphUrl(data.result.predictions_path);
+          const response = await fetch(csvUrl);
+          const csvText = await response.text();
+          Papa.parse(csvText, {
+            header: true,
+            dynamicTyping: true,
+            complete: (result) => {
+              setPredictionsData(result.data);
+              setSortedPredictionsData(result.data.sort((a, b) => a[orderBy] - b[orderBy]));
+            },
+            error: (error) => {
+              console.error('Error parsing CSV data:', error);
+            },
+          });
+        }
       } catch (error) {
         setError('Error fetching job data');
         console.error('Error fetching job data:', error);
@@ -57,6 +77,14 @@ const JobDetails = () => {
 
     fetchJobData();
   }, [wellId, jobId, dataAuthentication]);
+
+  useEffect(() => {
+    setSortedPredictionsData([...predictionsData].sort((a, b) => a[orderBy] - b[orderBy]));
+  }, [orderBy, predictionsData]);
+
+  const handleOrderByChange = (event) => {
+    setOrderBy(event.target.value);
+  };
 
   if (loading) {
     return <Box display="flex" justifyContent="center" alignItems="center" height="100vh"><CircularProgress /></Box>;
@@ -69,8 +97,6 @@ const JobDetails = () => {
   if (!jobData) {
     return <Box display="flex" justifyContent="center" alignItems="center" height="100vh"><Typography>No job data available</Typography></Box>;
   }
-
-
 
   const handleOpenModal = (graph) => {
     setSelectedGraph(graph);
@@ -100,10 +126,18 @@ const JobDetails = () => {
         <CardContent>
           <Typography variant="h6">Parameters</Typography>
           <Divider sx={{ my: 2 }} />
-          <Typography><strong>Filename:</strong> {jobData.parameters.filename}</Typography>
+          <Typography><strong>Filename:</strong> {jobData.parameters.filename || 'N/A'}</Typography>
+          <Typography><strong>Min Window:</strong> {jobData.parameters.min_window}</Typography>
+          <Typography><strong>Max Window:</strong> {jobData.parameters.max_window}</Typography>
+          {jobData.parameters.tolerance !== undefined && (
+            <Typography><strong>Tolerance:</strong> {jobData.parameters.tolerance}%</Typography>
+          )}
+          {jobData.parameters.sedimentation_rate !== undefined && (
+            <Typography><strong>Sedimentation Rate:</strong> {jobData.parameters.sedimentation_rate}</Typography>
+          )}
         </CardContent>
       </Card>
-      {jobData.type === 'NEW_WELL' && (
+      {(jobData.type === 'NEW_WELL' || jobData.type === 'GRAPHS') && (
         <Card>
           <CardContent>
             <Typography variant="h6">Result Graphs</Typography>
@@ -134,13 +168,20 @@ const JobDetails = () => {
             <Typography variant="h6">Milankovitch Cycles</Typography>
             <Divider sx={{ my: 2 }} />
             <Grid container spacing={2}>
-              {jobData.result.cycles.map((cycle, index) => (
+              {Object.entries(jobData.result.cycles).map(([cycleType, cycleData], index) => (
                 <Grid item xs={12} sm={6} md={4} key={index}>
                   <Card>
                     <CardContent>
-                      <Typography variant="subtitle1">{cycle.type}</Typography>
-                      <Typography><strong>Period:</strong> {cycle.period}</Typography>
-                      <Typography><strong>Amplitude:</strong> {cycle.amplitude}</Typography>
+                      <Typography variant="subtitle1">{cycleType}</Typography>
+                      {cycleData.detected ? (
+                        <>
+                          <Typography><strong>Period:</strong> {cycleData.details.period}</Typography>
+                          <Typography><strong>Amplitude:</strong> {cycleData.details.amplitude}</Typography>
+                          <Typography><strong>Error Percentage:</strong> {cycleData.details.error_percentage}</Typography>
+                        </>
+                      ) : (
+                        <Typography><strong>Reason:</strong> {cycleData.details.reason}</Typography>
+                      )}
                     </CardContent>
                   </Card>
                 </Grid>
@@ -161,6 +202,34 @@ const JobDetails = () => {
                 <YAxis />
                 <Tooltip />
                 <Line type="monotone" dataKey="amplitudes" stroke="#8884d8" />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      )}
+      {jobData.type === 'PREDICTION' && sortedPredictionsData.length > 0 && (
+        <Card sx={{ mt: 4 }}>
+          <CardContent>
+            <Typography variant="h6">Predictions Graph</Typography>
+            <Divider sx={{ my: 2 }} />
+            <RadioGroup
+              row
+              aria-label="order-by"
+              name="order-by"
+              value={orderBy}
+              onChange={handleOrderByChange}
+              sx={{ mb: 2 }}
+            >
+              <FormControlLabel value="TEMP_DEPTH" control={<Radio />} label="Order by Depth" />
+              <FormControlLabel value="OIL_PROBABILITY" control={<Radio />} label="Order by Oil Probability" />
+            </RadioGroup>
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={sortedPredictionsData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="TEMP_DEPTH" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="OIL_PROBABILITY" stroke="#8884d8" />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
