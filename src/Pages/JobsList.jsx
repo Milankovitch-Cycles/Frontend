@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { getJobs } from '../api/authService';
 import BaseTable from '../components/BaseTable';
 import { useSelector } from 'react-redux';
-import { Box, Typography, TablePagination, InputAdornment } from '@mui/material';
+import { Box, Typography, TablePagination } from '@mui/material';
 
 import BaseInput from "../components/BaseInput";
-import SearchIcon from "@mui/icons-material/Search"; // Importa el ícono de lupa
 
 const JobsList = () => {
+  const { t } = useTranslation(); // Hook para usar traducciones
   const [jobs, setJobs] = useState([]);
   const [pagination, setPagination] = useState({
     limit: 10,
@@ -26,25 +27,10 @@ const JobsList = () => {
     fetchJobs();
   }, [dataAuthentication]);
 
-  const translations = {
-    type: {
-      "NEW_WELL": "Nuevo Pozo",
-    },
-    status: {
-      "processed": "Procesado",
-      "pending": "Pendiente",
-      "failed": "Fallido",
-    }
-  };
-
-  const parameterTranslations = {
-    filename: "Nombre de Archivo",
-  };
-
   const translateJobData = (job) => ({
     ...job,
-    type: translations.type[job.type] || job.type,
-    status: translations.status[job.status] || job.status,
+    type: t(`type.${job.type}`, job.type),
+    status: t(`status.${job.status}`, job.status),
   });
 
   const fetchJobs = async (offset = 0, limit = 10) => {
@@ -87,7 +73,7 @@ const JobsList = () => {
       <ul style={{ padding: 0, margin: 0, listStyleType: 'none' }}>
         {Object.entries(parameters).map(([key, value]) => (
           <li key={key}>
-            <strong>{parameterTranslations[key] || key}:</strong> {value}
+            <strong>{t(`parameters.${key}`, key)}:</strong> {value}
           </li>
         ))}
       </ul>
@@ -95,12 +81,12 @@ const JobsList = () => {
   };
 
   const columns = [
-    { id: 'id', label: 'ID' },
-    { id: 'user_id', label: 'ID de Usuario' },
-    { id: 'type', label: 'Tipo' },
-    { id: 'parameters', label: 'Parámetros', render: (job) => renderParameters(job.parameters) },
-    { id: 'status', label: 'Estado' },
-    { id: 'created_at', label: 'Fecha de Creación', render: (job) => new Date(job.created_at).toLocaleString() },
+    { id: 'id', label: t('columns.id', 'ID') },
+    { id: 'user_id', label: t('columns.user_id', 'ID de Usuario') },
+    { id: 'type', label: t('columns.type', 'Tipo') },
+    { id: 'parameters', label: t('columns.parameters', 'Parámetros'), render: (job) => renderParameters(job.parameters) },
+    { id: 'status', label: t('columns.status', 'Estado') },
+    { id: 'created_at', label: t('columns.created_at', 'Fecha de Creación'), render: (job) => new Date(job.created_at).toLocaleString() },
   ];
 
   const actions = {
@@ -126,12 +112,12 @@ const JobsList = () => {
   return (
     <Box p={4}>
       <Typography variant="h4" gutterBottom>
-        Procesamientos
+        {t('jobsList.title', 'Procesamientos')}
       </Typography>
       <div className="flex justify-evenly">
         <BaseInput
           type="text"
-          placeholder="Filtrar: "
+          placeholder={t('jobsList.filter', 'Filtrar: ')}
           onChange={(e) => setFilter(e.target.value)}
         />
       </div>
@@ -150,7 +136,7 @@ const JobsList = () => {
         onPageChange={handleChangePage}
         rowsPerPage={pagination.limit}
         onRowsPerPageChange={handleChangeRowsPerPage}
-        labelRowsPerPage="Filas por página"
+        labelRowsPerPage={t('pagination.rowsPerPage', 'Filas por página')}
       />
     </Box>
   );

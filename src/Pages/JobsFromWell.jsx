@@ -4,6 +4,7 @@ import { getWellJobs } from '../api/authService';
 import { useSelector } from "react-redux";
 import { CircularProgress, Box, Typography, Button } from '@mui/material';
 import BaseTable from '../components/BaseTable';
+import { useTranslation } from 'react-i18next';
 
 const JobsFromWell = () => {
   const { wellId } = useParams();
@@ -12,35 +13,19 @@ const JobsFromWell = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const dataAuthentication = useSelector((state) => state.authToken);
+  const { t } = useTranslation();
 
-  // Traducciones para tipo, estado y parámetros
-  const translations = {
-    type: {
-      "NEW_WELL": "Nuevo Pozo",
-    },
-    status: {
-      "processed": "Procesado",
-      "pending": "Pendiente",
-      "failed": "Fallido",
-    },
-    parameters: {
-      "filename": "Nombre de Archivo",
-    }
-  };
-
-  // Función para traducir los trabajos
   const translateJobData = (job) => ({
     ...job,
-    type: translations.type[job.type] || job.type,
-    status: translations.status[job.status] || job.status,
+    type: t(`type.${job.type}`, { defaultValue: job.type }),
+    status: t(`status.${job.status}`, { defaultValue: job.status }),
     parameters: translateParameters(job.parameters),
   });
 
-  // Función para traducir los parámetros del trabajo
   const translateParameters = (parameters) => {
     if (!parameters) return parameters;
     return Object.entries(parameters).reduce((acc, [key, value]) => {
-      acc[translations.parameters[key] || key] = value;
+      acc[t(`parameters.${key}`, { defaultValue: key })] = value;
       return acc;
     }, {});
   };
@@ -55,7 +40,7 @@ const JobsFromWell = () => {
 
         const token = dataAuthentication.access_token;
         const data = await getWellJobs(token, wellId);
-        const translatedJobs = data.map(translateJobData); // Traducir los trabajos
+        const translatedJobs = data.map(translateJobData);
         setJobs(translatedJobs);
       } catch (error) {
         setError('Error fetching job details');
@@ -77,16 +62,16 @@ const JobsFromWell = () => {
   }
 
   if (jobs.length === 0) {
-    return <Box display="flex" justifyContent="center" alignItems="center" height="100vh"><Typography>No job details available</Typography></Box>;
+    return <Box display="flex" justifyContent="center" alignItems="center" height="100vh"><Typography>{t('noJobsAvailable')}</Typography></Box>;
   }
 
   const columns = [
-    { id: 'id', label: 'ID' },
-    { id: 'user_id', label: 'ID De Usuario' },
-    { id: 'type', label: 'Tipo' },
-    { id: 'parameters', label: 'Parámetros', render: (job) => renderParameters(job.parameters) },
-    { id: 'status', label: 'Estado' },
-    { id: 'created_at', label: 'Fecha De Creación', render: (job) => new Date(job.created_at).toLocaleString() },
+    { id: 'id', label: t('columns.id') },
+    { id: 'user_id', label: t('columns.user_id') },
+    { id: 'type', label: t('columns.type') },
+    { id: 'parameters', label: t('columns.parameters'), render: (job) => renderParameters(job.parameters) },
+    { id: 'status', label: t('columns.status') },
+    { id: 'created_at', label: t('columns.created_at'), render: (job) => new Date(job.created_at).toLocaleString() },
   ];
 
   const actions = {
@@ -109,10 +94,10 @@ const JobsFromWell = () => {
     <Box display="flex" flexDirection="column" p={2}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h4" gutterBottom>
-          Procesamientos De Pozo {wellId}
+        {t('wellProcessing')} {wellId}
         </Typography>
         <Button variant="contained" color="primary" onClick={() => navigate(`/wells/${wellId}/createJob`)}>
-          Crear Proceso
+          {t('createJob')}
         </Button>
       </Box>
       <BaseTable
