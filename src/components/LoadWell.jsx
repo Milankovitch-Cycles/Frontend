@@ -12,10 +12,12 @@ import AttachFileIcon from "@mui/icons-material/AttachFile";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
+import { useTranslation } from "react-i18next";
 
 const LoadWell = ({ closeModal }) => {
+  const { t } = useTranslation(); // Hook para traducción
   const [wellName, setWellName] = useState("");
-  const [description, setDescription] = useState("");;
+  const [description, setDescription] = useState("");
   const [lasFile, setLasFile] = useState(null);
   const [lasFilePreview, setLasFilePreview] = useState(null);
   const [hoverFile, setHoverFile] = useState(false);
@@ -26,15 +28,12 @@ const LoadWell = ({ closeModal }) => {
   const [loading, setLoading] = useState(false);
   const dataAuthentication = useSelector((state) => state.authToken);
 
-
-
   const handleLasFileChange = (e) => {
     const file = e.target.files[0];
     setLasFile(file);
     setLasFilePreview(file.name);
     setLasFileError(false);
   };
-
 
   const handleRemoveLasFile = () => {
     setLasFile(null);
@@ -51,7 +50,7 @@ const LoadWell = ({ closeModal }) => {
   const handleSubmit = async () => {
     const token = dataAuthentication.access_token;
     let valid = true;
-  
+
     if (!wellName) {
       setWellNameError(true);
       valid = false;
@@ -65,18 +64,18 @@ const LoadWell = ({ closeModal }) => {
       setLasFileError(false);
     }
     if (!valid) {
-      setToastMessage("Please fill in all required fields.");
+      setToastMessage(t("dialogs.loadWell.validationMessage")); // Traducción
       setToastOpen(true);
       return;
     }
-  
+
     setLoading(true);
-  
+
     const formData = new FormData();
     formData.append("name", wellName);
     formData.append("description", description);
     formData.append("file", lasFile);
-  
+
     try {
       const response = await fetch("http://localhost:8080/wells/", {
         method: "POST",
@@ -85,31 +84,26 @@ const LoadWell = ({ closeModal }) => {
         },
         body: formData,
       });
-  
+
       if (response.ok) {
         closeModal();
         Swal.fire({
-          title: "Pozo creado con éxito!",
+          title: t("dialogs.loadWell.successTitle"), // Traducción
           icon: "success",
-          confirmButtonText: "Aceptar",
-        }).then(() => {
-        
-         
-        });
-        setToastMessage("Pozo creado con éxito!");
+          confirmButtonText: t("dialogs.loadWell.successButton"), // Traducción
+        }).then(() => {});
+        setToastMessage(t("dialogs.loadWell.successMessage")); // Traducción
         setToastOpen(true);
-  
-     
-       
-     
       } else {
         const errorData = await response.json();
         console.error("Error details:", errorData);
-        setToastMessage(`Error al crear el pozo: ${errorData.message || "Unknown error"}`);
+        setToastMessage(
+          `${t("dialogs.loadWell.errorMessage")}: ${errorData.message || t("dialogs.loadWell.unknownError")}`
+        ); // Traducción
         setToastOpen(true);
       }
     } catch (error) {
-      setToastMessage("Error: " + error.message);
+      setToastMessage(`${t("dialogs.loadWell.error")}: ${error.message}`); // Traducción
       setToastOpen(true);
     } finally {
       setLoading(false);
@@ -117,7 +111,7 @@ const LoadWell = ({ closeModal }) => {
   };
 
   const handleCloseToast = () => {
-    setToastOpen(false); // Cerrar el modal
+    setToastOpen(false);
   };
 
   return (
@@ -125,16 +119,16 @@ const LoadWell = ({ closeModal }) => {
       <Box display="flex" flexDirection="column" alignItems="center" mt={2}>
         <Box display="flex" flexDirection="column" width="70%">
           <TextField
-            label="Nombre del pozo"
+            label={t("dialogs.loadWell.wellNameLabel")} // Traducción
             value={wellName}
             onChange={handleWellNameChange}
             margin="normal"
             fullWidth
             error={wellNameError}
-            helperText={wellNameError ? "Well Name is required" : ""}
+            helperText={wellNameError ? t("dialogs.loadWell.wellNameError") : ""}
           />
           <TextField
-            label="Descripción"
+            label={t("dialogs.loadWell.descriptionLabel")} // Traducción
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             margin="normal"
@@ -168,7 +162,7 @@ const LoadWell = ({ closeModal }) => {
                 <AttachFileIcon />
               </IconButton>
               <Typography variant="body1" component="span" ml={1}>
-                Adjuntar archivo LAS
+                {t("dialogs.loadWell.attachFileLabel")} 
               </Typography>
             </label>
             {lasFilePreview && (
@@ -187,7 +181,7 @@ const LoadWell = ({ closeModal }) => {
             )}
             {lasFileError && (
               <Typography variant="body2" color="error" ml={2}>
-                El archivo LAS es requerido
+                {t("dialogs.loadWell.fileError")} 
               </Typography>
             )}
           </Box>
@@ -200,7 +194,7 @@ const LoadWell = ({ closeModal }) => {
             disabled={loading}
             style={{ marginRight: "10px" }}
           >
-            Agregar
+            {t("dialogs.loadWell.addButton")}
           </Button>
           {loading && <CircularProgress size={24} />}
         </Box>

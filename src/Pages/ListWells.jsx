@@ -2,17 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Typography, Button, Modal, Box, IconButton, TablePagination, InputAdornment } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
-import SearchIcon from "@mui/icons-material/Search"; // Importa el ícono de lupa
+import SearchIcon from "@mui/icons-material/Search";
 import { useSelector } from "react-redux";
-import { getWells } from "../api/authService";
-import { deleteWell } from "../api/authService";
+import { getWells, deleteWell } from "../api/authService";
 import BaseTable from "../components/BaseTable";
 import BaseInput from "../components/BaseInput";
 import LoadWell from "../components/LoadWell";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert2";
+import { useTranslation } from "react-i18next";
 
 const ListWells = () => {
+  const { t } = useTranslation(); // Importar la función de traducción
   const [wells, setWells] = useState([]);
   const [filteredWells, setFilteredWells] = useState([]);
   const [pagination, setPagination] = useState({
@@ -39,7 +40,7 @@ const ListWells = () => {
         setWells(result.wells || []);
         setPagination(result.pagination || {});
       } catch (error) {
-        console.error("Error loading wells:", error);
+        console.error(t("errors.loadingWells"), error); // t("errors.loadingWells")
       }
     }
     loadWells();
@@ -78,16 +79,12 @@ const ListWells = () => {
   const handleCloseModal = () => { setOpenModal(false); reloadWells(); }
 
   const columns = [
-    {
-      id: "name",
-      label: "Nombre",
-      render: (well) => <Typography>{well.name}</Typography>,
-    },
-    { id: "filename", label: "Archivo LAS" },
-    { id: "description", label: "Descripción" },
+    { id: "name", label: t("columns.name"), render: (well) => <Typography>{well.name}</Typography> }, // t("columns.name")
+    { id: "filename", label: t("parameters.filename") }, // t("parameters.filename")
+    { id: "description", label: t("columns.description") }, // t("columns.description")
     {
       id: "dateCreated",
-      label: "Fecha Creación",
+      label: t("columns.created_at"), // t("columns.created_at")
       render: (well) => (
         <Typography>{new Date(well.created_at).toLocaleDateString()}</Typography>
       ),
@@ -99,12 +96,12 @@ const ListWells = () => {
     const token = dataAuthentication.access_token;
 
     const result = await swal.fire({
-      title: "¿Estás seguro de querer eliminar este pozo?",
-      text: "¡Esta acción no se puede deshacer!",
+      title: t("dialogs.deleteWell.title"), // t("dialogs.deleteWell.title")
+      text: t("dialogs.deleteWell.text"), // t("dialogs.deleteWell.text")
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Eliminar",
-      cancelButtonText: "Cancelar",
+      confirmButtonText: t("dialogs.deleteWell.confirm"), // t("dialogs.deleteWell.confirm")
+      cancelButtonText: t("dialogs.deleteWell.cancel"), // t("dialogs.deleteWell.cancel")
       reverseButtons: true,
     });
 
@@ -115,8 +112,8 @@ const ListWells = () => {
         setWells(result.wells || []);
         setPagination(result.pagination || {});
       } catch (error) {
-        console.error("Error deleting well:", error);
-        swal.fire("Error", "Hubo un problema al eliminar el pozo.", "error");
+        console.error(t("errors.deletingWell"), error); // t("errors.deletingWell")
+        swal.fire(t("errors.error"), t("errors.problemDeletingWell"), "error"); // t("errors.error"), t("errors.problemDeletingWell")
       }
     }
   };
@@ -138,7 +135,7 @@ const ListWells = () => {
         setWells(result.wells || []);
         setPagination(result.pagination || {});
       } catch (error) {
-        console.error("Error loading wells:", error);
+        console.error(t("errors.loadingWells"), error); // t("errors.loadingWells")
       }
     }
     loadWells();
@@ -146,11 +143,11 @@ const ListWells = () => {
 
   return (
     <div className="flex flex-col p-6">
-      <h1 className="mb-4 text-2xl">Pozos</h1>
+      <h1 className="mb-4 text-2xl">{t("listWells.title")}</h1> {/* t("jobsList.title") */}
       <div className="flex justify-evenly">
         <BaseInput
           type="text"
-          placeholder="Filtrar: "
+          placeholder={t("jobsList.filter")} // t("jobsList.filter")
           onChange={(e) => setFilter(e.target.value)}
           InputProps={{
             startAdornment: (
@@ -171,7 +168,7 @@ const ListWells = () => {
           }}
           onClick={handleOpenModal}
         >
-          Agregar Pozo
+          {t("addWell")} {/* t("createJob") */}
         </Button>
       </div>
       <Modal
@@ -204,7 +201,7 @@ const ListWells = () => {
             <CloseIcon />
           </IconButton>
           <Typography id="modal-title" variant="h6" component="h2" mb={2}>
-            Agregar Nuevo Pozo
+            {t("dialogs.addNewWell.title")} {/* t("dialogs.addNewWell.title") */}
           </Typography>
           <LoadWell closeModal={handleCloseModal} reloadWells={reloadWells} />
         </Box>
@@ -226,7 +223,7 @@ const ListWells = () => {
         onPageChange={handleChangePage}
         rowsPerPage={pagination.limit}
         onRowsPerPageChange={handleChangeRowsPerPage}
-        labelRowsPerPage="Filas por página"
+        labelRowsPerPage={t("pagination.rowsPerPage")} // t("pagination.rowsPerPage")
       />
     </div>
   );
