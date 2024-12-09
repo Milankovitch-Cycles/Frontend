@@ -5,18 +5,22 @@ i18n.use(initReactI18next).init({
     resources: {
         en: {
             translation: {
+                day: "Day",
                 wellProcessing: "Well Processing",  
                 createJob: "Create Job",
                 addWell: "Add Well",
                 type: {
                     "NEW_WELL": "New Well",
                     "MILANKOVIC_CYCLES": "Milankovic Cycles",
-                    "PREDICTION": "Prediction"
+                    "PREDICTION": "Prediction",
+                    "GRAPHS": "Graphs",
                 },
                 status: {
                     "processed": "Processed",
                     "pending": "Pending",
                     "failed": "Failed",
+                    "completed": "Completed",
+                    "in_progress": "In Progress",
                 },
                 parameters: {
                     "filename": "File Name",
@@ -72,23 +76,36 @@ i18n.use(initReactI18next).init({
                         fileError: "A file is required.",
                         addButton: "Add Well",
                     },
+                 
+                },
+                home: {
+                    "recentActivity": "Recent Activity",
+                    "statusesOfTheProcedures": "Statuses of the procedures",
+                    "dailyProcessing": "Processing by Days (Last 7 Days)",
+                    "numberOfWells": "Number of Wells",
+                    "numberOfProcessings": "Number of Processings",
+
                 },
             },
         },
         es: {
             translation: {
+                day: "Día",
                 wellProcessing: "Procesamiento de Pozo", 
                 createJob: "Crear Proceso", 
                 addWell: "Agregar Pozo",
                 type: {
                     "NEW_WELL": "Nuevo Pozo",
                     "MILANKOVIC_CYCLES": "Ciclos de Milankovitch",
-                    "PREDICTION": "Predicción"
+                    "PREDICTION": "Predicción",
+                   "GRAPHS": "Gráficos",
                 },
                 status: {
                     "processed": "Procesado",
                     "pending": "Pendiente",
                     "failed": "Fallido",
+                    "completed": "Completado",
+                    "in_progress": "En Progreso",
                 },
                 parameters: {
                     "filename": "Nombre de Archivo",
@@ -144,6 +161,15 @@ i18n.use(initReactI18next).init({
                         fileError: "Es necesario un archivo.",
                         addButton: "Agregar Pozo",
                     },
+                  
+                },
+                home: {
+                    "recentActivity": "Actividad Reciente",
+                    "statusesOfTheProcedures": "Estado de los Procesamientos",
+                    "dailyProcessing": "Procesamientos por Días (Últimos 7 días)",
+                    "numberOfWells": "Cantidad De Pozos",
+                    "numberOfProcessings": "Cantidad De Procesamientos",
+
                 },
             },
         },

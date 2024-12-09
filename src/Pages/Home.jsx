@@ -6,8 +6,10 @@ import { useSelector } from 'react-redux';
 import InfoIcon from '@mui/icons-material/Info';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import BarChartIcon from '@mui/icons-material/BarChart';
+import { useTranslation } from 'react-i18next';
 
 const Home = () => {
+  const { t } = useTranslation();
   const [wells, setWells] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [recentActivity, setRecentActivity] = useState([]);
@@ -29,12 +31,10 @@ const Home = () => {
 
         setRecentActivity(jobsData.jobs.slice(0, 5));
 
-
         const last7Days = Array.from({ length: 7 }, (_, i) => ({
-          name: `Día ${1 + i}`,
+          name: `${t('day')} ${1 + i}`,
           jobs: 0,
         }));
-
 
         jobsData.jobs.forEach(job => {
           const jobDate = new Date(job.created_at).toLocaleDateString();
@@ -54,14 +54,14 @@ const Home = () => {
       }
     }
     fetchData();
-  }, [dataAuthentication]);
+  }, [dataAuthentication, t]);
 
   const completedJobs = jobs.filter(job => job.status === 'processed').length;
   const pendingJobs = jobs.filter(job => job.status !== 'processed').length;
 
   const pieData = [
-    { name: 'Completado', value: completedJobs },
-    { name: 'Pendiente', value: pendingJobs },
+    { name: t('status.completed'), value: completedJobs },
+    { name: t('status.pending'), value: pendingJobs },
   ];
 
   const COLORS = ['#0088FE', '#FFBB28'];
@@ -74,7 +74,7 @@ const Home = () => {
             <CardContent>
               <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant="h6" gutterBottom>
-                  Estado de los Procesamientos
+                  {t('home.statusesOfTheProcedures')}
                 </Typography>
                 <IconButton>
                   <AssignmentIcon />
@@ -124,7 +124,7 @@ const Home = () => {
                 <CardContent>
                   <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Typography variant="h6" gutterBottom>
-                      Cantidad de Pozos
+                      {t('home.numberOfWells')}
                     </Typography>
                     <IconButton>
                       <InfoIcon />
@@ -139,7 +139,7 @@ const Home = () => {
                 <CardContent>
                   <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Typography variant="h6" gutterBottom>
-                      Cantidad de Procesamientos
+                      {t('home.numberOfProcessings')}
                     </Typography>
                     <IconButton>
                       <BarChartIcon />
@@ -157,15 +157,15 @@ const Home = () => {
           <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Procesamientos por Días (Último 7 días)
+                {t('home.dailyProcessing')} 
               </Typography>
               <BarChart width={500} height={300} data={barData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
-                <Tooltip formatter={(value) => [`${value}`, "Procesamientos"]} />
+                <Tooltip formatter={(value) => [`${value}`, t('jobsList.title')]} />
                 <Legend />
-                <Bar dataKey="jobs" fill="#8884d8" name="Procesamientos" />
+                <Bar dataKey="jobs" fill="#8884d8" name={t('jobsList.title')} />
               </BarChart>
             </CardContent>
           </Card>
@@ -174,7 +174,7 @@ const Home = () => {
           <Card sx={{ height: '100%' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
-                Actividad Reciente
+                {t('home.recentActivity')}
               </Typography>
               <Box sx={{ maxHeight: 300, overflow: 'auto' }}>
                 <ul style={{ listStyleType: 'none', padding: 0 }}>
@@ -183,13 +183,13 @@ const Home = () => {
                       <Card variant="outlined">
                         <CardContent>
                           <Typography variant="body2">
-                            <strong>Tipo:</strong> {job.type === "NEW_WELL" ? "Nuevo Pozo" : job.type}
+                            <strong>{t('columns.type')}:</strong> {t(`type.${job.type}`, job.type)}
                           </Typography>
                           <Typography variant="body2">
-                            <strong>Estado:</strong> {job.status === "processed" ? "Procesado" : job.status}
+                            <strong>{t('columns.status')}:</strong> {t(`status.${job.status}`, job.status)}
                           </Typography>
                           <Typography variant="body2">
-                            <strong>Fecha De Creación:</strong> {new Date(job.created_at).toLocaleString()}
+                            <strong>{t('columns.created_at')}:</strong> {new Date(job.created_at).toLocaleString()}
                           </Typography>
                         </CardContent>
                       </Card>
