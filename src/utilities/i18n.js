@@ -35,6 +35,7 @@ i18n.use(initReactI18next).init({
                 },
                 reason: {
                     "frequencyNotWithinToleranceRange": "Frequency not within tolerance range",
+                    "Frequency not within tolerance range": "Frequency not within tolerance range",
                 },
                 columns: {
                     "id": "ID",
@@ -101,7 +102,7 @@ i18n.use(initReactI18next).init({
                     "graphsJobs": "Graphs Job",
 
                 },
-                graphs: {
+                "graphs": {
                     "depthVsGammaRayChart": "Depth versus Gamma Ray chart",
                     "gammaRayHistogram": "Gamma Ray Histogram",
                     "scatterPlotGammaRay": "Scatter Plot of Gamma Ray",
@@ -114,8 +115,30 @@ i18n.use(initReactI18next).init({
                     "missingValues": "Missing Values",
                     "heatmapVariableCorrelations": "Heatmap of Variable Correlations",
                     "multipleCurvePlot": "Multiple Curve Plot",
-                    "pairplotVariables": "Pairplot of Variables"
+                    "pairplotVariables": "Pairplot of Variables",
+                    "Depth versus Gamma Ray chart": "Depth versus Gamma Ray chart",
+                    "Gamma Ray Histogram": "Gamma Ray Histogram",
+                    "Scatter Plot of Gamma Ray": "Scatter Plot of Gamma Ray",
+                    "Depth versus Bulk Density chart": "Depth versus Bulk Density chart",
+                    "Bulk Density Histogram": "Bulk Density Histogram",
+                    "Scatter Plot of Bulk Density": "Scatter Plot of Bulk Density",
+                    "Depth versus Neutron Porosity chart": "Depth versus Neutron Porosity chart",
+                    "Neutron Porosity Histogram": "Neutron Porosity Histogram",
+                    "Scatter Plot of Neutron Porosity": "Scatter Plot of Neutron Porosity",
+                    "Missing Values": "Missing Values",
+                    "Heatmap of Variable Correlations": "Heatmap of Variable Correlations",
+                    "Multiple Curve Plot": "Multiple Curve Plot",
+                    "Pairplot of Variables": "Pairplot of Variables"
                 },
+
+                jobsDetails: {
+                    "jobDetail": "Process Details",
+                    "jobInformation": "Process Information",
+                    "resultGraphs": "Graph Results",
+                    "reason": "Reason"
+
+                },
+
             },
         },
         es: {
@@ -150,6 +173,7 @@ i18n.use(initReactI18next).init({
                 },
                 reason: {
                     "frequencyNotWithinToleranceRange": "Frecuencia fuera del rango de tolerancia",
+                    "Frequency not within tolerance range": "Frecuencia fuera del rango de tolerancia",
                 },
                 columns: {
                     "id": "ID",
@@ -229,8 +253,30 @@ i18n.use(initReactI18next).init({
                     "missingValues": "Valores faltantes",
                     "heatmapVariableCorrelations": "Mapa de calor de correlaciones de variables",
                     "multipleCurvePlot": "Gráfico de múltiples curvas",
-                    "pairplotVariables": "Gráfico de pares de variables"
-                }
+                    "pairplotVariables": "Gráfico de pares de variables",
+                    "Depth versus Gamma Ray chart": "Gráfico de profundidad versus rayos gamma",
+                    "Gamma Ray Histogram": "Histograma de rayos gamma",
+                    "Scatter Plot of Gamma Ray": "Diagrama de dispersión de rayos gamma",
+                    "Depth versus Bulk Density chart": "Gráfico de profundidad versus densidad",
+                    "Bulk Density Histogram": "Histograma de densidad",
+                    "Scatter Plot of Bulk Density": "Diagrama de dispersión de densidad",
+                    "Depth versus Neutron Porosity chart": "Gráfico de profundidad versus porosidad de neutrones",
+                    "Neutron Porosity Histogram": "Histograma de porosidad de neutrones",
+                    "Scatter Plot of Neutron Porosity": "Diagrama de dispersión de porosidad de neutrones",
+                    "Missing Values": "Valores faltantes",
+                    "Heatmap of Variable Correlations": "Mapa de calor de correlaciones de variables",
+                    "Multiple Curve Plot": "Gráfico de múltiples curvas",
+                    "Pairplot of Variables": "Gráfico de pares de variables"
+                },
+                jobsDetails: {
+                    "jobDetail": "Detalles del Proceso",
+                    "jobInformation": "Información del Proceso",
+                    "resultGraphs": "Resultado de los Gráficos",
+                    "reason": "Razón"
+
+
+                },
+
 
             },
         },

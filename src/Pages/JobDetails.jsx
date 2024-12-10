@@ -6,8 +6,10 @@ import { useSelector } from 'react-redux';
 import CloseIcon from '@mui/icons-material/Close';
 import Papa from 'papaparse';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useTranslation } from 'react-i18next';
 
 const JobDetails = () => {
+  const { t } = useTranslation(); // Importar la función de traducción
   const { wellId, jobId } = useParams();
   const [jobData, setJobData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -109,45 +111,44 @@ const JobDetails = () => {
   return (
     <Box p={4}>
       <Typography variant="h4" gutterBottom>
-        Job Details
+      {t('jobsDetails.jobDetail')}
       </Typography>
       <Card sx={{ mb: 4 }}>
         <CardContent>
-          <Typography variant="h6">Job Information</Typography>
+          <Typography variant="h6">{t('jobsDetails.jobInformation')}</Typography>
           <Divider sx={{ my: 2 }} />
-          <Typography><strong>ID:</strong> {jobData.id}</Typography>
-          <Typography><strong>User ID:</strong> {jobData.user_id}</Typography>
-          <Typography><strong>Type:</strong> {jobData.type}</Typography>
-          <Typography><strong>Status:</strong> {jobData.status}</Typography>
-          <Typography><strong>Created At:</strong> {new Date(jobData.created_at).toLocaleString()}</Typography>
+          <Typography><strong>{t('columns.id')}:</strong> {jobData.id}</Typography>
+          <Typography><strong>{t('columns.user_id')}:</strong> {jobData.user_id}</Typography>
+          <Typography><strong>{t('columns.type')}:</strong> {t(`type.${jobData.type}`)}</Typography>
+          <Typography><strong>{t('columns.status')}:</strong> {t(`status.${jobData.status}`)}</Typography>
+          <Typography><strong>{t('columns.created_at')}:</strong> {new Date(jobData.created_at).toLocaleString()}</Typography>
         </CardContent>
       </Card>
       <Card sx={{ mb: 4 }}>
         <CardContent>
-          <Typography variant="h6">Parameters</Typography>
+          <Typography variant="h6">{t('columns.parameters')}</Typography>
           <Divider sx={{ my: 2 }} />
-          <Typography><strong>Filename:</strong> {jobData.parameters.filename || 'N/A'}</Typography>
-          <Typography><strong>Min Window:</strong> {jobData.parameters.min_window}</Typography>
-          <Typography><strong>Max Window:</strong> {jobData.parameters.max_window}</Typography>
+          <Typography><strong>{t('parameters.min_window')}:</strong> {jobData.parameters.min_window}</Typography>
+          <Typography><strong>{t('parameters.max_window')}:</strong> {jobData.parameters.max_window}</Typography>
           {jobData.parameters.tolerance !== undefined && (
-            <Typography><strong>Tolerance:</strong> {jobData.parameters.tolerance}%</Typography>
+            <Typography><strong>{t('parameters.tolerance')}:</strong> {jobData.parameters.tolerance}%</Typography>
           )}
           {jobData.parameters.sedimentation_rate !== undefined && (
-            <Typography><strong>Sedimentation Rate:</strong> {jobData.parameters.sedimentation_rate}</Typography>
+            <Typography><strong>{t('parameters.sedimentation_rate')}:</strong> {jobData.parameters.sedimentation_rate}</Typography>
           )}
         </CardContent>
       </Card>
       {(jobData.type === 'NEW_WELL' || jobData.type === 'GRAPHS') && (
         <Card>
           <CardContent>
-            <Typography variant="h6">Result Graphs</Typography>
+            <Typography variant="h6">{t('jobsDetails.resultGraphs')}</Typography>
             <Divider sx={{ my: 2 }} />
             <Grid container spacing={2}>
               {jobData.result.graphs.map((graph, index) => (
                 <Grid item xs={12} sm={6} md={4} key={index}>
                   <Card onClick={() => handleOpenModal(transformGraphUrl(graph.image))} sx={{ cursor: 'pointer' }}>
                     <CardContent>
-                      <Typography variant="subtitle1">{graph.title}</Typography>
+                      <Typography variant="subtitle1">{t(`graphs.${graph.title}`)}</Typography> 
                       <Box
                         component="img"
                         src={transformGraphUrl(graph.image)}
@@ -165,7 +166,7 @@ const JobDetails = () => {
       {jobData.type === 'MILANKOVIC_CYCLES' && (
         <Card>
           <CardContent>
-            <Typography variant="h6">Milankovitch Cycles</Typography>
+            <Typography variant="h6">{t('type.MILANKOVIC_CYCLES')}</Typography>
             <Divider sx={{ my: 2 }} />
             <Grid container spacing={2}>
               {Object.entries(jobData.result.cycles).map(([cycleType, cycleData], index) => (
@@ -179,8 +180,8 @@ const JobDetails = () => {
                           <Typography><strong>Amplitude:</strong> {cycleData.details.amplitude}</Typography>
                           <Typography><strong>Error Percentage:</strong> {cycleData.details.error_percentage}</Typography>
                         </>
-                      ) : (
-                        <Typography><strong>Reason:</strong> {cycleData.details.reason}</Typography>
+                      ) : (                    
+                        <Typography><strong>{t('jobsDetails.reason')}: </strong>{t(`reason.${cycleData.details.reason}`)}</Typography>
                       )}
                     </CardContent>
                   </Card>
@@ -193,7 +194,7 @@ const JobDetails = () => {
       {jobData.type === 'MILANKOVIC_CYCLES' && frequenciesData.length > 0 && (
         <Card sx={{ mt: 4 }}>
           <CardContent>
-            <Typography variant="h6">Frequencies Graph</Typography>
+            <Typography variant="h6">{t('parameters.frequenciesGraph')}</Typography>
             <Divider sx={{ my: 2 }} />
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={frequenciesData}>
