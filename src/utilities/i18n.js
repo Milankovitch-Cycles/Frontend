@@ -6,7 +6,7 @@ i18n.use(initReactI18next).init({
         en: {
             translation: {
                 day: "Day",
-                wellProcessing: "Well Processing",  
+                wellProcessing: "Well Processing",
                 createJob: "Create Job",
                 addWell: "Add Well",
                 type: {
@@ -57,7 +57,7 @@ i18n.use(initReactI18next).init({
                 pagination: {
                     "rowsPerPage": "Rows per page",
                 },
-                dialogs: { 
+                dialogs: {
                     addNewWell: {
                         title: "Add New Well",
                     },
@@ -76,7 +76,7 @@ i18n.use(initReactI18next).init({
                         fileError: "A file is required.",
                         addButton: "Add Well",
                     },
-                 
+
                 },
                 home: {
                     "recentActivity": "Recent Activity",
@@ -86,19 +86,49 @@ i18n.use(initReactI18next).init({
                     "numberOfProcessings": "Number of Processings",
 
                 },
+                createJobs: {
+                    "createJob": "Create Job",
+                    "TypeOfProcessings": "Type of Processings",
+                    "selectAnalysisWindow": "Select Analysis Window",
+                    "start": "Start",
+                    "end": "End",
+                    "tolerance": "Tolerancia (%)",
+                    "sedimentationRate": "Sedimentation Rate",
+                    "graphsJob": "Graphs Job ",
+                    "instructionGraphs": "This job will create the following graphs",
+                    "instructionPrediction": "This job will determine the probability of finding oil and gas based on gamma ray concentration.",
+                    "predictionJob": "Prediction Job",
+                    "graphsJobs": "Graphs Job",
+
+                },
+                graphs: {
+                    "depthVsGammaRayChart": "Depth versus Gamma Ray chart",
+                    "gammaRayHistogram": "Gamma Ray Histogram",
+                    "scatterPlotGammaRay": "Scatter Plot of Gamma Ray",
+                    "depthVsBulkDensityChart": "Depth versus Bulk Density chart",
+                    "bulkDensityHistogram": "Bulk Density Histogram",
+                    "scatterPlotBulkDensity": "Scatter Plot of Bulk Density",
+                    "depthVsNeutronPorosityChart": "Depth versus Neutron Porosity chart",
+                    "neutronPorosityHistogram": "Neutron Porosity Histogram",
+                    "scatterPlotNeutronPorosity": "Scatter Plot of Neutron Porosity",
+                    "missingValues": "Missing Values",
+                    "heatmapVariableCorrelations": "Heatmap of Variable Correlations",
+                    "multipleCurvePlot": "Multiple Curve Plot",
+                    "pairplotVariables": "Pairplot of Variables"
+                },
             },
         },
         es: {
             translation: {
                 day: "Día",
-                wellProcessing: "Procesamiento de Pozo", 
-                createJob: "Crear Proceso", 
+                wellProcessing: "Procesamiento de Pozo",
+                createJob: "Crear Proceso",
                 addWell: "Agregar Pozo",
                 type: {
                     "NEW_WELL": "Nuevo Pozo",
                     "MILANKOVIC_CYCLES": "Ciclos de Milankovitch",
                     "PREDICTION": "Predicción",
-                   "GRAPHS": "Gráficos",
+                    "GRAPHS": "Gráficos",
                 },
                 status: {
                     "processed": "Procesado",
@@ -142,7 +172,7 @@ i18n.use(initReactI18next).init({
                 pagination: {
                     "rowsPerPage": "Filas por página",
                 },
-                dialogs: { 
+                dialogs: {
                     addNewWell: {
                         title: "Agregar Nuevo Pozo",
                     },
@@ -161,7 +191,7 @@ i18n.use(initReactI18next).init({
                         fileError: "Es necesario un archivo.",
                         addButton: "Agregar Pozo",
                     },
-                  
+
                 },
                 home: {
                     "recentActivity": "Actividad Reciente",
@@ -171,10 +201,41 @@ i18n.use(initReactI18next).init({
                     "numberOfProcessings": "Cantidad De Procesamientos",
 
                 },
+                createJobs: {
+                    "createJob": "Crear Procesamiento",
+                    "TypeOfProcessings": "Tipo De Procesamiento",
+                    "selectAnalysisWindow": "Seleccionar Ventana de Análisis",
+                    "start": "Inicio",
+                    "end": "Fin",
+                    "tolerance": "Tolerancia (%)",
+                    "sedimentationRate": "Tasa de Sedimentación",
+                    "graphsJob": "Gráficos de Procesamiento",
+                    "instructionGraphs": "Este procesamiento creara los siguientes gráficos",
+                    "instructionPrediction": "Este proceso determinara la probabilidad de encontrar petroleo o gas basado en la concentración de rayos gamma",
+                    "predictionJob": "Proceso De Predicción",
+                    "graphsJobs": "Graficos Del Proceso",
+
+                },
+                graphs: {
+                    "depthVsGammaRayChart": "Gráfico de profundidad versus rayos gamma",
+                    "gammaRayHistogram": "Histograma de rayos gamma",
+                    "scatterPlotGammaRay": "Diagrama de dispersión de rayos gamma",
+                    "depthVsBulkDensityChart": "Gráfico de profundidad versus densidad",
+                    "bulkDensityHistogram": "Histograma de densidad",
+                    "scatterPlotBulkDensity": "Diagrama de dispersión de densidad",
+                    "depthVsNeutronPorosityChart": "Gráfico de profundidad versus porosidad de neutrones",
+                    "neutronPorosityHistogram": "Histograma de porosidad de neutrones",
+                    "scatterPlotNeutronPorosity": "Diagrama de dispersión de porosidad de neutrones",
+                    "missingValues": "Valores faltantes",
+                    "heatmapVariableCorrelations": "Mapa de calor de correlaciones de variables",
+                    "multipleCurvePlot": "Gráfico de múltiples curvas",
+                    "pairplotVariables": "Gráfico de pares de variables"
+                }
+
             },
         },
     },
-    lng: "es", 
-    fallbackLng: "en", 
+    lng: "es",
+    fallbackLng: "en",
     interpolation: { escapeValue: false },
 });

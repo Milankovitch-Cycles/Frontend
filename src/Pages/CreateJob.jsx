@@ -6,30 +6,12 @@ import { getWellById, createJob } from '../api/authService';
 import Papa from 'papaparse';
 import { CircularProgress } from '@mui/material';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
-const jobTypes = [
-  { value: 'MILANKOVIC_CYCLES', label: 'Milankovitch Cycle Analysis' },
-  { value: 'PREDICTION', label: 'Prediction' },
-  { value: 'GRAPHS', label: 'Graphs' },
-];
 
-const graphsDescription = [
-  { title: "Depth versus Gamma Ray chart"},
-  { title: "Gamma Ray Histogram"},
-  { title: "Scatter Plot of Gamma Ray"},
-  { title: "Depth versus Bulk Density chart"},
-  { title: "Bulk Density Histogram"},
-  { title: "Scatter Plot of Bulk Density"},
-  { title: "Depth versus Neutron Porosity chart"},
-  { title: "Neutron Porosity Histogram"},
-  { title: "Scatter Plot of Neutron Porosity"},
-  { title: "Missing Values"},
-  { title: "Heatmap of Variable Correlations"},
-  { title: "Multiple Curve Plot"},
-  { title: "Pairplot of Variables"},
-];
 
 const CreateJob = () => {
+  const { t } = useTranslation(); // Hook para usar traducciones
   const { wellId } = useParams();
   const navigate = useNavigate();
   const [jobType, setJobType] = useState('MILANKOVIC_CYCLES');
@@ -41,6 +23,29 @@ const CreateJob = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const dataAuthentication = useSelector((state) => state.authToken);
+
+  const jobTypes = [
+    { value: 'MILANKOVIC_CYCLES', label: t('type.MILANKOVIC_CYCLES') },
+    { value: 'PREDICTION', label: t('type.PREDICTION') },
+    { value: 'GRAPHS', label: t('type.GRAPHS') },
+  ];
+
+  const graphsDescription = [
+    { title: t('graphs.depthVsGammaRayChart') },
+    { title: t('graphs.gammaRayHistogram') },
+    { title: t('graphs.scatterPlotGammaRay') },
+    { title: t('graphs.depthVsBulkDensityChart') },
+    { title: t('graphs.bulkDensityHistogram') },
+    { title: t('graphs.scatterPlotBulkDensity') },
+    { title: t('graphs.depthVsNeutronPorosityChart') },
+    { title: t('graphs.neutronPorosityHistogram') },
+    { title: t('graphs.scatterPlotNeutronPorosity') },
+    { title: t('graphs.missingValues') },
+    { title: t('graphs.heatmapVariableCorrelations') },
+    { title: t('graphs.multipleCurvePlot') },
+    { title: t('graphs.pairplotVariables') },
+  ];
+
 
   useEffect(() => {
     const fetchWellData = async () => {
@@ -161,12 +166,12 @@ const CreateJob = () => {
   return (
     <Box p={4}>
       <Typography variant="h4" gutterBottom>
-        Crear Procesamiento Para Pozo {wellId}
+      {t('createJobs.createJob')} {wellId}
       </Typography>
       <Box mb={2}>
         <TextField
           select
-          label="Tipo De Procesamiento"
+          label=  {t('createJobs.TypeOfProcessings')}
           value={jobType}
           onChange={handleJobTypeChange}
           fullWidth
@@ -183,10 +188,10 @@ const CreateJob = () => {
       {jobType === 'MILANKOVIC_CYCLES' && (
         <>
           <Box mb={2}>
-            <Typography variant="h6">Seleccionar Ventana De Análisis</Typography>
+            <Typography variant="h6"> {t('createJobs.selectAnalysisWindow')}</Typography>
             <Grid container spacing={2}>
               <Grid item xs={6}>
-                <Typography>Inicio</Typography>
+                <Typography>{t('createJobs.start')}</Typography>
                 <Slider
                   value={start}
                   onChange={handleStartChange}
@@ -199,7 +204,7 @@ const CreateJob = () => {
                 />
               </Grid>
               <Grid item xs={6}>
-                <Typography>Fin</Typography>
+                <Typography>{t('createJobs.end')}</Typography>
                 <Slider
                   value={end}
                   onChange={handleEndChange}
@@ -215,7 +220,7 @@ const CreateJob = () => {
           </Box>
           <Box mb={2}>
             <TextField
-              label="Tolerance (%)"
+              label={t('createJobs.tolerance')}
               type="number"
               value={tolerance}
               onChange={(e) => setTolerance(e.target.value)}
@@ -227,7 +232,7 @@ const CreateJob = () => {
           </Box>
           <Box mb={2}>
             <TextField
-              label="Sedimentation Rate"
+              label={t('createJobs.sedimentationRate')}
               type="number"
               value={sedimentationRate}
               onChange={(e) => setSedimentationRate(e.target.value)}
@@ -255,17 +260,17 @@ const CreateJob = () => {
       )}
       {jobType === 'PREDICTION' && (
         <Box mb={2}>
-          <Typography variant="h6">Prediction Job</Typography>
+          <Typography variant="h6">{t('createJobs.predictionJob')}</Typography>
           <Typography>
-            This job will determine the probability of finding oil and gas based on gamma ray concentration.
+          {t('createJobs.instructionPrediction')}
           </Typography>
         </Box>
       )}
       {jobType === 'GRAPHS' && (
         <Box mb={2}>
-          <Typography variant="h6">Graphs Job</Typography>
+          <Typography variant="h6">{t('createJobs.graphsJobs')}</Typography>
           <Typography>
-            This job will create the following graphs:
+          {t('createJobs.instructionGraphs')}
           </Typography>
           <ul>
             {graphsDescription.map((graph, index) => (
@@ -277,7 +282,7 @@ const CreateJob = () => {
         </Box>
       )}
       <Button variant="contained" color="primary" onClick={handleSubmit}>
-        Create Job
+      {t('createJob')}
       </Button>
     </Box>
   );
