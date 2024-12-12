@@ -14,8 +14,10 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import WorkIcon from "@mui/icons-material/Work";
+import { useTranslation } from 'react-i18next';
 
 const BaseTable = ({
+  
   data,
   columns,
   onSort,
@@ -23,6 +25,7 @@ const BaseTable = ({
   orderBy,
   actions,
 }) => {
+  const { t } = useTranslation(); // Importar la función de traducción
   return (
     <TableContainer>
       <Table>
@@ -39,7 +42,7 @@ const BaseTable = ({
                 </TableSortLabel>
               </TableCell>
             ))}
-            {actions && <TableCell>Acciones</TableCell>}
+            {actions && <TableCell>{t('columns.actions')}</TableCell>}
           </TableRow>
         </TableHead>
         <TableBody>

@@ -45,7 +45,8 @@ i18n.use(initReactI18next).init({
                     "status": "Status",
                     "created_at": "Created At",
                     "name": "Name",
-                    "description": "Description"
+                    "description": "Description",
+                    "actions" : "Actions"
                 },
                 jobsList: {
                     "title": "Jobs List",
@@ -135,9 +136,39 @@ i18n.use(initReactI18next).init({
                     "jobDetail": "Process Details",
                     "jobInformation": "Process Information",
                     "resultGraphs": "Graph Results",
-                    "reason": "Reason"
+                    "reason": "Reason",
+                    "graphsDetails":"Graph Details",
+                    "eccentricity": "Eccentricity",
+                    "obliquity": "Obliquity",
+                    "precession": "Precession",
+                    "predictionsGraph": "Predictions Graph",
+                    "orderByDepth": "Order By Depth",
+                    "orderByOilProbability": "Order by Oil Probability"
 
                 },
+                wellDetails: {
+                    "description": "Descripción",
+                    "fileLas": "LAS file",
+                    "depthRange": "Depth Range",
+                    "frequencyRange": "Frequency Range",
+                    "massDensityRange": "Mass Density Range",
+                    "gammaRayRange": "Gamma Ray Range",
+                    "neutronPorosityRange": "Neutron Porosity Range",
+                    "processingGraphs": "Processing Graphs",
+                    "graphsDetails":"Graph Details"
+
+                   
+
+
+                },
+                layout: {
+                    "home": "Home",
+                    "wells": "Wells",
+                    "processing": "Processing",
+                    "account": "Account",
+                    "logout": "Logout"
+                }
+
 
             },
         },
@@ -183,7 +214,8 @@ i18n.use(initReactI18next).init({
                     "status": "Estado",
                     "created_at": "Fecha de Creación",
                     "name": "Nombre",
-                    "description": "Descripción"
+                    "description": "Descripción",
+                     "actions" : "Acciones"
                 },
                 jobsList: {
                     "title": "Procesos",
@@ -272,10 +304,37 @@ i18n.use(initReactI18next).init({
                     "jobDetail": "Detalles del Proceso",
                     "jobInformation": "Información del Proceso",
                     "resultGraphs": "Resultado de los Gráficos",
-                    "reason": "Razón"
+                    "reason": "Razón",
+                    "graphsDetails": "Detalles del Gráfico", 
+                    "eccentricity": "Excentricidad",
+                    "obliquity": "Oblicuidad",
+                    "precession": "Precesión",
+                    "predictionsGraph": "Gráfico de Predicción",
+                     "orderByDepth": "Ordenar por Profundidad",
+                     "orderByOilProbability": "Ordenar por Probabilidad de Petróleo"
 
 
                 },
+                wellDetails: {
+                    "description": "Descripción",
+                    "fileLas": "Archivo LAS",
+                    "depthRange": "Intervalo de Profundidades",
+                    "frequencyRange": "Intervalo de Frecuencia",
+                    "massDensityRange": "Intervalo de Densidad de Masa",
+                    "gammaRayRange": "Intervalo de Rayos Gamma",
+                    "neutronPorosityRange": "Intervalo de Porosidad de Neutrones",
+                    "processingGraphs": "Gráfico del Procesamiento",
+                    "graphsDetails": "Detalles del Gráfico"
+               
+
+                },
+                layout: {
+                    "home": "Inicio",
+                    "wells": "Pozos",
+                    "processing": "Procesamientos",
+                    "account": "Cuenta",
+                    "logout": "Salir"
+                }
 
 
             },

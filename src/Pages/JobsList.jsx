@@ -5,11 +5,10 @@ import { getJobs } from '../api/authService';
 import BaseTable from '../components/BaseTable';
 import { useSelector } from 'react-redux';
 import { Box, Typography, TablePagination } from '@mui/material';
-
 import BaseInput from "../components/BaseInput";
 
 const JobsList = () => {
-  const { t } = useTranslation(); // Hook para usar traducciones
+  const { t, i18n } = useTranslation(); // Access the i18n object
   const [jobs, setJobs] = useState([]);
   const [pagination, setPagination] = useState({
     limit: 10,
@@ -24,12 +23,12 @@ const JobsList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchJobs();
-  }, [dataAuthentication]);
+    fetchJobs(); // Re-fetch jobs whenever language changes or dataAuthentication changes
+  }, [i18n.language, dataAuthentication]);
 
   const translateJobData = (job) => ({
     ...job,
-    type: t(`type.${job.type}`, job.type),
+    type: t(`type.${job.type}`),
     status: t(`status.${job.status}`, job.status),
   });
 

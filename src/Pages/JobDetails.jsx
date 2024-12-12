@@ -173,7 +173,7 @@ const JobDetails = () => {
                 <Grid item xs={12} sm={6} md={4} key={index}>
                   <Card>
                     <CardContent>
-                      <Typography variant="subtitle1">{cycleType}</Typography>
+                      <Typography variant="subtitle1">{t(`jobsDetails.${cycleType}`)}</Typography>
                       {cycleData.detected ? (
                         <>
                           <Typography><strong>Period:</strong> {cycleData.details.period}</Typography>
@@ -211,7 +211,7 @@ const JobDetails = () => {
       {jobData.type === 'PREDICTION' && sortedPredictionsData.length > 0 && (
         <Card sx={{ mt: 4 }}>
           <CardContent>
-            <Typography variant="h6">Predictions Graph</Typography>
+            <Typography variant="h6">{t('jobsDetails.predictionsGraph')}</Typography>
             <Divider sx={{ my: 2 }} />
             <RadioGroup
               row
@@ -221,8 +221,8 @@ const JobDetails = () => {
               onChange={handleOrderByChange}
               sx={{ mb: 2 }}
             >
-              <FormControlLabel value="TEMP_DEPTH" control={<Radio />} label="Order by Depth" />
-              <FormControlLabel value="OIL_PROBABILITY" control={<Radio />} label="Order by Oil Probability" />
+              <FormControlLabel value="TEMP_DEPTH" control={<Radio />} label={t('jobsDetails.orderByDepth')}/>
+              <FormControlLabel value="OIL_PROBABILITY" control={<Radio />} label={t('jobsDetails.orderByOilProbability')} />
             </RadioGroup>
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={sortedPredictionsData}>
@@ -269,7 +269,7 @@ const JobDetails = () => {
           {selectedGraph && (
             <Box>
               <Typography id="modal-title" variant="h6" component="h2" mb={2}>
-                Graph Details
+              {t('jobsDetails.graphsDetails')}
               </Typography>
               <Box
                 component="img"
