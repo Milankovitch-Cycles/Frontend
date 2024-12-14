@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Card, CardContent, Typography, Grid, Divider, CircularProgress, Modal, IconButton, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import { Box, Card, CardContent, Typography, Grid, Divider, CircularProgress, Modal, IconButton, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, Button } from '@mui/material';
 import { getJobById } from '../api/authService';
 import { useSelector } from 'react-redux';
 import CloseIcon from '@mui/icons-material/Close';
+import GetAppIcon from '@mui/icons-material/GetApp';
 import Papa from 'papaparse';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Scatter, BarChart, Bar } from 'recharts';
 import { useTranslation } from 'react-i18next';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 const JobDetails = () => {
   const { t } = useTranslation(); // Importar la función de traducción
@@ -18,7 +23,8 @@ const JobDetails = () => {
   const [frequenciesData, setFrequenciesData] = useState([]);
   const [predictionsData, setPredictionsData] = useState([]);
   const [sortedPredictionsData, setSortedPredictionsData] = useState([]);
-  const [orderBy, setOrderBy] = useState('TEMP_DEPTH');
+  const [gammaRayData, setGammaRayData] = useState([]);
+  const [graphType, setGraphType] = useState('prediction');
   const dataAuthentication = useSelector((state) => state.authToken);
 
   const transformGraphUrl = (url) => {
@@ -61,8 +67,30 @@ const JobDetails = () => {
             header: true,
             dynamicTyping: true,
             complete: (result) => {
-              setPredictionsData(result.data);
-              setSortedPredictionsData(result.data.sort((a, b) => a[orderBy] - b[orderBy]));
+              const sortedData = result.data.sort((a, b) => a.TEMP_DEPTH - b.TEMP_DEPTH);
+              setPredictionsData(sortedData);
+              setSortedPredictionsData(sortedData);
+            },
+            error: (error) => {
+              console.error('Error parsing CSV data:', error);
+            },
+          });
+        }
+
+        if (data.type === 'NEW_WELL' && data.result.gamma_ray_path) {
+          const csvUrl = transformGraphUrl(data.result.gamma_ray_path);
+          const response = await fetch(csvUrl);
+          const csvText = await response.text();
+          Papa.parse(csvText, {
+            header: true,
+            dynamicTyping: true,
+            complete: (result) => {
+              const transformedData = result.data.map((row) => ({
+                ...row,
+                GR: parseInt(row.GR, 10),
+                TEMP_DEPTH: parseInt(row.TEMP_DEPTH, 10),
+              }));
+              setGammaRayData(transformedData);
             },
             error: (error) => {
               console.error('Error parsing CSV data:', error);
@@ -80,12 +108,79 @@ const JobDetails = () => {
     fetchJobData();
   }, [wellId, jobId, dataAuthentication]);
 
-  useEffect(() => {
-    setSortedPredictionsData([...predictionsData].sort((a, b) => a[orderBy] - b[orderBy]));
-  }, [orderBy, predictionsData]);
+  const calculateTrendLine = (data) => {
+    const validData = data.filter(point => point.TEMP_DEPTH != null && point.OIL_PROBABILITY != null);
+    const n = validData.length;
+    if (n === 0) return [];
 
-  const handleOrderByChange = (event) => {
-    setOrderBy(event.target.value);
+    const sumX = validData.reduce((acc, point) => acc + point.TEMP_DEPTH, 0);
+    const sumY = validData.reduce((acc, point) => acc + point.OIL_PROBABILITY, 0);
+    const sumXY = validData.reduce((acc, point) => acc + point.TEMP_DEPTH * point.OIL_PROBABILITY, 0);
+    const sumX2 = validData.reduce((acc, point) => acc + point.TEMP_DEPTH * point.TEMP_DEPTH, 0);
+
+    const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+    const intercept = (sumY - slope * sumX) / n;
+
+    const minX = Math.min(...validData.map(point => point.TEMP_DEPTH));
+    const maxX = Math.max(...validData.map(point => point.TEMP_DEPTH));
+
+    return [
+      { TEMP_DEPTH: minX, TREND: slope * minX + intercept },
+      { TEMP_DEPTH: maxX, TREND: slope * maxX + intercept }
+    ];
+  };
+
+  const calculateDepthBuckets = (data, bucketSize) => {
+    const buckets = {};
+    data.forEach(point => {
+      const bucket = Math.floor(point.TEMP_DEPTH / bucketSize) * bucketSize;
+      if (!buckets[bucket]) {
+        buckets[bucket] = { depth: bucket, totalProbability: 0, count: 0 };
+      }
+      buckets[bucket].totalProbability += point.OIL_PROBABILITY;
+      buckets[bucket].count += 1;
+    });
+
+    const bucketArray = Object.values(buckets).map(bucket => ({
+      depth: bucket.depth,
+      averageProbability: bucket.totalProbability / bucket.count,
+    })).filter(bucket => !isNaN(bucket.averageProbability));
+
+    return bucketArray.sort((a, b) => b.averageProbability - a.averageProbability);
+  };
+
+  const downloadPDF = () => {
+    const input = document.getElementById('job-details');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+
+    html2canvas(input, { scale: 2 }).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = imgWidth / imgHeight;
+      const pageHeight = pdfWidth / ratio;
+
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pageHeight);
+      pdf.save("job-details.pdf");
+    });
+  };
+
+  const downloadZip = async () => {
+    const zip = new JSZip();
+    const folder = zip.folder("graphs");
+
+    for (const graph of jobData.result.graphs) {
+      const url = transformGraphUrl(graph.image);
+      const response = await fetch(url);
+      const blob = await response.blob();
+      folder.file(`${graph.title}.png`, blob);
+    }
+
+    zip.generateAsync({ type: "blob" }).then((content) => {
+      saveAs(content, "graphs.zip");
+    });
   };
 
   if (loading) {
@@ -108,10 +203,28 @@ const JobDetails = () => {
     setSelectedGraph(null);
   };
 
+  const handleGraphTypeChange = (event) => {
+    setGraphType(event.target.value);
+  };
+
+  const trendLineData = calculateTrendLine(sortedPredictionsData);
+  const depthBucketsData = calculateDepthBuckets(sortedPredictionsData, 100);
+
   return (
-    <Box p={4}>
+    <Box p={4} id="job-details">
+      <Box display="flex" justifyContent="flex-end" mb={2}>
+        {jobData.type === 'GRAPHS' ? (
+          <IconButton color="primary" onClick={downloadZip}>
+            <GetAppIcon />
+          </IconButton>
+        ) : (
+          <IconButton color="primary" onClick={downloadPDF}>
+            <GetAppIcon />
+          </IconButton>
+        )}
+      </Box>
       <Typography variant="h4" gutterBottom>
-      {t('jobsDetails.jobDetail')}
+        {t('jobsDetails.jobDetail')}
       </Typography>
       <Card sx={{ mb: 4 }}>
         <CardContent>
@@ -128,17 +241,42 @@ const JobDetails = () => {
         <CardContent>
           <Typography variant="h6">{t('columns.parameters')}</Typography>
           <Divider sx={{ my: 2 }} />
-          <Typography><strong>{t('parameters.min_window')}:</strong> {jobData.parameters.min_window}</Typography>
-          <Typography><strong>{t('parameters.max_window')}:</strong> {jobData.parameters.max_window}</Typography>
+          {jobData.parameters.min_window !== undefined && (
+            <Typography><strong>{t('parameters.min_window')}:</strong> {jobData.parameters.min_window}</Typography>
+          )}
+          {jobData.parameters.max_window !== undefined && (
+            <Typography><strong>{t('parameters.max_window')}:</strong> {jobData.parameters.max_window}</Typography>
+          )}
           {jobData.parameters.tolerance !== undefined && (
             <Typography><strong>{t('parameters.tolerance')}:</strong> {jobData.parameters.tolerance}%</Typography>
           )}
           {jobData.parameters.sedimentation_rate !== undefined && (
             <Typography><strong>{t('parameters.sedimentation_rate')}:</strong> {jobData.parameters.sedimentation_rate}</Typography>
           )}
+          {jobData.parameters.filename && (
+            <Typography><strong>{t('parameters.filename')}:</strong> {jobData.parameters.filename}</Typography>
+          )}
         </CardContent>
       </Card>
-      {(jobData.type === 'NEW_WELL' || jobData.type === 'GRAPHS') && (
+      {jobData.type === 'NEW_WELL' && (
+        <Card>
+          <CardContent>
+            <Typography variant="h6">{t('jobsDetails.resultGraphs')}</Typography>
+            <Divider sx={{ my: 2 }} />
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={gammaRayData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="TEMP_DEPTH" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="GR" stroke="#8884d8" />
+                <Scatter dataKey="GR" fill="red" />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      )}
+      {jobData.type === 'GRAPHS' && (
         <Card>
           <CardContent>
             <Typography variant="h6">{t('jobsDetails.resultGraphs')}</Typography>
@@ -209,33 +347,56 @@ const JobDetails = () => {
         </Card>
       )}
       {jobData.type === 'PREDICTION' && sortedPredictionsData.length > 0 && (
-        <Card sx={{ mt: 4 }}>
-          <CardContent>
-            <Typography variant="h6">{t('jobsDetails.predictionsGraph')}</Typography>
-            <Divider sx={{ my: 2 }} />
-            <RadioGroup
-              row
-              aria-label="order-by"
-              name="order-by"
-              value={orderBy}
-              onChange={handleOrderByChange}
-              sx={{ mb: 2 }}
-            >
-              <FormControlLabel value="TEMP_DEPTH" control={<Radio />} label={t('jobsDetails.orderByDepth')}/>
-              <FormControlLabel value="OIL_PROBABILITY" control={<Radio />} label={t('jobsDetails.orderByOilProbability')} />
-            </RadioGroup>
-            <ResponsiveContainer width="100%" height={400}>
-              <LineChart data={sortedPredictionsData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="TEMP_DEPTH" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="OIL_PROBABILITY" stroke="#8884d8" />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
+        <>
+          <Card sx={{ mt: 4 }}>
+            <CardContent>
+              <Typography variant="h6">{t('jobsDetails.predictionsGraph')}</Typography>
+              <Divider sx={{ my: 2 }} />
+              <ResponsiveContainer width="100%" height={400}>
+                <LineChart data={sortedPredictionsData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="TEMP_DEPTH" />
+                  <YAxis />
+                  <Tooltip />
+                  <Scatter dataKey="OIL_PROBABILITY" fill="red" />
+                  <Line type="monotone" dataKey="OIL_PROBABILITY" stroke="#8884d8" />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+          <Card sx={{ mt: 4 }}>
+            <CardContent>
+              <Typography variant="h6">{t('jobsDetails.trendGraph')}</Typography>
+              <Divider sx={{ my: 2 }} />
+              <ResponsiveContainer width="100%" height={400}>
+                <LineChart data={sortedPredictionsData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="TEMP_DEPTH" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line type="linear" dataKey="TREND" data={trendLineData} stroke="#ff7300" dot={false} />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+          <Card sx={{ mt: 4 }}>
+            <CardContent>
+              <Typography variant="h6">{t('jobsDetails.depthBucketsGraph')}</Typography>
+              <Divider sx={{ my: 2 }} />
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={depthBucketsData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="depth" tickFormatter={(tick) => `${tick}-${tick + 100}`} />
+                  <YAxis />
+                  <Tooltip formatter={(value) => value.toFixed(2)} />
+                  <Bar dataKey="averageProbability" fill="#8884d8" />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </>
       )}
+
       <Modal
         open={!!selectedGraph}
         onClose={handleCloseModal}
@@ -269,7 +430,7 @@ const JobDetails = () => {
           {selectedGraph && (
             <Box>
               <Typography id="modal-title" variant="h6" component="h2" mb={2}>
-              {t('jobsDetails.graphsDetails')}
+                {t('jobsDetails.graphsDetails')}
               </Typography>
               <Box
                 component="img"

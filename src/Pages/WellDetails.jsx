@@ -4,6 +4,8 @@ import { getWellById } from "../api/authService";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Scatter } from 'recharts';
+import Papa from 'papaparse';
 import { useTranslation } from 'react-i18next';
 
 const WellDetails = () => {
@@ -13,23 +15,12 @@ const WellDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedGraph, setSelectedGraph] = useState(null);
+  const [gammaRayData, setGammaRayData] = useState([]);
   const dataAuthentication = useSelector((state) => state.authToken);
 
-  const graphsDescription = [
-    { title: t('graphs.depthVsGammaRayChart') },
-    { title: t('graphs.gammaRayHistogram') },
-    { title: t('graphs.scatterPlotGammaRay') },
-    { title: t('graphs.depthVsBulkDensityChart') },
-    { title: t('graphs.bulkDensityHistogram') },
-    { title: t('graphs.scatterPlotBulkDensity') },
-    { title: t('graphs.depthVsNeutronPorosityChart') },
-    { title: t('graphs.neutronPorosityHistogram') },
-    { title: t('graphs.scatterPlotNeutronPorosity') },
-    { title: t('graphs.missingValues') },
-    { title: t('graphs.heatmapVariableCorrelations') },
-    { title: t('graphs.multipleCurvePlot') },
-    { title: t('graphs.pairplotVariables') },
-  ];
+  const transformCsvUrl = (url) => {
+    return url.replace('./static', 'http://localhost:8080/static');
+  };
 
   useEffect(() => {
     async function fetchWell() {
@@ -43,6 +34,27 @@ const WellDetails = () => {
         console.log("Fetching well with id:", wellId);
         const result = await getWellById(token, wellId);
         setWell(result);
+
+        if (result.jobs && result.jobs[0].result.gamma_ray_path) {
+          const csvUrl = transformCsvUrl(result.jobs[0].result.gamma_ray_path);
+          const response = await fetch(csvUrl);
+          const csvText = await response.text();
+          Papa.parse(csvText, {
+            header: true,
+            dynamicTyping: true,
+            complete: (result) => {
+              const transformedData = result.data.map((row) => ({
+                ...row,
+                GR: parseInt(row.GR, 10),
+                TEMP_DEPTH: parseInt(row.TEMP_DEPTH, 10),
+              }));
+              setGammaRayData(transformedData);
+            },
+            error: (error) => {
+              setError('Error parsing CSV data');
+            },
+          });
+        }
       } catch (error) {
         setError(error.message);
       } finally {
@@ -64,9 +76,7 @@ const WellDetails = () => {
     return <Typography>No well data found</Typography>;
   }
 
-  const transformGraphUrl = (url) => {
-    return url.replace('/app', '').replace('localhost:3000', 'localhost:8080');
-  };
+
 
   const handleOpenModal = (graph) => {
     setSelectedGraph(graph);
@@ -121,25 +131,18 @@ const WellDetails = () => {
       <Typography variant="h5" gutterBottom>
         {t('wellDetails.processingGraphs')}
       </Typography>
-      <Grid container spacing={2}>
-        {well.jobs && well.jobs[0].result.graphs.map((graph, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
-            <Card onClick={() => handleOpenModal(graph.image)} sx={{ cursor: 'pointer' }}>
-              <CardContent>
-                <Typography variant="body2" color="textSecondary" gutterBottom>
-                  {graphsDescription[index]?.title || `Graph ${index + 1}`}
-                </Typography>
-                <Box
-                  component="img"
-                  src={"http://localhost:8080/" + transformGraphUrl(graph.image)}
-                  alt={`Graph ${graphsDescription[index]?.title || `Graph ${index + 1}`}`}
-                  sx={{ width: '100%', height: 'auto' }}
-                />
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+      <Box mb={2}>
+        <ResponsiveContainer width="100%" height={400}>
+          <LineChart data={gammaRayData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="TEMP_DEPTH" />
+            <YAxis />
+            <Tooltip />
+            <Line type="monotone" dataKey="GR" stroke="#8884d8" />
+            <Scatter dataKey="GR" fill="red" />
+          </LineChart>
+        </ResponsiveContainer>
+      </Box>
       <Modal
         open={!!selectedGraph}
         onClose={handleCloseModal}
@@ -173,11 +176,11 @@ const WellDetails = () => {
           {selectedGraph && (
             <Box>
               <Typography id="modal-title" variant="h6" component="h2" mb={2}>
-              {t('wellDetails.graphsDetails')}
+                {t('wellDetails.graphsDetails')}
               </Typography>
               <Box
                 component="img"
-                src={"http://localhost:8080/" + transformGraphUrl(selectedGraph)}
+                src={"http://localhost:8080/" + transformCsvUrl(selectedGraph)}
                 alt="Graph Detail"
                 sx={{ width: '100%', height: 'auto' }}
               />
