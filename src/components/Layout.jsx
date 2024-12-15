@@ -154,7 +154,6 @@ const Layout = () => {
             <IconButton color="inherit" onClick={handleThemeToggle}>
               {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
             </IconButton>
-            <Avatar alt="User Avatar" src="/path/to/avatar.jpg" />
           </Toolbar>
         </AppBar>
         <Drawer
