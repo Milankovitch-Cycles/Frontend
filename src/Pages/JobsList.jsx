@@ -113,13 +113,6 @@ const JobsList = () => {
       <Typography variant="h4" gutterBottom>
         {t('jobsList.title', 'Procesamientos')}
       </Typography>
-      <div className="flex justify-evenly">
-        <BaseInput
-          type="text"
-          placeholder={t('jobsList.filter', 'Filtrar: ')}
-          onChange={(e) => setFilter(e.target.value)}
-        />
-      </div>
       <BaseTable
         data={jobs}
         columns={columns}
