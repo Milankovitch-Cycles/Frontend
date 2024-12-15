@@ -7,13 +7,14 @@ import BaseInput from "../components/BaseInput";
 import BaseButton  from "../components/BaseButton";
 import { useDispatch } from "react-redux";
 import BackgroundSlider from "../components/BackgroundSlider";
+import { useTranslation } from 'react-i18next';
 
 const RecoverPassword = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
-
+  const { t } = useTranslation(); // Importar la función de traducción
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -24,9 +25,9 @@ const RecoverPassword = () => {
     const validationErrors = {};
 
     if (!email) {
-      validationErrors.email = 'El correo electrónico es obligatorio';
+      validationErrors.email = t('login.errorEmail');
     } else if (!validateEmail(email)) {
-      validationErrors.email = 'El correo electrónico no es válido';
+      validationErrors.email = t('recoverPassword.invalidEmail');
     }
 
     if (Object.keys(validationErrors).length > 0) {
@@ -36,8 +37,8 @@ const RecoverPassword = () => {
 
     try {
       Swal.fire({
-        title: "Enviando solicitud de recuperación",
-        text: "Por favor, espere un momento...",
+        title: t('dialogs.sendingRecoveryRequest'),
+        text: t('dialogs.pleaseWait'),
         didOpen: () => {
           Swal.showLoading();
         },
@@ -53,8 +54,8 @@ const RecoverPassword = () => {
 
       Swal.fire({
         icon: "success",
-        title: "Solicitud enviada",
-        text: "Revisa tu correo para obtener el código de recuperación.",
+        title: t('dialogs.requestSent'),
+        text: t('dialogs.checkEmailForRecoveryCode'),
       });
       sessionStorage.setItem("previousPage", window.location.pathname);
       navigate("/verifyCode");
@@ -64,12 +65,12 @@ const RecoverPassword = () => {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Error al recuperar la contraseña. Intenta nuevamente.",
+        text: t('dialogs.passwordRecoveryError'),
       });
 
       console.error("Error en la solicitud de recuperación:", error.message);
       setErrors({
-        apiError: "Error al recuperar la contraseña. Intenta nuevamente.",
+        apiError: t('dialogs.passwordRecoveryError'),
       });
     }
   };
@@ -83,14 +84,14 @@ const RecoverPassword = () => {
             <div className="w-full max-w-md">
               <div className="bg-white p-6 rounded-lg shadow-lg">
                 <h1 className="text-2xl font-bold mb-4">
-                  Recuperar contraseña
+                {t('recoverPassword.recoverPassword')},
                 </h1>
                 <p className="text-gray-600 mb-4">
-                  Ingresa tu correo para restablecer tu contraseña
+                  {t('recoverPassword.enterYourEmail')},
                 </p>
                 <BaseInput
                   type="email"
-                  placeholder="Correo electrónico"
+                  placeholder={t('recoverPassword.email')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   error={
@@ -102,7 +103,7 @@ const RecoverPassword = () => {
                   }
                 />
                 <BaseButton onPress={handleRecoverPassword}>
-                  Recuperar contraseña
+                {t('recoverPassword.recoverPassword')}
                 </BaseButton>
               </div>
             </div>
