@@ -8,8 +8,6 @@ import { CircularProgress } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 
-
-
 const CreateJob = () => {
   const { t } = useTranslation(); // Hook para usar traducciones
   const { wellId } = useParams();
@@ -45,7 +43,6 @@ const CreateJob = () => {
     { title: t('graphs.multipleCurvePlot') },
     { title: t('graphs.pairplotVariables') },
   ];
-
 
   useEffect(() => {
     const fetchWellData = async () => {
@@ -166,12 +163,12 @@ const CreateJob = () => {
   return (
     <Box p={4}>
       <Typography variant="h4" gutterBottom>
-      {t('createJobs.createJob')} {wellId}
+        {t('createJobs.createJob')} {wellId}
       </Typography>
       <Box mb={2}>
         <TextField
           select
-          label=  {t('createJobs.TypeOfProcessings')}
+          label={t('createJobs.TypeOfProcessings')}
           value={jobType}
           onChange={handleJobTypeChange}
           fullWidth
@@ -188,7 +185,35 @@ const CreateJob = () => {
       {jobType === 'MILANKOVIC_CYCLES' && (
         <>
           <Box mb={2}>
-            <Typography variant="h6"> {t('createJobs.selectAnalysisWindow')}</Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <TextField
+                  label={t('createJobs.tolerance')}
+                  type="number"
+                  value={tolerance}
+                  onChange={(e) => setTolerance(e.target.value)}
+                  fullWidth
+                  variant="outlined"
+                  margin="normal"
+                  inputProps={{ min: 0, max: 100 }}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label={t('createJobs.sedimentationRate')}
+                  type="number"
+                  value={sedimentationRate}
+                  onChange={(e) => setSedimentationRate(e.target.value)}
+                  fullWidth
+                  variant="outlined"
+                  margin="normal"
+                  inputProps={{ step: "0.01" }}
+                />
+              </Grid>
+            </Grid>
+          </Box>
+          <Box mb={2}>
+            <Typography variant="h6">{t('createJobs.selectAnalysisWindow')}</Typography>
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <Typography>{t('createJobs.start')}</Typography>
@@ -219,30 +244,6 @@ const CreateJob = () => {
             </Grid>
           </Box>
           <Box mb={2}>
-            <TextField
-              label={t('createJobs.tolerance')}
-              type="number"
-              value={tolerance}
-              onChange={(e) => setTolerance(e.target.value)}
-              fullWidth
-              variant="outlined"
-              margin="normal"
-              inputProps={{ min: 0, max: 100 }}
-            />
-          </Box>
-          <Box mb={2}>
-            <TextField
-              label={t('createJobs.sedimentationRate')}
-              type="number"
-              value={sedimentationRate}
-              onChange={(e) => setSedimentationRate(e.target.value)}
-              fullWidth
-              variant="outlined"
-              margin="normal"
-              inputProps={{ step: "0.01" }}
-            />
-          </Box>
-          <Box mb={2}>
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={data} onClick={handleChartClick}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -262,7 +263,7 @@ const CreateJob = () => {
         <Box mb={2}>
           <Typography variant="h6">{t('createJobs.predictionJob')}</Typography>
           <Typography>
-          {t('createJobs.instructionPrediction')}
+            {t('createJobs.instructionPrediction')}
           </Typography>
         </Box>
       )}
@@ -270,7 +271,7 @@ const CreateJob = () => {
         <Box mb={2}>
           <Typography variant="h6">{t('createJobs.graphsJobs')}</Typography>
           <Typography>
-          {t('createJobs.instructionGraphs')}
+            {t('createJobs.instructionGraphs')}
           </Typography>
           <ul>
             {graphsDescription.map((graph, index) => (
@@ -282,7 +283,7 @@ const CreateJob = () => {
         </Box>
       )}
       <Button variant="contained" color="primary" onClick={handleSubmit}>
-      {t('createJob')}
+        {t('createJob')}
       </Button>
     </Box>
   );
