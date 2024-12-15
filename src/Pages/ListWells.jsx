@@ -144,7 +144,7 @@ const ListWells = () => {
   return (
     <div className="flex flex-col p-6">
       <h1 className="mb-4 text-2xl">{t("listWells.title")}</h1> {/* t("jobsList.title") */}
-      <div className="flex justify-evenly">
+      <div className="flex justify-between mb-4">
         <BaseInput
           type="text"
           placeholder={t("jobsList.filter")} // t("jobsList.filter")
