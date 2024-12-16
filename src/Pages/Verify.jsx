@@ -136,7 +136,7 @@ const Verify = () => {
         Swal.fire({
           icon: "success",
           title: t('dialogs.userCreated'),
-          text: t('dialogs.accountCreate'),
+          text: t('dialogs.accountCreated'),
           confirmButtonText: t('dialogs.accept'),
         }).then((result) => {
           if (result.isConfirmed) {

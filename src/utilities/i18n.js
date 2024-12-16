@@ -63,6 +63,15 @@ i18n.use(initReactI18next).init({
                     addNewWell: {
                         title: "Add New Well",
                     },
+
+                    deleteWell: {
+                        title: "Are you sure you want to delete this well?",
+                        text: "This action cannot be undone!",
+                        cancel: "Cancel",
+                        confirm: "Delete"
+                    },
+                 
+
                     loadWell: { // Agregado
                         validationMessage: "Please fill all required fields.",
                         successTitle: "Well Added",
@@ -78,6 +87,26 @@ i18n.use(initReactI18next).init({
                         fileError: "A file is required.",
                         addButton: "Add Well",
                     },
+                    "generatingVerificationCode": "Generating your verification code",
+                        "pleaseWait": "Please wait a moment...",
+                        "sendingRecoveryRequest": "Sending recovery request",
+                        "pleaseWaitAgain": "Please wait a moment...",
+                        "requestSent": "Request sent",
+                        "checkEmailForRecoveryCode": "Check your email for the recovery code",
+                        "resendingCode": "Resending code",
+                        "pleaseWaitResend": "Please wait a moment...",
+                        "error": "Error",
+                        "loginError": "There was a problem logging in. Please try again.",
+                        "registrationError": "Error registering. Please try again.",
+                        "passwordRecoveryError": "Error recovering the password. Please try again.",
+                        "codeLengthError": "The code must be exactly 6 digits long.",
+                        "codeVerified": "Code verified",
+                        "codeVerificationSuccess": "Your code has been successfully verified.",
+                        "accept": "Accept",
+                        "userCreated": "User created successfully",
+                        "accountCreated": "Your account has been successfully created.",
+                        "codeVerificationError": "Error verifying the code. Please try again.",
+                       
 
                 },
                 home: {
@@ -155,7 +184,23 @@ i18n.use(initReactI18next).init({
                     "gammaRayRange": "Gamma Ray Range",
                     "neutronPorosityRange": "Neutron Porosity Range",
                     "processingGraphs": "Processing Graphs",
-                    "graphsDetails":"Graph Details"
+                    "graphsDetails":"Graph Details",
+                    "apiNumber": "Well ID",
+                    "company": "Company",
+                    "country": "Location",
+                    "county": "Country Code",
+                    "field": "Field",
+                    "nation": "Nationality",
+                    "nullValue": "No Data Value",
+                    "provinceBasin": "Platform Well",
+                    "provinceBasinSub": "Well Section",
+                    "province": "Province",
+                    "state": "Country",
+                    "step": "Step",
+                    "stop": "Stop Depth",
+                    "strt": "Start Depth",
+                    "wellboreName": "Wellbore Name",
+                    "wellName": "Well Name"
 
                    
 
@@ -194,7 +239,8 @@ i18n.use(initReactI18next).init({
                     "codeExpiresIn": "The code expires in",
                     "verifyCodeAction": "Verify code",
                     "resendCode": "Resend code",
-                    "seconds": "seconds"
+                    "seconds": "seconds",
+                    "backToRegistration": "Back to Registration"
                 },
 
                 register: {
@@ -216,31 +262,7 @@ i18n.use(initReactI18next).init({
                     "passwordsDoNotMatch": "The passwords do not match"
                 },
 
-                dialogs:{                    
-                        "generatingVerificationCode": "Generating your verification code",
-                        "pleaseWait": "Please wait a moment...",
-                        "sendingRecoveryRequest": "Sending recovery request",
-                        "pleaseWaitAgain": "Please wait a moment...",
-                        "requestSent": "Request sent",
-                        "checkEmailForRecoveryCode": "Check your email for the recovery code",
-                        "resendingCode": "Resending code",
-                        "pleaseWaitResend": "Please wait a moment...",
-                        "error": "Error",
-                        "loginError": "There was a problem logging in. Please try again.",
-                        "registrationError": "Error registering. Please try again.",
-                        "passwordRecoveryError": "Error recovering the password. Please try again.",
-                        "codeLengthError": "The code must be exactly 6 digits long.",
-                        "codeVerified": "Code verified",
-                        "codeVerificationSuccess": "Your code has been successfully verified.",
-                        "accept": "Accept",
-                        "userCreated": "User created successfully",
-                        "accountCreated": "Your account has been successfully created.",
-                        "codeVerificationError": "Error verifying the code. Please try again.",
-                        "backToRegistration": "Back to Registration"
-                        
-                    
-                }
-
+              
 
             },
         },
@@ -304,6 +326,14 @@ i18n.use(initReactI18next).init({
                     addNewWell: {
                         title: "Agregar Nuevo Pozo",
                     },
+
+                    deleteWell: {
+                        title: "¿Estás seguro de querer eliminar este pozo?",
+                        text: "¡Esta acción no se puede deshacer!",
+                        cancel: "Cancelar",
+                        confirm: "Eliminar"
+
+                    },
                     loadWell: { // Agregado
                         validationMessage: "Por favor complete todos los campos requeridos.",
                         successTitle: "Pozo Agregado",
@@ -319,6 +349,26 @@ i18n.use(initReactI18next).init({
                         fileError: "Es necesario un archivo.",
                         addButton: "Agregar Pozo",
                     },
+
+                    "generatingVerificationCode": "Generando su código de verificación",
+                    "pleaseWait": "Aguarde un momento...",
+                    "sendingRecoveryRequest": "Enviando solicitud de recuperación",
+                    "pleaseWaitAgain": "Por favor, espere un momento...",
+                    "requestSent": "Solicitud enviada",
+                    "checkEmailForRecoveryCode": "Revisa tu correo para obtener el código de recuperación",
+                    "resendingCode": "Enviando código nuevamente",
+                    "pleaseWaitResend": "Por favor, espere un momento...",
+                    "error": "Error",
+                    "loginError": "Hubo un problema al iniciar sesión. Inténtalo nuevamente.",
+                    "registrationError": "Error al registrar. Intenta nuevamente.",
+                    "passwordRecoveryError": "Error al recuperar la contraseña. Intenta nuevamente.",
+                    "codeVerified": "Código verificado",
+                    "codeVerificationSuccess": "Tu código ha sido verificado correctamente.",
+                    "accept": "Aceptar",
+                    "userCreated": "Usuario creado correctamente",
+                    "accountCreated": "Tu cuenta ha sido creada con éxito.",
+                    "codeVerificationError": "Error al verificar el código. Intenta nuevamente.",
+                    
 
                 },
                 home: {
@@ -396,7 +446,23 @@ i18n.use(initReactI18next).init({
                     "gammaRayRange": "Intervalo de Rayos Gamma",
                     "neutronPorosityRange": "Intervalo de Porosidad de Neutrones",
                     "processingGraphs": "Gráfico del Procesamiento",
-                    "graphsDetails": "Detalles del Gráfico"
+                    "graphsDetails": "Detalles del Gráfico",
+                    "apiNumber": "ID del Pozo",
+                    "company": "Compañía",
+                    "country": "País",
+                    "county": "Código de País",
+                    "field": "Campo",
+                    "nation": "Nacionalidad",
+                    "nullValue": "Valor de Sin Datos",
+                    "provinceBasin": "Pozo en Plataforma",
+                    "provinceBasinSub": "Sección del Pozo",
+                    "province": "Provincia",
+                    "state": "País",
+                    "step": "Paso",
+                    "stop": "Profundidad Final",
+                    "strt": "Profundidad Inicial",
+                    "wellboreName": "Nombre del Pozo Perforado",
+                    "wellName": "Nombre del Pozo"
                
 
                 },
@@ -434,7 +500,8 @@ i18n.use(initReactI18next).init({
                     "verifyCodeAction": "Verificar código",
                     "resendCode": "Reenviar código",
                     "codeLengthError": "El código debe tener exactamente 6 dígitos.",
-                    "seconds": "segundos"
+                    "seconds": "segundos",
+                    "backToRegistration": "Volver a Registro"
                 },
                 register:{
                     "register": "Registrarse",
@@ -455,28 +522,7 @@ i18n.use(initReactI18next).init({
                     "passwordsDoNotMatch": "Las contraseñas no coinciden"
 
                 },
-                dialogs:{
-                    "generatingVerificationCode": "Generando su código de verificación",
-                    "pleaseWait": "Aguarde un momento...",
-                    "sendingRecoveryRequest": "Enviando solicitud de recuperación",
-                    "pleaseWaitAgain": "Por favor, espere un momento...",
-                    "requestSent": "Solicitud enviada",
-                    "checkEmailForRecoveryCode": "Revisa tu correo para obtener el código de recuperación",
-                    "resendingCode": "Enviando código nuevamente",
-                    "pleaseWaitResend": "Por favor, espere un momento...",
-                    "error": "Error",
-                    "loginError": "Hubo un problema al iniciar sesión. Inténtalo nuevamente.",
-                    "registrationError": "Error al registrar. Intenta nuevamente.",
-                    "passwordRecoveryError": "Error al recuperar la contraseña. Intenta nuevamente.",
-                    "codeVerified": "Código verificado",
-                    "codeVerificationSuccess": "Tu código ha sido verificado correctamente.",
-                    "accept": "Aceptar",
-                    "userCreated": "Usuario creado correctamente",
-                    "accountCreated": "Tu cuenta ha sido creada con éxito.",
-                    "codeVerificationError": "Error al verificar el código. Intenta nuevamente.",
-                    "backToRegistration": "Volver a Registro"
-                }
-
+            
 
             },
         },

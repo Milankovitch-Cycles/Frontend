@@ -33,6 +33,7 @@ const WellDetails = () => {
       try {
         console.log("Fetching well with id:", wellId);
         const result = await getWellById(token, wellId);
+        console.log("wellData", result.well_metadata)
         setWell(result);
 
         if (result.jobs && result.jobs[0].result.gamma_ray_path) {
@@ -109,15 +110,40 @@ const WellDetails = () => {
         <CardContent>
           <Typography variant="body1" gutterBottom>
             <strong>Metadata:</strong>{" "}
-            {well.well_metadata ? well.well_metadata : (
+            {well.well_metadata ? (
               <div>
-                <p><strong>{t('wellDetails.depthRange')}:</strong> 3600 a 4600</p>
-                <p><strong>{t('wellDetails.frequencyRange')}:</strong> 0 a 800</p>
-                <p><strong>{t('wellDetails.massDensityRange')}:</strong> 2.0 a 3.0</p>
-                <p><strong>{t('wellDetails.gammaRayRange')}:</strong> 0 a 300</p>
-                <p><strong>{t('wellDetails.neutronPorosityRange')}:</strong> 0 a 140</p>
+                <p><strong>{t('wellDetails.depthRange')}:</strong> {well.well_metadata.STRT} a {well.well_metadata.STOP}</p>
+                <p><strong>{t('wellDetails.step')}:</strong> {well.well_metadata.STEP}</p>
+                <p><strong>{t('wellDetails.nullValue')}:</strong> {well.well_metadata.NULL}</p>
+                <p><strong>{t('wellDetails.field')}:</strong> {well.well_metadata.FLD}</p>
+                <p><strong>{t('wellDetails.wellName')}:</strong> {well.well_metadata.WELL}</p>
+
+                <p><strong>{t('wellDetails.wellboreName')}:</strong> {well.well_metadata.WBN}</p>
+                <p><strong>{t('wellDetails.nation')}:</strong> {well.well_metadata.NATI}</p>
+                <p><strong>{t('wellDetails.county')}:</strong> {well.well_metadata.COUN}</p>
+                <p><strong>{t('wellDetails.company')}:</strong> {well.well_metadata.COMP}</p>
+                <p><strong>{t('wellDetails.province')}:</strong> {well.well_metadata.PDAT}</p>
+
+                <p><strong>{t('wellDetails.apiNumber')}:</strong> {well.well_metadata.APIN}</p>
+                <p><strong>{t('wellDetails.country')}:</strong> {well.well_metadata.CTRY}</p>
+                <p><strong>{t('wellDetails.provinceBasin')}:</strong> {well.well_metadata.PBWE}</p>
+                <p><strong>{t('wellDetails.provinceBasinSub')}:</strong> {well.well_metadata.PBWS}</p>
+                <p><strong>{t('wellDetails.state')}:</strong> {well.well_metadata.STAT}</p>
+
               </div>
-            )}
+            )
+
+
+
+              : (
+                <div>
+                  <p><strong>{t('wellDetails.depthRange')}:</strong> 3600 a 4600</p>
+                  <p><strong>{t('wellDetails.frequencyRange')}:</strong> 0 a 800</p>
+                  <p><strong>{t('wellDetails.massDensityRange')}:</strong> 2.0 a 3.0</p>
+                  <p><strong>{t('wellDetails.gammaRayRange')}:</strong> 0 a 300</p>
+                  <p><strong>{t('wellDetails.neutronPorosityRange')}:</strong> 0 a 140</p>
+                </div>
+              )}
           </Typography>
         </CardContent>
       </Card>
