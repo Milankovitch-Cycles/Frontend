@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { addAuthToken } from "../redux/states";
 import { useDispatch } from "react-redux";
 import BackgroundSlider from "../components/BackgroundSlider";
+import { useTranslation } from 'react-i18next';
 
 const Verify = () => {
   const [codeObtain, setCode] = useState("");
@@ -17,6 +18,7 @@ const Verify = () => {
   const navigate = useNavigate();
   const previousPage = sessionStorage.getItem("previousPage");
   const dispatch = useDispatch();
+  const { t } = useTranslation(); // Importar la función de traducción
 
   useEffect(() => {
     if (previousPage === "/register") {
@@ -44,8 +46,8 @@ const Verify = () => {
   const resendCode = async () => {
     try {
       Swal.fire({
-        title: "Enviando código nuevamente",
-        text: "Por favor, espere un momento...",
+        title: t('dialogs.resendingCode'),
+        text: t('dialogs.pleaseWaitResend'),
         didOpen: () => {
           Swal.showLoading();
         },
@@ -65,8 +67,8 @@ const Verify = () => {
 
       Swal.fire({
         icon: "success",
-        title: "Solicitud enviada",
-        text: "Revisa tu correo para obtener el código de recuperación.",
+        title: t('dialogs.requestSent'),
+        text: t('dialogs.checkEmailForRecoveryCode'),
       }).then(() => {
         sessionStorage.setItem("previousPage", window.location.pathname);
         window.location.reload();
@@ -77,7 +79,7 @@ const Verify = () => {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Error al recuperar la contraseña. Intenta nuevamente.",
+        text: t('dialogs.passwordRecoveryError'),
       });
 
       console.error("Error en la solicitud de recuperación:", error.message);
@@ -92,7 +94,7 @@ const Verify = () => {
 
     // Validate code length
     if (codeObtain.length !== 6) {
-      setValidationError('El código debe tener exactamente 6 dígitos.');
+      setValidationError(t('verifyCode.codeLengthError'));
       return;
     }
 
@@ -101,7 +103,7 @@ const Verify = () => {
 
     // Validate code length
     if (codeObtain.length !== 6) {
-      setValidationError('El código debe tener exactamente 6 dígitos.');
+      setValidationError(t('verifyCode.codeLengthError'));
       return;
     }
 
@@ -116,9 +118,9 @@ const Verify = () => {
 
         Swal.fire({
           icon: "success",
-          title: "Código verificado",
-          text: "Tu código ha sido verificado correctamente.",
-          confirmButtonText: "Aceptar",
+          title: t('dialogs.codeVerified'),
+          text: t('dialogs.codeVerificationSuccess'),
+          confirmButtonText: t('dialogs.accept'),
         }).then((result) => {
           if (result.isConfirmed) {
             navigate("/changePassword");
@@ -133,9 +135,9 @@ const Verify = () => {
 
         Swal.fire({
           icon: "success",
-          title: "Usuario creado correctamente",
-          text: "Tu cuenta ha sido creada con éxito.",
-          confirmButtonText: "Aceptar",
+          title: t('dialogs.userCreated'),
+          text: t('dialogs.accountCreated'),
+          confirmButtonText: t('dialogs.accept'),
         }).then((result) => {
           if (result.isConfirmed) {
             navigate("/login");
@@ -144,7 +146,7 @@ const Verify = () => {
       }
     } catch (error) {
       console.error("Error en la solicitud de registro:", error.message);
-      setApiError("Error al verificar el código. Intenta nuevamente.");
+      setApiError(t('dialogs.codeVerificationError'));
     }
   };
 
@@ -156,11 +158,10 @@ const Verify = () => {
             <div className="w-full max-w-md">
               <div className="bg-white p-6 rounded-lg shadow-lg">
                 <h1 className="text-2xl font-bold mb-4">
-                  Verificación de Código
+                {t('verifyCode.verifyCode')}
                 </h1>
                 <p className="text-gray-600 mb-4">
-                  Te hemos enviado un código de 6 dígitos a tu correo
-                  electrónico.
+                     {t('verifyCode.sentCode')}
                 </p>
 
                 <form onSubmit={handleSubmit}>
@@ -168,7 +169,7 @@ const Verify = () => {
                     <input
                       type="text"
                       maxLength="6"
-                      placeholder="Ingresa el código"
+                      placeholder={t('verifyCode.enterCode')}
                       value={codeObtain}
                       onChange={(e) => setCode(e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -185,8 +186,8 @@ const Verify = () => {
 
                   <div className="mb-4 text-gray-600">
                     <p>
-                      El código expira en:{" "}
-                      <span className="font-bold">{timer} segundos</span>
+                    {t('verifyCode.codeExpiresIn')}:{" "}
+                      <span className="font-bold">{timer}  {t('verifyCode.seconds')}</span>
                     </p>
                   </div>
 
@@ -195,7 +196,7 @@ const Verify = () => {
                     className="bg-blue-500 text-white w-full py-2 rounded-md hover:bg-blue-400"
                     disabled={timer === 0}
                   >
-                    Verificar Código
+                        {t('verifyCode.verifyCodeAction')}
                   </button>
 
                   {codeExpired && (
@@ -206,7 +207,7 @@ const Verify = () => {
                           onClick={resendCode}
                           className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
                         >
-                          Reenviar Código
+                          {t('verifyCode.resendCode')}
                         </button>
                       ) : (
                         previousPage === "/register" && (
@@ -214,7 +215,7 @@ const Verify = () => {
                             onClick={() => navigate("/register")}
                             className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
                           >
-                            Volver a Registro
+                             {t('verifyCode.backToRegistration')}
                           </button>
                         )
                       )}

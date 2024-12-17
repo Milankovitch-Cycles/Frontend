@@ -63,6 +63,15 @@ i18n.use(initReactI18next).init({
                     addNewWell: {
                         title: "Add New Well",
                     },
+
+                    deleteWell: {
+                        title: "Are you sure you want to delete this well?",
+                        text: "This action cannot be undone!",
+                        cancel: "Cancel",
+                        confirm: "Delete"
+                    },
+                 
+
                     loadWell: { // Agregado
                         validationMessage: "Please fill all required fields.",
                         successTitle: "Well Added",
@@ -78,6 +87,26 @@ i18n.use(initReactI18next).init({
                         fileError: "A file is required.",
                         addButton: "Add Well",
                     },
+                    "generatingVerificationCode": "Generating your verification code",
+                        "pleaseWait": "Please wait a moment...",
+                        "sendingRecoveryRequest": "Sending recovery request",
+                        "pleaseWaitAgain": "Please wait a moment...",
+                        "requestSent": "Request sent",
+                        "checkEmailForRecoveryCode": "Check your email for the recovery code",
+                        "resendingCode": "Resending code",
+                        "pleaseWaitResend": "Please wait a moment...",
+                        "error": "Error",
+                        "loginError": "There was a problem logging in. Please try again.",
+                        "registrationError": "Error registering. Please try again.",
+                        "passwordRecoveryError": "Error recovering the password. Please try again.",
+                        "codeLengthError": "The code must be exactly 6 digits long.",
+                        "codeVerified": "Code verified",
+                        "codeVerificationSuccess": "Your code has been successfully verified.",
+                        "accept": "Accept",
+                        "userCreated": "User created successfully",
+                        "accountCreated": "Your account has been successfully created.",
+                        "codeVerificationError": "Error verifying the code. Please try again.",
+                       
 
                 },
                 home: {
@@ -155,7 +184,23 @@ i18n.use(initReactI18next).init({
                     "gammaRayRange": "Gamma Ray Range",
                     "neutronPorosityRange": "Neutron Porosity Range",
                     "processingGraphs": "Processing Graphs",
-                    "graphsDetails":"Graph Details"
+                    "graphsDetails":"Graph Details",
+                    "apiNumber": "Well ID",
+                    "company": "Company",
+                    "country": "Location",
+                    "county": "Country Code",
+                    "field": "Field",
+                    "nation": "Nationality",
+                    "nullValue": "No Data Value",
+                    "provinceBasin": "Platform Well",
+                    "provinceBasinSub": "Well Section",
+                    "province": "Province",
+                    "state": "Country",
+                    "step": "Step",
+                    "stop": "Stop Depth",
+                    "strt": "Start Depth",
+                    "wellboreName": "Wellbore Name",
+                    "wellName": "Well Name"
 
                    
 
@@ -167,8 +212,57 @@ i18n.use(initReactI18next).init({
                     "processing": "Processing",
                     "account": "Account",
                     "logout": "Logout"
-                }
+                },
+                login: {
+                    "logIn": "Log in",
+                    "email": "Email",
+                    "password": "Password",
+                    "continue": "Continue",
+                    "forgotYourPassword": "Forgot your password?",
+                    "messageRegister": "Log in to access your account and enjoy our services. Don't have an account? Sign up here to get started.",
+                    "signUpNow": "Sign up now",
+                     "errorEmail": "The email is required.",
+                     "errorPassword": "The password is required."
+                },
+                recoverPassword: {
+                    "recoverPassword": "Recover password",
+                    "enterYourEmail": "Enter your email to reset your password",
+                    "email": "Email",
+                    "invalidEmail": "The email is not valid"
+                    
 
+                },
+                verifyCode: {
+                    "verifyCode": "Code Verification",
+                    "sentCode": "We have sent a 6-digit code to your email",
+                    "enterCode": "Enter code",
+                    "codeExpiresIn": "The code expires in",
+                    "verifyCodeAction": "Verify code",
+                    "resendCode": "Resend code",
+                    "seconds": "seconds",
+                    "backToRegistration": "Back to Registration"
+                },
+
+                register: {
+                    "register": "Sign Up",
+                    "firstName": "First Name",
+                    "lastName": "Last Name",
+                    "email": "Email",
+                    "password": "Password",
+                    "firstNameRequired": "First name is required",
+                    "lastNameRequired": "Last name is required",
+                    "emailRequired": "Email is required",
+                    "passwordRequired": "Password is required",
+                    "passwordMinLength": "Password must be at least 8 characters, include a number and a symbol",
+                    "repeatPassword": "Repeat password",
+                    "repeatPasswordRequired": "You must repeat the password",
+                    "createAccount": "Create Account",
+                    "emailFormatError": "The email format is incorrect",
+                    "passwordFormatError": "The password must contain at least one number and one symbol",
+                    "passwordsDoNotMatch": "The passwords do not match"
+                },
+
+              
 
             },
         },
@@ -232,6 +326,14 @@ i18n.use(initReactI18next).init({
                     addNewWell: {
                         title: "Agregar Nuevo Pozo",
                     },
+
+                    deleteWell: {
+                        title: "¿Estás seguro de querer eliminar este pozo?",
+                        text: "¡Esta acción no se puede deshacer!",
+                        cancel: "Cancelar",
+                        confirm: "Eliminar"
+
+                    },
                     loadWell: { // Agregado
                         validationMessage: "Por favor complete todos los campos requeridos.",
                         successTitle: "Pozo Agregado",
@@ -247,6 +349,26 @@ i18n.use(initReactI18next).init({
                         fileError: "Es necesario un archivo.",
                         addButton: "Agregar Pozo",
                     },
+
+                    "generatingVerificationCode": "Generando su código de verificación",
+                    "pleaseWait": "Aguarde un momento...",
+                    "sendingRecoveryRequest": "Enviando solicitud de recuperación",
+                    "pleaseWaitAgain": "Por favor, espere un momento...",
+                    "requestSent": "Solicitud enviada",
+                    "checkEmailForRecoveryCode": "Revisa tu correo para obtener el código de recuperación",
+                    "resendingCode": "Enviando código nuevamente",
+                    "pleaseWaitResend": "Por favor, espere un momento...",
+                    "error": "Error",
+                    "loginError": "Hubo un problema al iniciar sesión. Inténtalo nuevamente.",
+                    "registrationError": "Error al registrar. Intenta nuevamente.",
+                    "passwordRecoveryError": "Error al recuperar la contraseña. Intenta nuevamente.",
+                    "codeVerified": "Código verificado",
+                    "codeVerificationSuccess": "Tu código ha sido verificado correctamente.",
+                    "accept": "Aceptar",
+                    "userCreated": "Usuario creado correctamente",
+                    "accountCreated": "Tu cuenta ha sido creada con éxito.",
+                    "codeVerificationError": "Error al verificar el código. Intenta nuevamente.",
+                    
 
                 },
                 home: {
@@ -324,7 +446,23 @@ i18n.use(initReactI18next).init({
                     "gammaRayRange": "Intervalo de Rayos Gamma",
                     "neutronPorosityRange": "Intervalo de Porosidad de Neutrones",
                     "processingGraphs": "Gráfico del Procesamiento",
-                    "graphsDetails": "Detalles del Gráfico"
+                    "graphsDetails": "Detalles del Gráfico",
+                    "apiNumber": "ID del Pozo",
+                    "company": "Compañía",
+                    "country": "País",
+                    "county": "Código de País",
+                    "field": "Campo",
+                    "nation": "Nacionalidad",
+                    "nullValue": "Valor de Sin Datos",
+                    "provinceBasin": "Pozo en Plataforma",
+                    "provinceBasinSub": "Sección del Pozo",
+                    "province": "Provincia",
+                    "state": "País",
+                    "step": "Paso",
+                    "stop": "Profundidad Final",
+                    "strt": "Profundidad Inicial",
+                    "wellboreName": "Nombre del Pozo Perforado",
+                    "wellName": "Nombre del Pozo"
                
 
                 },
@@ -334,8 +472,57 @@ i18n.use(initReactI18next).init({
                     "processing": "Procesamientos",
                     "account": "Cuenta",
                     "logout": "Salir"
-                }
+                },
+                login: {
+                    "logIn": "Iniciar sesión",
+                    "email": "Correo electrónico",
+                    "password": "Contraseña",
+                    "continue": "Continuar",
+                    "forgotYourPassword": "Olvidaste tu contraseña?",
+                    "messageRegister": "Inicia sesión para acceder a tu cuenta y disfrutar de nuestros servicios. ¿No tienes una cuenta? Regístrate aquí para empezar.",
+                    "signUpNow": "Regístrate ahora",
+                    "errorEmail": "El correo electrónico es obligatorio.",
+                    "errorPassword": "La contraseña es obligatoria."
 
+                },
+                recoverPassword: {
+                    "recoverPassword": "Recuperar contraseña",
+                    "enterYourEmail": "Ingresa tu correo para restablecer tu contraseña",
+                    "email": "Correo electrónico",
+                    "invalidEmail": "El correo electrónico no es válido"
+                },
+
+                verifyCode:{
+                    "verifyCode": "Verificación de Código",
+                    "sentCode": "Te hemos enviado un código de 6 dígitos a tu correo electrónico",
+                    "enterCode": "Ingresa código",
+                    "codeExpiresIn": "El código expira en",
+                    "verifyCodeAction": "Verificar código",
+                    "resendCode": "Reenviar código",
+                    "codeLengthError": "El código debe tener exactamente 6 dígitos.",
+                    "seconds": "segundos",
+                    "backToRegistration": "Volver a Registro"
+                },
+                register:{
+                    "register": "Registrarse",
+                    "firstName": "Nombre",
+                    "lastName": "Apellido",
+                    "email": "Correo electrónico",
+                    "password": "Contraseña",
+                    "firstNameRequired": "El nombre es obligatorio",
+                    "lastNameRequired": "El apellido es obligatorio",
+                    "emailRequired": "El correo electrónico es obligatorio",
+                    "passwordRequired": "La contraseña es obligatoria",
+                    "passwordMinLength": "La contraseña debe tener al menos 8 caracteres, incluir un número y un símbolo",
+                    "repeatPassword": "Repetir contraseña",
+                    "repeatPasswordRequired": "Debes repetir la contraseña",
+                    "createAccount": "Crear Cuenta",
+                    "emailFormatError": "El formato del correo electrónico es incorrecto",
+                    "passwordFormatError": "La contraseña debe contener al menos un número y un símbolo",
+                    "passwordsDoNotMatch": "Las contraseñas no coinciden"
+
+                },
+            
 
             },
         },

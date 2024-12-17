@@ -8,10 +8,10 @@ import BaseInput from "../components/BaseInput";
 import BaseButton from "../components/BaseButton";
 import BaseLink from "../components/BaseLink";
 import BackgroundSlider from "../components/BackgroundSlider";
-
-
+import { useTranslation } from 'react-i18next';
 
 const Login = () => {
+  const { t, i18n } = useTranslation(); // Importar la función de traducción y i18n
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,19 +19,18 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
 
-
   const handleLogin = async (e) => {
     e.preventDefault();
     const validationErrors = {};
 
     if (!email) {
-      validationErrors.email = "El correo electrónico es obligatorio.";
+      validationErrors.email = t('login.messageRegister');
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      validationErrors.email = "Introduce un correo electrónico válido.";
+      validationErrors.email = t('login.errorEmail');
     }
 
     if (!password) {
-      validationErrors.password = "La contraseña es obligatoria.";
+      validationErrors.password = t('login.errorPassword');
     }
 
     if (Object.keys(validationErrors).length > 0) {
@@ -48,10 +47,14 @@ const Login = () => {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "Hubo un problema al iniciar sesión. Inténtalo nuevamente.",
+        text: t('dialogs.loginError'),
       });
       console.error("Error en el login:", error.message);
     }
+  };
+
+  const handleLanguageChange = (lang) => {
+    i18n.changeLanguage(lang);
   };
 
   return (
@@ -61,12 +64,28 @@ const Login = () => {
           <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
             <h1 className="text-3xl font-bold mb-4 text-center">Cycle App</h1>
             <p className="text-2xl text-gray-600 mb-6 text-center">
-              Iniciar sesión
+              {t('login.logIn')}
             </p>
+
+            {/* Botones para cambiar el idioma arriba del formulario */}
+            <div className="flex justify-between mb-4">
+              <button 
+                type="button" 
+                onClick={() => handleLanguageChange('es')} 
+                className="text-blue-600">
+                Español
+              </button>
+              <button 
+                type="button" 
+                onClick={() => handleLanguageChange('en')} 
+                className="text-blue-600">
+                English
+              </button>
+            </div>
 
             <BaseInput
               type="email"
-              placeholder="Correo electrónico"
+              placeholder={t('login.email')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               error={
@@ -79,7 +98,7 @@ const Login = () => {
             <div className="relative">
               <BaseInput
                 type={showPassword ? "text" : "password"}
-                placeholder="Contraseña"
+                placeholder={t('login.password')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 error={
@@ -100,10 +119,10 @@ const Login = () => {
             </div>
 
             <div className="flex flex-col items-center mt-4">
-              <BaseButton onPress={handleLogin}>Continuar</BaseButton>
+              <BaseButton onPress={handleLogin}>{t('login.continue')}</BaseButton>
               <BaseLink
                 path="/forgotPassword"
-                text="Olvidaste tu contraseña?"
+                text={t('login.forgotYourPassword')}
                 className="mb-2 text-blue-500"
               />
             </div>
@@ -112,13 +131,11 @@ const Login = () => {
             <div className="text-center">
               <h2 className="text-3xl font-bold mb-4">Cycle App</h2>
               <p className="mb-6">
-              Inicia sesión para acceder a tu cuenta y disfrutar de nuestros servicios.
-               ¿No tienes una cuenta?
-              Regístrate aquí para empezar.
+                {t('login.messageRegister')}
               </p>
               <BaseLink
                 path="/register"
-                text="Registrate ahora!"
+                text={t('login.signUpNow')}
                 className="bg-white text-indigo-500 px-4 py-2 rounded-md"
               />
             </div>
