@@ -176,7 +176,7 @@ i18n.use(initReactI18next).init({
 
                 },
                 wellDetails: {
-                    "description": "Descripción",
+                    "description": "Description",
                     "fileLas": "LAS file",
                     "depthRange": "Depth Range",
                     "frequencyRange": "Frequency Range",
