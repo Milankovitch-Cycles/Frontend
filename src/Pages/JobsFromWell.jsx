@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getWellJobs } from '../api/authService';
 import { useSelector } from "react-redux";
-import { CircularProgress, Box, Typography, Button } from '@mui/material';
+import { CircularProgress, Box, Typography, Button, IconButton } from '@mui/material';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import BaseTable from '../components/BaseTable';
 import { useTranslation } from 'react-i18next';
 
@@ -30,26 +31,26 @@ const JobsFromWell = () => {
     }, {});
   };
 
-  useEffect(() => {
-    const fetchJobsFromWell = async () => {
-      try {
-        if (!dataAuthentication || !dataAuthentication.access_token) {
-          console.error("No access token available");
-          return;
-        }
-
-        const token = dataAuthentication.access_token;
-        const data = await getWellJobs(token, wellId);
-        const translatedJobs = data.map(translateJobData);
-        setJobs(translatedJobs);
-      } catch (error) {
-        setError('Error fetching job details');
-        console.error('Error fetching job details:', error);
-      } finally {
-        setLoading(false);
+  const fetchJobsFromWell = async () => {
+    try {
+      if (!dataAuthentication || !dataAuthentication.access_token) {
+        console.error("No access token available");
+        return;
       }
-    };
 
+      const token = dataAuthentication.access_token;
+      const data = await getWellJobs(token, wellId);
+      const translatedJobs = data.map(translateJobData);
+      setJobs(translatedJobs);
+    } catch (error) {
+      setError('Error fetching job details');
+      console.error('Error fetching job details:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchJobsFromWell();
   }, [wellId, dataAuthentication]);
 
@@ -94,11 +95,16 @@ const JobsFromWell = () => {
     <Box display="flex" flexDirection="column" p={2}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h4" gutterBottom>
-        {t('wellProcessing')} {wellId}
+          {t('wellProcessing')} {wellId}
         </Typography>
-        <Button variant="contained" color="primary" onClick={() => navigate(`/wells/${wellId}/createJob`)}>
-          {t('createJob')}
-        </Button>
+        <Box>
+          <IconButton color="primary" onClick={fetchJobsFromWell}>
+            <RefreshIcon />
+          </IconButton>
+          <Button variant="contained" color="primary" onClick={() => navigate(`/wells/${wellId}/createJob`)}>
+            {t('createJob')}
+          </Button>
+        </Box>
       </Box>
       <BaseTable
         data={jobs}
